@@ -2,8 +2,8 @@
 #file created 2022-Dec-02 23:25
 """https://adventofcode.com/2022/day/3"""
 
+
 DATA = 'data202203.txt'
-# DATA = 'testdata202203.txt'
 
 
 def GetData(datafile):
@@ -15,18 +15,17 @@ def GetData(datafile):
 
 
 def Priority(n):
-  """Return priority for n. Raise exception if n not in [a-zA-Z]"""
+  """Return priority for n. Raise exception if n not in [a-zA-Z]."""
   if 'A' <= n <= 'Z':
     return ord(n) - ord('A') + 27
   if 'a' <= n <= 'z':
     return ord(n) - ord('a') + 1
-
-  print(f'{n} has no priority')
   raise Exception
 
 
 def Part1():
-  """Solve part 1"""
+  """Solve part 1: total priority of items that are in both halves
+     of any given line."""
   lines = GetData(DATA)
   total = 0
   for l in lines:
@@ -42,7 +41,8 @@ def Part1():
 
 
 def Part2():
-  """Solve part 2"""
+  """Solve part 2: total priority of common items in each group of
+     three lines."""
   lines = GetData(DATA)
   total = 0
   for g in range(len(lines)//3):
@@ -53,7 +53,6 @@ def Part2():
 
 
 def main():
-  """main"""
   Part1()
   Part2()
 
