@@ -20,6 +20,8 @@ import sys
 from GetDataConfig import SESSION_COOKIE, CONTACT, TEST_URL
 
 
+GITHUB = ('https://github.com/WandaMinimoff/AdventOfCode/blob'
+          '/main/bin/GetData.py')
 CURL = '/usr/bin/curl'
 DAY = 1
 YEAR = 2022
@@ -33,11 +35,8 @@ def GetUrl(day=0, year=0):
 
 
 def UserAgent():
-  """Return a UserAgent string. curl version determined dynamically."""
-  cmd = [CURL, '-V']
-  raw_data = subprocess.check_output(cmd).decode('utf-8').strip()
-  curl_version = raw_data.split()[1]
-  return f'curl/{curl_version} from {CONTACT}'
+  """Return a UserAgent string."""
+  return f'{GITHUB} by {CONTACT}'
 
 
 def GetRawInput(session_cookie, target_url):
