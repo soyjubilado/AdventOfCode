@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import unittest
-from prog202204 import ParseLineToNumbers, WhollyContained, OverlapAtAll
+from prog202204 import *
 
 
 class TestProg202204(unittest.TestCase):
@@ -27,6 +27,19 @@ class TestProg202204(unittest.TestCase):
     self.assertEqual(OverlapAtAll(2, 8, 3, 7), True)
     self.assertEqual(OverlapAtAll(6, 6, 4, 6), True)
     self.assertEqual(OverlapAtAll(2, 6, 4, 8), True)
+
+  def testSolve(self):
+    sample = ['2-4,6-8',
+              '2-3,4-5',
+              '5-7,7-9',
+              '2-8,3-7',
+              '6-6,4-6',
+              '2-6,4-8',]
+    self.assertEqual(Solve(sample, 'Part 1'), 2)
+    self.assertEqual(Solve(sample, 'Part 2'), 4)
+    with self.assertRaises(AssertionError):
+      Solve([], 'Part 3')
+
 
 if __name__ == '__main__':
   unittest.main()

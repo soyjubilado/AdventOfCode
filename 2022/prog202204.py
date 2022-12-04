@@ -40,19 +40,20 @@ def Solve(lines, part) -> None:
     lines: (list of str) lines of input
     part: 'Part 1' or 'Part 2'
   """
-  overlaps = []
+  assert part in {'Part 1', 'Part 2'}
+  total = 0
   CriteriaMet = WhollyContained if part == 'Part 1' else OverlapAtAll
   for l in lines:
     one_s, one_f, two_s, two_f = ParseLineToNumbers(l)
     if CriteriaMet(one_s, one_f, two_s, two_f):
-      overlaps.append((one_s, one_f, two_s, two_f))
-  print(f'{part}: {len(overlaps)}')
+      total += 1
+  return total
 
 
 def main():
   lines = GetData(DATA)
-  Solve(lines, 'Part 1')
-  Solve(lines, 'Part 2')
+  print(f'Part 1: {Solve(lines, "Part 1")}')
+  print(f'Part 2: {Solve(lines, "Part 2")}')
 
 
 if __name__ == '__main__':
