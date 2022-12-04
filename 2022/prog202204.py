@@ -12,15 +12,33 @@ def GetData(datafile):
   return lines
 
 
-def Part1(lines):
+def ParseLineToNumbers(line):
+  """'1-2,3-4' -> (1,2,3,4)"""
+  one, two = line.split(',')
+  one_s, one_f = [int(i) for i in one.split('-')]
+  two_s, two_f = [int(i) for i in two.split('-')]
+  return one_s, one_f, two_s, two_f
+
+
+def WhollyContained(one_s, one_f, two_s, two_f):
   """One range is fully within the other."""
+  return (one_s <= two_s <= two_f <= one_f or
+          two_s <= one_s <= one_f <= two_f)
+
+
+def OverlapAtAll(one_s, one_f, two_s, two_f):
+  """The two ranges overlap at least partially."""
+  return (one_s <= two_s <= one_f or
+          one_s <= two_f <= one_f or
+          two_s <= one_s <= two_f or
+          two_s <= one_f <= two_f)
+
+
+def Part1(lines):
   overlaps = []
   for l in lines:
-    one, two = l.split(',')
-    one_s, one_f = [int(i) for i in one.split('-')]
-    two_s, two_f = [int(i) for i in two.split('-')]
-    if (one_s <= two_s <= two_f <= one_f or
-        two_s <= one_s <= one_f <= two_f):
+    one_s, one_f, two_s, two_f = ParseLineToNumbers(l)
+    if WhollyContained(one_s, one_f, two_s, two_f):
       overlaps.append((one_s, one_f, two_s, two_f))
   print(f'Part 1: {len(overlaps)}')
 
@@ -29,13 +47,8 @@ def Part2(lines):
   """The two ranges overlap at least partially."""
   overlaps = []
   for l in lines:
-    one, two = l.split(',')
-    one_s, one_f = [int(i) for i in one.split('-')]
-    two_s, two_f = [int(i) for i in two.split('-')]
-    if (one_s <= two_s <= one_f or
-        one_s <= two_f <= one_f or
-        two_s <= one_s <= two_f or
-        two_s <= one_f <= two_f):
+    one_s, one_f, two_s, two_f = ParseLineToNumbers(l)
+    if OverlapAtAll(one_s, one_f, two_s, two_f):
       overlaps.append((one_s, one_f, two_s, two_f))
   print(f'Part 2: {len(overlaps)}')
 
