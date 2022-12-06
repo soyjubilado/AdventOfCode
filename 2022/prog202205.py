@@ -6,8 +6,6 @@ from collections import defaultdict
 
 DATA = 'data202205.txt'
 COLUMNS = 9
-# DATA = 'testdata202205.txt'
-# COLUMNS = 3
 
 
 def GetData(datafile):
@@ -18,8 +16,9 @@ def GetData(datafile):
   return lines
 
 
-def FirstBlankRow(lines):
-  """Index of first row that starts with ' '."""
+def LastRow(lines):
+  """Index of first row that starts with ' 1', which indicates the bottom
+     of the stacks."""
   for idx, line in enumerate(lines):
     if line.startswith(' 1'):
       break
@@ -34,7 +33,7 @@ def ParseStarting(lines):
   # extract chars at index 1, 5, 9, ... etc and put in a dictionary
   # keyed on column.
   column_dict = defaultdict(lambda: [])
-  last_row = FirstBlankRow(lines)
+  last_row = LastRow(lines)
   for line in lines[:last_row]:
     for col in range(1, COLUMNS+1):
       idx = 4*col - 3
