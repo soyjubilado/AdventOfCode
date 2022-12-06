@@ -20,7 +20,7 @@ import sys
 from GetDataConfig import SESSION_COOKIE, CONTACT, TEST_URL
 
 
-GITHUB = ('https://github.com/WandaMinimoff/AdventOfCode/blob'
+GITHUB = ('https://github.com/soyjubilado/AdventOfCode/blob'
           '/main/bin/GetData.py')
 CURL = '/usr/bin/curl'
 DAY = 1
