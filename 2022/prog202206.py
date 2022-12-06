@@ -5,6 +5,10 @@
 DATA = 'data202206.txt'
 
 
+class NoSolution(Exception):
+  """No solution for a given input."""
+
+
 def GetData(datafile):
   """Parse input file, return the one line that's in it."""
   lines = []
@@ -22,7 +26,7 @@ def Solver(line, width):
     set_of_N = {line[i-width+j] for j in range(width)}
     if len(set_of_N) == width:
       return i
-  return 'Not found'
+  raise NoSolution
 
 
 def main():
