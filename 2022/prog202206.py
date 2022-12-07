@@ -23,7 +23,7 @@ def Solver(line, width):
      a set; if the size of the set == width, that's the index we're seeking.
   """
   for i in range(width, len(line) + 1):
-    set_of_N = set(list(line[i-width:i]))
+    set_of_N = set(line[i-width:i])
     if len(set_of_N) == width:
       return i
   raise NoSolution
