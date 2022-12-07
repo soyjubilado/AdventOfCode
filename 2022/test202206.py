@@ -6,6 +6,7 @@ from prog202206 import Solver, NoSolution
 
 DATA = [
         ['bvwbjplbgvbhsrlpgdmjqwftvncz', 4, 5],
+        ['bvwbj', 4, 5],
         ['nppdvjthqldpwncqszvftbrmjlhg', 4, 6],
         ['nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg', 4, 10],
         ['zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 4, 11],

@@ -22,8 +22,8 @@ def Solver(line, width):
      pointed at the last character. Check for duplicates by casting it to
      a set; if the size of the set == width, that's the index we're seeking.
   """
-  for i in range(width, len(line)):
-    set_of_N = {line[i-width+j] for j in range(width)}
+  for i in range(width, len(line) + 1):
+    set_of_N = set(list(line[i-width:i]))
     if len(set_of_N) == width:
       return i
   raise NoSolution
