@@ -75,6 +75,12 @@ def GetDestPtr(ptr, current_line):
   if dest == '..':
     return ptr.parent
 
+  # untested, but added for completeness after the fact.
+  if dest == '/':
+    while ptr.parent is not None:
+      ptr = ptr.parent
+    return ptr
+
   for i in ptr.contents:
     if i.name == dest:
       assert not isinstance(i, File)
