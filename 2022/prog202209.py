@@ -42,14 +42,9 @@ def MoveTail(tail, head):
   if AreAdjacent(tail, head):
     return tail
 
-  if x_head == x_tail:
-    return (x_tail, y_tail + 1) if y_head > y_tail else (x_tail, y_tail - 1)
-  if y_head == y_tail:
-    return (x_tail + 1, y_tail) if x_head > x_tail else (x_tail - 1, y_tail)
-
-  # tail needs to move on a diagonal, direction of head's relative quadrant
-  y_tail = y_tail + 1 if y_head > y_tail else y_tail - 1
-  x_tail = x_tail + 1 if x_head > x_tail else x_tail - 1
+  # Add +1, 0, or -1 to the tail to get it closer to the head
+  y_tail += 0 if y_head == y_tail else (y_head - y_tail)//abs(y_head - y_tail)
+  x_tail += 0 if x_head == x_tail else (x_head - x_tail)//abs(x_head - x_tail)
 
   return x_tail, y_tail
 
