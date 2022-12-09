@@ -41,6 +41,7 @@ def MoveTail(tail, head):
   x_tail, y_tail = tail
   if AreAdjacent(tail, head):
     return tail
+
   if x_head == x_tail:
     return (x_tail, y_tail + 1) if y_head > y_tail else (x_tail, y_tail - 1)
   if y_head == y_tail:
@@ -51,22 +52,6 @@ def MoveTail(tail, head):
   x_tail = x_tail + 1 if x_head > x_tail else x_tail - 1
 
   return x_tail, y_tail
-
-
-def Part1(lines):
-  """Single head and tail."""
-  head = (0, 0)
-  tail = (0, 0)
-  head_seen = [head]
-  tail_seen = [tail]
-  for line in lines:
-    direction, steps = line.split()
-    for _ in range(int(steps)):
-      head = MoveHead(head, direction)
-      head_seen.append(head)
-      tail = MoveTail(tail, head)
-      tail_seen.append(tail)
-  print(f'Part 1: {len(set(tail_seen))}')
 
 
 def GetGraphDimensions(lines):
@@ -88,7 +73,9 @@ def GetGraphDimensions(lines):
 
 
 def PrintRope(rope, dimensions):
-  """Print a graphic representation of the rope on the field."""
+  """Print a graphic representation of the rope on the field.
+     "dimensions" is the tuple returned by GetGraphDimensions.
+  """
   invert_rope = defaultdict(lambda: '.')
   for i in range(9, 0, -1):
     invert_rope[rope[i]] = str(i) # dups will be overwritten by smallest no.
@@ -101,31 +88,26 @@ def PrintRope(rope, dimensions):
     print()
 
 
-def Part2(lines, dimensions):
-  """A head followed by 9 tails."""
-  rope = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-          (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),]
+def Solver(lines, length=10):
+  """Solve for a rope of arbitrary length. Works for Part 1 and Part 2."""
+  rope = [(0, 0) for _ in range(length)]
   tail_seen = [(0, 0)]
 
-  for count, line in enumerate(lines):
+  for line in lines:
     direction, steps = line.split()
     for _ in range(int(steps)):
       rope[0] = MoveHead(rope[0], direction)
-      for idx in range(1, 10):
+      for idx in range(1, length):
         rope[idx] = MoveTail(rope[idx], rope[idx-1])
-      tail_seen.append(rope[9])
+      tail_seen.append(rope[-1])
 
-    # print(f'\n== step {count} ==')
-    # PrintRope(rope, dimensions)
-
-  print(f'Part 2: {len(set(tail_seen))}')
+  return len(set(tail_seen))
 
 
 def main():
   lines = GetData(DATA)
-  Part1(lines)
-  dimensions = GetGraphDimensions(lines)
-  Part2(lines, dimensions)
+  print(f'Part 1: {Solver(lines, 2)}')
+  print(f'Part 2: {Solver(lines, 10)}')
 
 
 if __name__ == '__main__':
