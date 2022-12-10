@@ -30,6 +30,8 @@ class TestProg202206(unittest.TestCase):
     self.assertEqual(MoveTail((0,0), (0,1)), (0,0))
     self.assertEqual(MoveTail((0,0), (0,-1)), (0,0))
     self.assertEqual(MoveTail((0,0), (1,0)), (0,0))
+    self.assertEqual(MoveTail((0,0), (1,1)), (0,0))
+    self.assertEqual(MoveTail((0,0), (1,-1)), (0,0))
 
     self.assertEqual(MoveTail((0,0), (2,0)), (1,0))
     self.assertEqual(MoveTail((0,0), (-2,0)), (-1,0))
