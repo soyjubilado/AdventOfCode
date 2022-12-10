@@ -1,4 +1,14 @@
-# AdventOfCode
+## Advent Of Code
 
-These are my python solutions for the annual Advent of Code coding challenge,
-which takes place every December at https://adventofcode.com/
+Advent of Code is an annual coding challenge that takes place 
+from December 1 through December 25. Like an advent calendar, a new puzzle
+is released at midnight (EST, or UTC-5:00) at the
+[Advent of Code website](https://adventofcode.com/).
+
+These directories contain, organized by year, some of my solutions in python
+for the puzzles. The naming convention for the programs is progYYYYDD.py. If
+there are unit tests associated with that day, they will be in the file
+testYYYYDD.py.
+
+A discussion forum for participants is available on
+[Reddit](https://reddit.com/r/adventofcode).
