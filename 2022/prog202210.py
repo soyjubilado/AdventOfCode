@@ -26,15 +26,13 @@ def LineIterator(lines):
     yield lines[pointer]
 
 
-def ClockAndRegister(lines):
-  """Iterator that returns the next clock and register."""
+def ClockAndRegister(lines, how_many):
+  """Return a list of how_many clock ticks and register contents."""
   clock = 0
   instructions = LineIterator(lines)
   register = 1
-  register_prev = register
-  while True:
-    # pylint: disable=stop-iteration-return
-    # because both iterators loop indefinitely
+  return_list = []
+  while clock < how_many:
     instr = next(instructions)
     if instr.startswith('noop'):
       value = 0
@@ -47,32 +45,31 @@ def ClockAndRegister(lines):
 
     for _ in range(cycles_per_op):
       clock += 1
-      yield clock, register
+      return_list.append((clock, register))
 
     # don't update register until after the operation has finished
     register += value
+  return return_list[:how_many]
 
 
 def Part1(lines):
   """Update sum_strengths every 40 cycles starting at 20."""
-  clock_and_register = ClockAndRegister(lines)
+  clock_and_register = ClockAndRegister(lines, 220)
   sum_strengths = 0
-  for _ in range(220):
-    clock, register = next(clock_and_register)
+  for clock, register in clock_and_register:
     sum_strengths += 0 if (clock + 20) % 40 else clock * register
   return sum_strengths
 
 
 def Part2(lines):
   """When clock % 40 and register (roughly) match, print the pixel."""
-  clock_and_register = ClockAndRegister(lines)
-  for n in range(1, 241):
-    clock, register = next(clock_and_register)
+  clock_and_register = ClockAndRegister(lines, 240)
+  for clock, register in clock_and_register:
     crt = clock % 40
     visible = (crt in (register, register + 1, register + 2))
     output = '0' if visible else ' '
     print(output, end='')
-    if not n % 40:
+    if not clock % 40:
       print()
 
 
