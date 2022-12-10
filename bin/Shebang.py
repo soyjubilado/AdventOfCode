@@ -21,8 +21,9 @@ def WriteFile(daynum, year):
     fh.write(f'"""https://adventofcode.com/{year}/day/{daynum}"""\n\n')
     fh.write(f"DATA = 'data{year}{daynum:>02}.txt'\n")
     fh.write(f"#DATA = 'testdata{year}{daynum:>02}.txt'\n\n")
-    fh.write(dedent("""
+    fh.write(dedent('''
                     def GetData(datafile):
+                      """Read input into a list of lines."""
                       lines = []
                       with open(datafile, 'r') as fh:
                         lines = [i.strip() for i in fh]
@@ -30,13 +31,14 @@ def WriteFile(daynum, year):
 
 
                     def main():
+                      """main"""
                       lines = GetData(DATA)
                       print(lines)
 
 
                     if __name__ == '__main__':
                       main()
-                    """))
+                    '''))
   os.chmod(filename, stat.S_IRWXU)
 
 
