@@ -5,45 +5,16 @@
 from collections import deque, defaultdict
 
 DATA = 'data202211.txt'
-DATA = 'testdata202211.txt'
-BIGNUM = 13 * 3 * 7 * 2 * 19 * 5 * 11 * 17
-SMALLNUM = 23 * 19 * 13 * 17
+# DATA = 'testdata202211.txt'
 
-def DataMonkeys():
-  m = []
-  m.append(Monkey([89, 73, 66, 57, 64, 80],
-                  lambda x: x * 3, lambda x: 6 if not x % 13 else 2))
-  m.append(Monkey([83, 78, 81, 55, 81, 59, 69],
-                  lambda x: x + 1, lambda x: 7 if not x % 3 else 4))
-  m.append(Monkey([76, 91, 58, 85],
-                  lambda x: x * 13, lambda x: 1 if not x % 7 else 4))
-  m.append(Monkey([71, 72, 74, 76, 68],
-                  lambda x: x * x, lambda x: 6 if not x % 2 else 0))
-  m.append(Monkey([98, 85, 84],
-                  lambda x: x + 7, lambda x: 5 if not x % 19 else 7))
-  m.append(Monkey([78],
-                  lambda x: x + 8, lambda x: 3 if not x % 5 else 0))
-  m.append(Monkey([86, 70, 60, 88, 88, 78, 74, 83],
-                  lambda x: x + 4, lambda x: 1 if not x % 11 else 2))
-  m.append(Monkey([81, 58],
-                  lambda x: x + 5, lambda x: 3 if not x % 17 else 5))
-  return m
+Times = lambda x, y: x * y
+Plus = lambda x, y: x + y
+Square = lambda x, y: x * x
 
 
-def TestMonkeys():
-  m = []
-  m.append(Monkey([79, 98],
-                   lambda x: x * 19, lambda x: 2 if not x % 23 else 3))
-  m.append(Monkey([54, 65, 75, 74],
-                   lambda x: x + 6, lambda x: 2 if not x % 19 else 0))
-  m.append(Monkey([79, 60, 97],
-              lambda x: x * x, lambda x: 1 if not x % 13 else 3))
-  m.append(Monkey([74], lambda x: x + 3, lambda x: 0 if not x % 17 else 1))
-  return m
+class UndefinedOperation(Exception):
+  """undefined opeation in the input file."""
 
-
-def Nop(*args, **kwargs):
-  pass
 
 def GetData(datafile):
   """Read input into a list of lines."""
@@ -53,58 +24,122 @@ def GetData(datafile):
   return lines
 
 
-class Monkey(object):
-  def __init__(self, starting, operation, test):
-    self.starting = deque(starting)
+class Monkey():
+  """A monkey object."""
+
+  def __init__(self, name, starting, operation, oparg,
+               divis_val, dest_T, dest_F):
+    self.name = name
+    self.bag = deque(starting)
     self.operation = operation
-    self.test = test
-    self.inspected = len(self.starting)
+    self.oparg = oparg
+    self.divisibility = divis_val
+    self.dest_if_true = dest_T
+    self.dest_if_false = dest_F
+    self.inspected = len(self.bag)
+
+  def __str__(self):
+    retval = [f'Monkey {self.name}']
+    retval.append(f'  bag: {self.bag}')
+    retval.append(f'  operation: {self.operation}')
+    retval.append(f'  oparg: {self.oparg}')
+    retval.append(f'  divisibility: {self.divisibility}')
+    retval.append(f'  dest_if_true: {self.dest_if_true}')
+    retval.append(f'  dest_if_false: {self.dest_if_false}')
+    return '\n'.join(retval)
+
+  def Test(self, item):
+    """Test whether item is divisible by self.divisibility; return the
+       destination that results."""
+    if not item % self.divisibility:
+      return self.dest_if_true
+    return self.dest_if_false
 
   def SetInspectation(self):
-    self.inspected = len(self.starting)
+    """Keep track of number of items in bag before monkey handles them."""
+    self.inspected = len(self.bag)
 
-  def Catch(self, item):
-    self.starting.append(item)
+  def AddToBag(self, item):
+    """Add an item to the monkey's bag."""
+    self.bag.append(item)
 
-def RunRound(monkeys, inspect_dict, print=Nop):
+
+def CommonDivisibility(monkeys):
+  """Given a barrel of monkeys, determine the product of all their
+     "divisibility" values. This becomes the modulo to keep the worry a
+     manageable size in part 2."""
+  answer = 1
+  for m in monkeys:
+    answer *= m.divisibility
+  return answer
+
+
+def RunRound(monkeys, inspect_dict, puzzle_part=None):
+  """Run one round of monkeys. Update inspect_dict with how many items each
+     monkey handled during this round."""
+  lcm_monkeys = CommonDivisibility(monkeys)
   for idx, m in enumerate(monkeys):
-    print(f'Monkey {idx}:')
-    inspect_dict[idx] += len(m.starting)
-    for _ in range(len(m.starting)):
-      item = m.starting.popleft() 
-      print(f'  Monkey inspects item level {item}')
-      item = m.operation(item)
-      # print(f'    new worry level is {item}')
-      # item //= 3
-      # print(f'    dividing by 3 gives {item}')
-      item %= BIGNUM
-      # item %= SMALLNUM
-      destination = m.test(item)
-      print(f'    item {item} is thrown to monkey {destination}')
-      monkeys[destination].Catch(item)
+    inspect_dict[idx] += len(m.bag)
+    for _ in range(len(m.bag)):
+      item = m.bag.popleft()
+      item = m.operation(item, m.oparg)
+
+      # adjustment changes depending on Part 1 or Part 2
+      if puzzle_part == 'Part 1':
+        item //= 3
+      elif puzzle_part == 'Part 2':
+        item %= lcm_monkeys
+
+      destination = m.Test(item)
+      monkeys[destination].AddToBag(item)
   return monkeys
+
+
+def GetMonkeys(lines):
+  """Parse input line and produce a list of monkeys."""
+  lines_per_monkey_definition = 6
+  monkey = []
+  num_monkeys = (len(lines) + 1) // (lines_per_monkey_definition + 1)
+  for num in range(num_monkeys):
+    idx = num * (lines_per_monkey_definition + 1)
+    name = lines[idx]
+    start_str = lines[idx + 1].split(':')[1]
+    start = [int(i.strip()) for i in start_str.split(',')]
+    opline = lines[idx+2].split()
+    if opline[-1] == 'old' and opline[-2] == '*':
+      op = Square
+    elif opline[-2] == '+':
+      op = Plus
+    elif opline[-2] == '*':
+      op = Times
+    else:
+      raise UndefinedOperation
+    oparg = '0' if not opline[-1].isnumeric() else int(opline[-1])
+    divis_val = int(lines[idx+3].split()[-1])
+    dest_T = int(lines[idx+4].split()[-1])
+    dest_F = int(lines[idx+5].split()[-1])
+    monkey.append(Monkey(name, start, op, oparg, divis_val, dest_T, dest_F))
+  return monkey
+
+
+def Solver(part):
+  """Solve either Part 1 or Part 2 of the puzzle."""
+  num_rounds = 10000 if part == 'Part 2' else 20
+  lines = GetData(DATA)
+  monkeys = GetMonkeys(lines)
+  monkey_handle_map = defaultdict(lambda: 0)
+
+  for _ in range(num_rounds):
+    RunRound(monkeys, monkey_handle_map, part)
+
+  top_scores = list(reversed(sorted(monkey_handle_map.values())))
+  print(f'{part}: {top_scores[0] * top_scores[1]}')
+
 
 def main():
   """main"""
-  lines = GetData(DATA)
-  # print(lines)
-  """
-  """
-  # m = DataMonkeys()
-  m = DataMonkeys()
-  monkey_map = defaultdict(lambda: 0) 
-  for round in range(10000):
-    print(f'Round {round}')
-    """
-    for idx in range(len(m)):
-      print(f'Monkey {idx}: {m[idx].starting}')
-      print(f'   adding {len(m[idx].starting)}')
-    """
-    m = RunRound(m, monkey_map)
-  top_scores = list(reversed(sorted(monkey_map.values())))
-  print(monkey_map)
-  print(top_scores)
-  print({top_scores[0] * top_scores[1]})
+  Solver('Part 1')
+  Solver('Part 2')
 
 
 if __name__ == '__main__':
