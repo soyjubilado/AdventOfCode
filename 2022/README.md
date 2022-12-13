@@ -9,6 +9,10 @@
     where the `StopIteration` was raised. This will get caught by
     pylint, and refers to PEP-479. I eventually refactored to eliminate
     the nested iterators.
+  - If you're looking for the shortest path, but the weights between vertices
+    are always 1, then you don't need Dijkstra's algorithm, only BFS.
+    Dijkstra's algorithm becomes BFS in this case, but with the overhead
+    of maintaining the priority queue. (day 12).
 
 ## Notes On Individual Days
 
@@ -106,5 +110,8 @@ a location that had no solution. I just caught these exceptions and ignored
 them. Someone noted that a more efficient algorithm would be to start and
 the top and reverse the rule for descending the mountain until you reached
 a low point.
+
+I ended up writing a second version without Dijkstra's algorithm. It was
+fairly simple to write, and it ran faster than the other version.
 
 - concepts: Dijkstra's algorithm, BFS
