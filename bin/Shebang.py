@@ -17,7 +17,7 @@ def WriteFile(daynum, year):
     sys.exit()
   with open(filename, 'w') as fh:
     fh.write('#!/usr/bin/python3\n')
-    fh.write(f'#file created {time.strftime("%Y-%b-%d %H:%M")}\n')
+    fh.write(f'# file created {time.strftime("%Y-%b-%d %H:%M")}\n')
     fh.write(f'"""https://adventofcode.com/{year}/day/{daynum}"""\n\n')
     fh.write(f"DATA = 'data{year}{daynum:>02}.txt'\n")
     fh.write(f"#DATA = 'testdata{year}{daynum:>02}.txt'\n\n")
