@@ -115,3 +115,28 @@ I ended up writing a second version without Dijkstra's algorithm. It was
 fairly simple to write, and it ran faster than the other version.
 
 - concepts: Dijkstra's algorithm, BFS
+
+### Day 13
+
+Recursion: distress signal packets.
+
+This was an especially fun day for me because I enjoy problems that have
+recursive solutions. Although the input resembled the input from last year's
+snailfish numbers puzzle (day 18), this one did not make me immediately think
+I needed a parse tree. In fact, the representation was exactly the same as
+a (nested) python list. So I warily read in the input via the python "eval"
+function, only later learning that json.loads() is a safer option.
+
+Although I was completely sober, I did not finish part 1 before bed. I did
+think about it over night, though, and I knew where my bug was by morning.
+
+For Part 2 I just used the function from Part 1 as the comparator function
+for a python sort() of the input. The function needed only minor modifications.
+Someone pointed out in the forum that you don't actually need to sort the
+input -- you only need to know how many are lower than [[2]] and how many are
+lower than [[6]]. That can be done in O(n).
+
+Python 3 got rid of the cmp function for sort, so I needed
+functools.cmp_to_key(func).
+
+- concepts: recursion, eval(), json.loads, functools.cmp_to_key
