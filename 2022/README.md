@@ -1,18 +1,21 @@
 ## Things I learned during AoC 2022
 
-  - How to use git, including difftool
-  - How to set up a repository on github
-  - Python has set comprehensions (day 3)
-  - How to use Python's built-in unittest (day 3)
-  - Brits call the game "Paper Scissors Rock"
-  - If you nest iterators, there is an issue with not knowing
-    where the `StopIteration` was raised. This will get caught by
-    pylint, and refers to PEP-479. I eventually refactored to eliminate
-    the nested iterators.
+  - Basic operations for git, including difftool.
+  - Setting up a repository on github.
+  - Python has set comprehensions. (day 3)
+  - Using Python's built-in unittest. (day 3)
+  - Brits call the game "Paper Scissors Rock."
+  - If you nest iterators, there is an issue with not knowing where the
+    `StopIteration` was raised. This will get caught by pylint, and refers to
+    PEP-479. I eventually refactored to eliminate the nested iterators. (day
+    10)
   - If you're looking for the shortest path, but the weights between vertices
     are always 1, then you don't need Dijkstra's algorithm, only BFS.
-    Dijkstra's algorithm becomes BFS in this case, but with the overhead
-    of maintaining the priority queue. (day 12).
+    Dijkstra's algorithm reduces to BFS in this case, but with the overhead of
+    maintaining the priority queue. (day 12).
+  - json.loads is a safe alternative to eval(). (day 13)
+  - Python 3 got rid of cmp functions for sort, so you have to convert it
+    to a key function via functools.cmp_to_sort(). (day 13)
 
 ## Notes On Individual Days
 
@@ -140,3 +143,11 @@ Python 3 got rid of the cmp function for sort, so I needed
 functools.cmp_to_key(func).
 
 - concepts: recursion, eval(), json.loads, functools.cmp_to_key
+
+### Day 14
+
+Mostly straightforward. Good problem decomposition helps debugging. I added
+an 'overlay' section to PrintGrid so that I could add the '+' to the
+picture without modifying the grid.
+
+- concepts: 2-d graphs
