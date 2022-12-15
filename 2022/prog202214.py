@@ -80,8 +80,7 @@ def NextSpot(grid, here, abyss_level, is_part_2=False):
 
 
 def AddOneGrain(grid, abyss_level, is_part_2=False):
-  """Add next grain to the grid.
-     Returns True successful."""
+  """Add next grain to the grid. Returns True if successful."""
   here = (500, 0)
   start = here
   next_spot = NextSpot(grid, here, abyss_level, is_part_2)
