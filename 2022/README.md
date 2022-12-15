@@ -16,6 +16,8 @@
   - json.loads is a safe alternative to eval(). (day 13)
   - Python 3 got rid of cmp functions for sort, so you have to convert it
     to a key function via functools.cmp_to_sort(). (day 13)
+  - Python has complex numbers, and these can be used to represent coordinates
+    on a grid.
 
 ## Notes On Individual Days
 
@@ -97,6 +99,8 @@ algorithm, not the implementation. Boy, was I right -- spoilers everywhere.
 
 ### Day 12
 
+Path searching.
+
 I borrowed code from last year's Day 15 for the shortest path algorithm.  I
 continue to use a dictionary of grid coordinates to represent a two-dimensional
 field.
@@ -146,8 +150,28 @@ functools.cmp_to_key(func).
 
 ### Day 14
 
+Falling sand day.
+
 Mostly straightforward. Good problem decomposition helps debugging. I added
 an 'overlay' section to PrintGrid so that I could add the '+' to the
 picture without modifying the grid.
 
 - concepts: 2-d graphs
+
+### Day 15
+
+Sensors and beacons.
+
+I wasn't even drunk, and I had a hard time understanding part 1. After writing
+code to parse the input, I gave up and went to bed early. By morning, things
+were more clear and I was able to code an inefficient solution to part 1. My
+program took about 4 seconds on my actual input. I was storing the impossible
+beacon locations individually, but I should have been storing them as ranges.
+
+For part 2, I needed to rewrite the part 1 code to be more efficient. After I
+finished this, part 1 completed in about 0.02 seconds.
+
+Iterating over the millions of lines still took my program about 40 seconds
+before finding a solution (after 3.2 million rows had been searched).
+
+concepts: big numbers?
