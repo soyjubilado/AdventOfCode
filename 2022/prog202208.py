@@ -59,7 +59,7 @@ def IsVisible(tree, grid):
   tallest_in_each_direction = [max(heights_left), max(heights_right),
                                max(heights_up), max(heights_down)]
 
-  # if the shortest of the tallest trees in all directions is shorter
+  # if the shortest of the tallest trees in any direction is shorter
   # than the current tree, the current tree is visible from somewhere.
 
   if min(tallest_in_each_direction) < tree_height:
