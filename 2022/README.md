@@ -175,3 +175,16 @@ Iterating over the millions of lines still took my program about 40 seconds
 before finding a solution (after 3.2 million rows had been searched).
 
 concepts: big numbers?
+
+### Day 16
+
+Valves and tunnesl (and elephants).
+
+See comments at top of program. For part 1, I successfully reduced the problem
+sufficiently so that an exhaustive search of all possible paths worked (in
+under 5 seconds).
+
+For part 2, partially based on a spoiler I read, I ran it twice: the first time
+with the full set of targets for 26 seconds; then again with the list of
+leftover targets, also for 26 seconds. This yielded the correct answer for my
+data set, but I am skeptical that it would work for all datasets.

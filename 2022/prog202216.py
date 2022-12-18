@@ -2,8 +2,6 @@
 # file created 2022-Dec-15 20:41
 """https://adventofcode.com/2022/day/16
 
-Only Part 1 is solved.
-
 Volcanic tunnels and pressure release valves. I reduced the problem by looking
 at only the rooms with a working valve. For the sample problem, this was six,
 and for my input it was 15. The total number of paths is N!, which is
@@ -116,34 +114,46 @@ def MaxPathValue(start, target_rooms, target_map, valve_dict, clock):
 
   # no more time
   if not clock:
-    return 0
+    return 0, worthless + target_rooms
 
   # no more rooms to visit
   if not target_rooms:
-    return FlowRate(start, valve_dict) * clock
+    return FlowRate(start, valve_dict) * clock, worthless
 
   # recursively evaluate every remaining path with the remaining time
-  sub_values = [MaxPathValue(room, target_rooms[:], target_map, valve_dict,
-                             clock - target_map[start][room] - 1)
-                for room in target_rooms]
+  sub_values_and_rooms = [MaxPathValue(room, target_rooms[:],
+                                       target_map, valve_dict,
+                                       clock - target_map[start][room] - 1)
+                          for room in target_rooms]
+  best_answer = max(sub_values_and_rooms)
+  sub_values, rooms = best_answer
 
-  return max(sub_values) + (FlowRate(start, valve_dict) * clock)
+  return sub_values + (FlowRate(start, valve_dict) * clock), worthless + rooms
 
 
-def Part1(valve_dict):
-  """no elephant"""
-  target_rooms = GetTargetRooms(valve_dict)
+def Solve(valve_dict, clock=30, rooms_left=None):
+  """Default args work for Part 1. For part 2, run once with clock=26, then take
+     the list of unvisited rooms and run it *again* with clock=26, and add the
+     two values together."""
+  target_rooms = GetTargetRooms(valve_dict) if not rooms_left else rooms_left
   target_map = GetMapOfTargetRooms(target_rooms[:], valve_dict)
-  clock = 30
-  answer = MaxPathValue('AA', target_rooms, target_map, valve_dict, clock)
-  print(f'Part 1: {answer}')
+  answer, rooms_left = MaxPathValue('AA', target_rooms, target_map, valve_dict,
+                                    clock)
+  return answer, rooms_left
 
 
 def main():
   """main"""
   lines = GetData(DATA)
   valve_dict = GetValveDict(lines)
-  Part1(valve_dict)
+  pt1_answer, rooms_left = Solve(valve_dict)
+  print(f'Part 1: {pt1_answer}, rooms left: {rooms_left}')
+
+  pt2_answer1, rooms_left = Solve(valve_dict, clock=26)
+  print(f'After 26 secs, answer = {pt2_answer1} with rooms left: {rooms_left}')
+  pt2_answer2, rooms_left = Solve(valve_dict, clock=26, rooms_left=rooms_left)
+  print(f'After 26 secs, answer = {pt2_answer2} with rooms left: {rooms_left}')
+  print(f'Part 2: {pt2_answer1} + {pt2_answer2} = {pt2_answer1 + pt2_answer2}')
 
 
 if __name__ == '__main__':
