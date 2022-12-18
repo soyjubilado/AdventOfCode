@@ -22,7 +22,7 @@ Basic algorithm:
 
 DATA = 'data202216.txt'
 # DATA = 'testdata202216.txt'
-NO_PATH = 10000
+NO_PATH = float('inf')
 
 
 def GetData(datafile):
