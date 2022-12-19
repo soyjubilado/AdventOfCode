@@ -198,12 +198,14 @@ data set, but I am skeptical that it would work for all datasets.
 Part 1 was pretty straighforward -- just count the cubes, and subtract
 shared sides.
 
-For part 2 I thought I'd just build a box around the droplet and do a flood
-fill to see how many sides are exposed on the outside. Unfortunately, the
-box was too big and the kernel kept killing my process for being a memory hog.
+For part 2, I thought build a box around the droplet and did a flood
+fill to see how many sides are exposed on the outside.
 
-I ended up just finding a point touching the outside of the drop, and building
-a shroud around it starting from that point. Same idea as a flood fill, but
-it hugged the surface of the drop and was more memory efficient.
+Note: I had a bug in the first version of this that led me to believe it
+wouldn't work, and so I wrote a version using a different algorithm. That
+was the first version I checked in. However, I kept thinking about it, and
+the numbers didn't add up, so I revisited the original algorithm and fixed
+it. That is the current version. The bug was just due to sloppy programming;
+a single unit test would have exposed it easily.
 
-- concepts: neighbors in 3-d 
+- concepts: neighbors in 3-d, flood fill
