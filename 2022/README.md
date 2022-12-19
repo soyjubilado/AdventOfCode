@@ -174,7 +174,7 @@ finished this, part 1 completed in about 0.02 seconds.
 Iterating over the millions of lines still took my program about 40 seconds
 before finding a solution (after 3.2 million rows had been searched).
 
-concepts: big numbers?
+- concepts: big numbers?
 
 ### Day 16
 
@@ -188,3 +188,22 @@ For part 2, partially based on a spoiler I read, I ran it twice: the first time
 with the full set of targets for 26 seconds; then again with the list of
 leftover targets, also for 26 seconds. This yielded the correct answer for my
 data set, but I am skeptical that it would work for all datasets.
+
+### Day 17
+
+(skipped)
+
+### Day 18
+
+Part 1 was pretty straighforward -- just count the cubes, and subtract
+shared sides.
+
+For part 2 I thought I'd just build a box around the droplet and do a flood
+fill to see how many sides are exposed on the outside. Unfortunately, the
+box was too big and the kernel kept killing my process for being a memory hog.
+
+I ended up just finding a point touching the outside of the drop, and building
+a shroud around it starting from that point. Same idea as a flood fill, but
+it hugged the surface of the drop and was more memory efficient.
+
+- concepts: neighbors in 3-d 
