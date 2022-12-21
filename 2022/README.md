@@ -233,3 +233,14 @@ modular arithmetic is applied, then Part 2 "just works" thanks to python's
 handling of arbitrarily large numbers.
 
 - concepts: circular linked list, modular arithmetic
+
+### Day 21
+
+Monkey arithmetic tree.
+
+Building the tree for part 1 was kind of fun, but unnecessary.
+
+I got an answer for Part 2, but I didn't really code it; I just kept
+changing the value associated with humn until I got the total I wanted
+for that branch. I should go back and fix the code so it does this
+programmatically.
