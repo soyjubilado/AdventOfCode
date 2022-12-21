@@ -187,7 +187,7 @@ under 5 seconds).
 For part 2, partially based on a spoiler I read, I ran it twice: the first time
 with the full set of targets for 26 seconds; then again with the list of
 leftover targets, also for 26 seconds. This yielded the correct answer for my
-data set, but I am skeptical that it would work for all datasets.
+data set, but I am certain that it wouldn't work for all datasets.
 
 ### Day 17
 
@@ -209,3 +209,27 @@ it. That is the current version. The bug was just due to sloppy programming;
 a single unit test would have exposed it easily.
 
 - concepts: neighbors in 3-d, flood fill
+
+### Day 19
+
+(skipped)
+
+### Day 20
+
+Circular linked lists.
+
+This was a pretty fun one. I created a Number class which held a value, and
+a pointer to the next and previous value. When I instantiated each new object
+and added it to the linked list, I also added the object to a regular python
+list so I could keep track of the original order.
+
+I knew there would be numbers, both negative and positive, that were
+larger than the list itself, so I used the number modulo the length of the
+list. The "fun" off by one errors kept happening because after you pull
+the current number out of the list, the length of the list is shorter.
+
+If Part 1 is done with an actual circular linked list, and the correct
+modular arithmetic is applied, then Part 2 "just works" thanks to python's
+handling of arbitrarily large numbers.
+
+- concepts: circular linked list, modular arithmetic
