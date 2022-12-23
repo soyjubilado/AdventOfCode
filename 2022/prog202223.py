@@ -100,8 +100,10 @@ def Solve(part):
   max_cycles = 10 if part == 'Part 1' else 10000
   for cycle in range(max_cycles):
     num_proposals = defaultdict(lambda: 0)
+    cell_destination = {}
     for cell in grid:
       proposed_cell = ProposedCell(cell, grid, cycle)
+      cell_destination[cell] = proposed_cell
       num_proposals[proposed_cell] += 1
 
     if num_proposals[None] == num_elves:
@@ -110,7 +112,7 @@ def Solve(part):
 
     new_grid = {}
     for cell in grid:
-      proposed_cell = ProposedCell(cell, grid, cycle)
+      proposed_cell = cell_destination[cell]
       if proposed_cell is not None and num_proposals[proposed_cell] == 1:
         new_grid[proposed_cell] = '#'
       else:
