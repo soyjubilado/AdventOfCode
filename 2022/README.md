@@ -255,7 +255,7 @@ Part 2 is incomplete -- there's a bug that I can't find.
 ### Day 23
 
 No quite cellular automata. Part 1 runs very quickly (10 rounds) but
-Part 2 is quite slow (900+ rounds) at over 15 seconds. I may revisit this
+Part 2 is somewhat slow for 900+ rounds. I may revisit this
 code to look for improvements, but at least I knew not to represent the
 white space. I did check that the rounds themselves are not getting
 slower -- they shouldn't be.
