@@ -244,3 +244,10 @@ I got an answer for Part 2, but I didn't really code it; I just kept
 changing the value associated with humn until I got the total I wanted
 for that branch. I should go back and fix the code so it does this
 programmatically.
+
+### Day 22
+
+Data were corrupted by my scraping program; leading spaces were stripped
+on the first line.
+
+Part 2 is incomplete -- there's a bug that I can't find.
