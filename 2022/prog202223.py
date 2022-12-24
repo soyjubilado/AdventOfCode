@@ -55,7 +55,7 @@ def ProposedCell(cell, grid, cycle):
 
 
 def PrintGrid(grid, default_char='.'):
-  """Print the grid with a '+' at (500,0)."""
+  """Print the grid with using as much space as necessary."""
   x_all = [x for x, y in grid]
   y_all = [y for x, y in grid]
   min_x = min(x_all)
