@@ -15,6 +15,31 @@ def GetData(datafile):
   return lines
 
 
+def GetGrid(lines):
+  """Create a grid from the input lines."""
+  grid_dict = {}
+  for row, line in enumerate(lines):
+    for col, char in enumerate(line):
+      if char == '#':
+        grid_dict[(col, row)] = char
+  return grid_dict
+
+
+def PrintGrid(grid, default_char='.'):
+  """Print the grid using only as much space as necessary."""
+  x_all = [x for x, y in grid]
+  y_all = [y for x, y in grid]
+  min_x = min(x_all)
+  min_y = min(y_all)
+  max_x = max(x_all)
+  max_y = max(y_all)
+  for y in range(min_y, max_y + 1):
+    row_str = ''
+    for x in range(min_x, max_x + 1):
+      row_str += f'{str(grid.get((x, y), default_char))}'
+    print(row_str)
+
+
 def NoNeighbors(cell, grid):
   """Return True of all 8 surrounding cells are empty."""
   x, y = cell
@@ -52,31 +77,6 @@ def ProposedCell(cell, grid, cycle):
       return t[0]
 
   return None
-
-
-def PrintGrid(grid, default_char='.'):
-  """Print the grid with using as much space as necessary."""
-  x_all = [x for x, y in grid]
-  y_all = [y for x, y in grid]
-  min_x = min(x_all)
-  min_y = min(y_all)
-  max_x = max(x_all)
-  max_y = max(y_all)
-  for y in range(min_y, max_y + 1):
-    row_str = ''
-    for x in range(min_x, max_x + 1):
-      row_str += f'{str(grid.get((x, y), default_char))}'
-    print(row_str)
-
-
-def GetGrid(lines):
-  """Create a grid from the input lines."""
-  grid_dict = {}
-  for row, line in enumerate(lines):
-    for col, char in enumerate(line):
-      if char == '#':
-        grid_dict[(col, row)] = char
-  return grid_dict
 
 
 def EmptySpace(grid):
