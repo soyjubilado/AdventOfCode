@@ -261,3 +261,7 @@ white space. I did check that the rounds themselves are not getting
 slower -- they shouldn't be.
 
 - concepts: Don't store the whole grid.
+
+#### Day 24
+
+in progress
