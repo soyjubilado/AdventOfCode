@@ -264,4 +264,14 @@ slower -- they shouldn't be.
 
 #### Day 24
 
-in progress
+BFS with a constantly changing map.
+
+Longer and probably slower than it needs to be. Create a blizzard class, and
+a dictionary holding all the locations of blizzards. Every iteration, update
+this dictionary.
+
+Create another dictionary with an explorer class. The explorer looks at the
+storm dictionary to see where it can move at any given moment. If there are
+multiple possibilities, it clones itself and goes to all of them.
+
+Part 1 goes quickly. The return trip on part 2 is very slow for some reason.
