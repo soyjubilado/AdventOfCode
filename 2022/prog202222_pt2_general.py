@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
+"""Solve Part 2 without hard-coding the edges."""
 
 from copy import deepcopy
-import time
 import math
-from prog202222 import GetGrid, GetData, PrintGrid, AddCoords
-from prog202222 import NewDir, GetMovement
+from prog202222 import GetGrid, GetData, AddCoords, NewDir, GetMovement
 
 DATA = 'data202222.txt'
 # DATA = 'testdata202222.txt'
@@ -17,6 +16,7 @@ def GetTopLeftPoint(grid):
 
 
 def PanelWidth(grid):
+  """The width of one side of the cube."""
   panel_width = int(math.sqrt(len(grid) // 6))
   assert (panel_width**2) * 6 == len(grid)
   return panel_width
@@ -55,7 +55,6 @@ class EdgeWalker():
     # These addends will move one spot to the right depending on your
     # heading.
     coord, heading = coord_heading
-    x, y = coord
     additive = {'N': (1, 0), 'E': (0, 1), 'S': (-1, 0), 'W': (0, -1)}
     new_coords = AddCoords(coord, additive[heading])
 
@@ -68,12 +67,13 @@ class EdgeWalker():
     if new_coords not in self.grid:
       turn_right = {'N': 'E', 'E': 'S', 'S': 'W', 'W': 'N'}
       return coord, turn_right[heading]
-    
+
     # if it's an inner corner, move forward, then turn left for heading
     next_spot, _ = self.NextSpot((new_coords, heading))
     if next_spot in self.grid and self.grid[next_spot] != ' ':
       turn_left = {'N': 'W', 'W': 'S', 'S': 'E', 'E': 'N'}
       return next_spot, turn_left[heading]
+    return None
 
   def GetEdge(self, start, heading):
     """Get a single edge of a given length. An edge is a list of tuples.
@@ -88,19 +88,19 @@ class EdgeWalker():
     edge = [(start, heading),]
     current = start
     for _ in range(length - 1):
-      next_point, next_heading = self.GetNextEdgePoint((current, heading))
+      next_point, _ = self.GetNextEdgePoint((current, heading))
       edge.append((next_point, heading))
       current = next_point
     return edge
 
-  def Edges(self, start, heading):
-    # return a set of exposed edges, each edge is a list of tuples starting
-    # from 'start'
+  def Edges(self):
+    """return a set of exposed edges, each edge is a list of tuples starting
+    from 'start'
+    """
     edges = []
-    panel_width = PanelWidth(self.grid)
-
+    heading = 'N'
     coord = GetTopLeftPoint(self.grid)
-    coord_heading = (coord, 'N')
+    coord_heading = (coord, heading)
     while not [e for e in edges if coord_heading in e]:
       one_edge = self.GetEdge(coord, heading)
       edges.append(one_edge)
@@ -122,6 +122,7 @@ class EdgeWalker():
     return coord_l, NewDir(head_l, 'L')
 
   def GetStitchablePairs(self, edges):
+    """Look at last point in each edge and return stitchable pairs."""
     pairs = []
     for e in edges:
       last_point = e[-1]
@@ -131,6 +132,7 @@ class EdgeWalker():
     return pairs
 
   def Stitch(self, stitchable_pairs, edges):
+    """Stitch edges starting at the stitchable pairs."""
     dir_map = {}
     opposite = {'N': 'S', 'E': 'W', 'S': 'N', 'W': 'E'}
     if not stitchable_pairs:
@@ -151,11 +153,12 @@ class EdgeWalker():
         b_coord, b_head = b1
         dir_map[a1] = (b_coord, opposite[b_head])
         dir_map[b1] = (a_coord, opposite[a_head])
-      fewer_edges = [e for e in edges if e != a_list and e != b_list]
+      fewer_edges = [e for e in edges if e not in (a_list, b_list)]
       edges = fewer_edges
     return dir_map, fewer_edges
 
 def MovePt2(coord_head, ew, mov):
+  """Move according to mov directive"""
   facing_char = {'N': '^', 'E': '>', 'S': 'v', 'W': '<'}
   here, facing = coord_head
   if mov in ['L', 'R']:
@@ -174,11 +177,11 @@ def MovePt2(coord_head, ew, mov):
 
 
 def main():
+  """main"""
   lines = GetData(DATA)
-  grid, max_coord = GetGrid(lines)
-  start = GetTopLeftPoint(grid)
+  grid, _ = GetGrid(lines)
   ew = EdgeWalker(grid)
-  edges = ew.Edges(start, 'N')
+  edges = ew.Edges()
 
   stitchable_pairs = ew.GetStitchablePairs(edges)
   while stitchable_pairs and edges:
@@ -186,7 +189,6 @@ def main():
     ew.cube_mapping.update(cube_wrap_map)
     if not edges or not stitchable_pairs:
       break
-    start, heading = edges[0][0]
     stitchable_pairs = ew.GetStitchablePairs(edges)
 
   movements = GetMovement(lines[-1].strip())

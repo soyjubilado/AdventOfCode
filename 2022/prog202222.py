@@ -32,7 +32,7 @@ def GetGrid(lines):
   return grid_dict, (max_col, max_row)
 
 
-def PrintGrid(grid, default_char = ' '):
+def PrintGrid(grid, default_char=' '):
   """Print the grid with a '+' at (500,0)."""
   assert ' ' not in grid.values()
   x_all = [x for x, y in grid]
@@ -162,8 +162,7 @@ def CubeWrap(spot, facing):
     facing_new = 'S'
   else:
     print(f'uncaught condition: {x},{y}, {facing}')
-    import sys
-    sys.exit()
+    raise Exception
 
   return (x_new, y_new), facing_new
 
@@ -171,7 +170,6 @@ def CubeWrap(spot, facing):
 def NextSpot2(start, facing, grid):
   """Find the next spot, given the current spot and a direction. The next
      spot may be wrapped around."""
-  x, y = start
   additive = {'N': (0, -1),
               'E': (1, 0),
               'S': (0, 1),
@@ -205,7 +203,7 @@ def NextSpot(start, facing, grid, max_coord):
   return spot, facing
 
 
-def Move2(start, facing, mov, grid, max_coord):
+def Move2(start, facing, mov, grid):
   """Given a starting spot and direction, execute the mov operation, which
      is either to move forward a number of spots, or turn left or right. If
      you hit a wall, finish out the instruction by doing nothing."""
@@ -262,61 +260,23 @@ def Part1():
   facing_val = {'E': 0, 'S': 1, 'W': 2, 'N': 3}
   col, row = start
   print(f'Part 1: {1000*row + 4*col + facing_val[facing]}')
-  # print(f'max coordinate: {max_coord}')
-
-
-def testNextSpot2(grid):
-  testcases = [ 
-               [[(100, 101), 'E'], [(150, 50), 'W']],
-               [[(50, 151), 'E'], [(51, 150), 'N']],
-               [[(50, 200), 'S'], [(150, 1), 'S']],
-               [[(100, 51), 'E'], [(101, 50), 'N']],
-               [[(100, 101), 'E'], [(150, 50), 'W']],
-               [[(1, 151), 'W'], [(51, 1), 'S']],
-               [[(50, 101), 'N'], [(51, 100), 'E']],
-               [[(1, 101), 'W'], [(51, 50), 'E']],
-
-               [[(150, 50), 'E'], [(100, 101), 'W']],
-               [[(51, 150), 'S'], [(50, 151), 'W']], 
-               [[(150, 1), 'N'],  [(50, 200), 'N']], 
-               [[(101, 50), 'S'], [(100, 51), 'W']], 
-               [[(150, 50), 'E'], [(100, 101), 'W']],
-               [[(51, 1), 'N'],   [(1, 151), 'E']],  
-               [[(51, 100), 'W'], [(50, 101), 'S']], 
-               [[(51, 50), 'W'],  [(1, 101), 'E']],  
-              ]
-  for case in testcases:
-    send, expect = case
-    point, facing = send
-    point_ex, facing_ex = expect
-    actual_point, actual_face = NextSpot2(point, facing, grid)
-    passing = actual_point == point_ex and actual_face == facing_ex
-    if passing:
-      print(f'pass: {case}')
-    else:
-      print(f'fail: expected {point_ex} {facing_ex} but got '
-            f'{actual_point} {actual_face}')
 
 
 def Part2():
   """part 2"""
   lines = GetData(DATA)
-  grid, max_coord = GetGrid(lines)
+  grid, _ = GetGrid(lines)
   movements = GetMovement(lines[-1].strip())
   start = GetStart(grid)
   facing = 'E'
 
-  testNextSpot2(grid)
 
   for mov in movements:
-    start, facing = Move2(start, facing, mov, grid, max_coord)
-    # print(f'{start}, {facing}')
+    start, facing = Move2(start, facing, mov, grid)
 
   facing_val = {'E': 0, 'S': 1, 'W': 2, 'N': 3}
   col, row = start
   print(f'Part 2: {1000*row + 4*col + facing_val[facing]}')
-  # 14336 is too low
-  # 140395 is too high
 
 
 def main():
