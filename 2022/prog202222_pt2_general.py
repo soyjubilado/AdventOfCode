@@ -131,6 +131,31 @@ class EdgeWalker():
         pairs.append((last_point, other_point))
     return pairs
 
+  def GetOppositePairs(self, edges):
+    """For part 1, get pairs of edge points on opposite sides of the shape."""
+    pairs = []
+    # coords to add to back away from edge
+    additive = {'N': (0, 1), 'E': (-1, 0), 'S': (0, -1), 'W': (1, 0)}
+    opposite = {'N': 'S', 'E': 'W', 'S': 'N', 'W': 'E'}
+
+    done_edges = []
+    for e in edges:
+      if e in done_edges:
+        continue
+      last_point = e[-1]
+      coord, heading = last_point
+      while coord in self.grid:
+        prev = coord
+        coord = AddCoords(coord, additive[heading])
+      opposite_point = (prev, opposite[heading])
+      # what edge is opposite_point in?
+      opposite_edge = [i for i in edges if opposite_point in i][0]
+      done_edges.append(e)
+      done_edges.append(opposite_edge)
+      the_pair = (last_point, (prev, opposite[heading]))
+      pairs.append(the_pair)
+    return pairs
+
   def Stitch(self, stitchable_pairs, edges):
     """Stitch edges starting at the stitchable pairs."""
     dir_map = {}
@@ -157,7 +182,27 @@ class EdgeWalker():
       edges = fewer_edges
     return dir_map, fewer_edges
 
-def MovePt2(coord_head, ew, mov):
+  def GenInternalMap(self, part):
+    """Generate self.cube_mapping"""
+    edges = self.Edges()
+
+    if part == 'Part 2':
+      acquire_pairs = self.GetStitchablePairs
+    elif part == 'Part 1':
+      acquire_pairs = self.GetOppositePairs
+    else:
+      raise Exception
+
+    stitchable_pairs = acquire_pairs(edges)
+    while stitchable_pairs and edges:
+      cube_wrap_map, edges = self.Stitch(stitchable_pairs, edges)
+      self.cube_mapping.update(cube_wrap_map)
+      if not edges or not stitchable_pairs:
+        break
+      stitchable_pairs = acquire_pairs(edges)
+
+
+def Move(coord_head, ew, mov):
   """Move according to mov directive"""
   facing_char = {'N': '^', 'E': '>', 'S': 'v', 'W': '<'}
   here, facing = coord_head
@@ -176,30 +221,30 @@ def MovePt2(coord_head, ew, mov):
   return here, facing
 
 
-def main():
-  """main"""
+def Solve(part):
+  """Solve part 1 or part 2."""
+  assert part in ('Part 1', 'Part 2')
   lines = GetData(DATA)
   grid, _ = GetGrid(lines)
-  ew = EdgeWalker(grid)
-  edges = ew.Edges()
-
-  stitchable_pairs = ew.GetStitchablePairs(edges)
-  while stitchable_pairs and edges:
-    cube_wrap_map, edges = ew.Stitch(stitchable_pairs, edges)
-    ew.cube_mapping.update(cube_wrap_map)
-    if not edges or not stitchable_pairs:
-      break
-    stitchable_pairs = ew.GetStitchablePairs(edges)
-
   movements = GetMovement(lines[-1].strip())
+
+  ew = EdgeWalker(grid)
+  ew.GenInternalMap(part)
+
   coord_head = (GetTopLeftPoint(grid), 'E')
   for mov in movements:
-    coord_head = MovePt2(coord_head, ew, mov)
+    coord_head = Move(coord_head, ew, mov)
 
   facing_val = {'E': 0, 'S': 1, 'W': 2, 'N': 3}
   coord, heading = coord_head
   col, row = coord
-  print(f'Part 2: {1000*row + 4*col + facing_val[heading]}')
+  return 1000*row + 4*col + facing_val[heading]
+
+
+def main():
+  """main"""
+  for part in ['Part 1', 'Part 2']:
+    print(f'{part}: {Solve(part)}')
 
 
 main()
