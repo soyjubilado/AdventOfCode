@@ -219,9 +219,10 @@ def Move2(start, facing, mov, grid, max_coord):
   # not L or R
   steps = int(mov)
   for _ in range(steps):
-    lookahead, facing = NextSpot2(here, facing, grid)
+    lookahead, new_facing = NextSpot2(here, facing, grid)
     if grid[lookahead] != '#':
       here = lookahead
+      facing = new_facing
       grid[here] = facing_char[facing]
   return here, facing
 
