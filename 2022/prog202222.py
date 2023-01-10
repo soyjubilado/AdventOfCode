@@ -273,10 +273,9 @@ def Move(coord_head, ew, mov):
   return here, facing
 
 
-def Solve(part, input_file):
+def Solve(part, lines):
   """Solve part 1 or part 2."""
   assert part in ('Part 1', 'Part 2')
-  lines = GetData(input_file)
   grid, _ = GetGrid(lines)
   movements = GetMovement(lines[-1].strip())
 
@@ -295,8 +294,9 @@ def Solve(part, input_file):
 
 def main():
   """main"""
+  lines = GetData(DATA)
   for part in ['Part 1', 'Part 2']:
-    print(f'{part}: {Solve(part, DATA)}')
+    print(f'{part}: {Solve(part, lines)}')
 
 
 if __name__ == '__main__':
