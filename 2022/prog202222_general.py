@@ -3,17 +3,68 @@
 
 from copy import deepcopy
 import math
-from prog202222_hardcoded import GetGrid, GetData, AddCoords
-from prog202222_hardcoded import NewDir, GetMovement
 
 DATA = 'data202222.txt'
 # DATA = 'testdata202222.txt'
+
+
+def AddCoords(coord1, coord2):
+  """Add two coordinates like vectors."""
+  x1, y1 = coord1
+  x2, y2 = coord2
+  return (x1 + x2, y1 + y2)
+
+
+def GetData(datafile):
+  """Read input into a list of lines."""
+  lines = []
+  with open(datafile, 'r') as fh:
+    lines = [i.rstrip() for i in fh]
+  return lines
+
+
+def GetGrid(lines):
+  """From a list of lines, return a dictionary keyed on coordinate.
+     Upper left is 1,1; one to right is 2,1. Do not add a cell if it
+     contains empty space."""
+  grid_dict = {}
+  for row, line in enumerate(lines):
+    if len(line.strip()) == 0:
+      break
+    for col, value in enumerate(line):
+      if value != ' ':
+        grid_dict[(col + 1, row + 1)] = value
+
+  max_row = len(lines) - 2
+  max_col = max([len(l) for l in lines[:-3]])
+  return grid_dict, (max_col, max_row)
+
+
+def GetMovement(line):
+  """Tokenize the last line of input, which contains movement instructions."""
+  line = line.replace('L', ' L ')
+  line = line.replace('R', ' R ')
+  linetokens = line.split()
+  return linetokens
 
 
 def GetTopLeftPoint(grid):
   """Just for starting out"""
   x_min = min([x for x, y in grid if y == 1])
   return x_min, 1
+
+
+def NewDir(old_dir, turn):
+  """Given a current direction and 'L' or 'R' return the new direction."""
+  lookup = {('N', 'L'): 'W',
+            ('E', 'L'): 'N',
+            ('S', 'L'): 'E',
+            ('W', 'L'): 'S',
+            ('N', 'R'): 'E',
+            ('E', 'R'): 'S',
+            ('S', 'R'): 'W',
+            ('W', 'R'): 'N',}
+  return lookup[(old_dir, turn)]
 
 
 def PanelWidth(grid):
