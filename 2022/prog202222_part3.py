@@ -4,7 +4,7 @@
 """
 
 import os
-from prog202222_general import Solve
+from prog202222 import Solve
 
 # download the file and put the file name here.
 PART3_DATA = 'data202222_part3.txt'
