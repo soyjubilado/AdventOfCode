@@ -3,7 +3,8 @@
 
 from copy import deepcopy
 import math
-from prog202222 import GetGrid, GetData, AddCoords, NewDir, GetMovement
+from prog202222_hardcoded import GetGrid, GetData, AddCoords
+from prog202222_hardcoded import NewDir, GetMovement
 
 DATA = 'data202222.txt'
 # DATA = 'testdata202222.txt'
@@ -221,10 +222,10 @@ def Move(coord_head, ew, mov):
   return here, facing
 
 
-def Solve(part):
+def Solve(part, input_file):
   """Solve part 1 or part 2."""
   assert part in ('Part 1', 'Part 2')
-  lines = GetData(DATA)
+  lines = GetData(input_file)
   grid, _ = GetGrid(lines)
   movements = GetMovement(lines[-1].strip())
 
@@ -244,7 +245,8 @@ def Solve(part):
 def main():
   """main"""
   for part in ['Part 1', 'Part 2']:
-    print(f'{part}: {Solve(part)}')
+    print(f'{part}: {Solve(part, DATA)}')
 
 
-main()
+if __name__ == '__main__':
+  main()
