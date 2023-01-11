@@ -3,8 +3,7 @@
    https://www.reddit.com/r/adventofcode/comments/zuso8x/2022_day_22_part_3/
 """
 
-import os
-from prog202222 import Solve, GetData
+from prog202222 import Solve
 
 # download the file and put the file name here.
 PART3_DATA = 'data202222_part3.txt'
@@ -16,7 +15,7 @@ def GetAllCases(filename):
   with open(filename) as fh:
     all_lines = fh.readlines()
   lines = iter(all_lines)
-  all_cases= []
+  all_cases = []
 
   while True:
     this_case = []
