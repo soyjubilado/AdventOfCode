@@ -238,12 +238,22 @@ handling of arbitrarily large numbers.
 
 Monkey arithmetic tree.
 
-Building the tree for part 1 was kind of fun, but unnecessary.
+Building the tree was kind of fun, but probably unnecessary for part 1. 
+Having the tree structure made for a pretty elegant general solution for
+part 2.
 
-I got an answer for Part 2, but I didn't really code it; I just kept
-changing the value associated with humn until I got the total I wanted
-for that branch. I should go back and fix the code so it does this
-programmatically.
+For part 1, writing a recursive method for evaluating the value of a tree
+branch was pretty easy. So the answer to part 1 was just calling this from
+the top of the tree.
+
+For part 2, I wrote a function to determine, given a node and a desired
+value, return the node below it that led toward the humn node, and what
+the value of that node had to be. It was less code than I expected, and it
+was far more elegant than my original manual brute-force method for
+finding the answer. I am most tickled by the fact that I have functions
+called minuend, subtrahend, divisor, and dividend.
+
+- concepts: tree data structures, recursion, arithmetic
 
 ### Day 22
 

@@ -5,6 +5,7 @@
 DATA = 'data202221.txt'
 # DATA = 'testdata202221.txt'
 
+
 class SuspiciousDivision(Exception):
   """Non-integer division happened."""
 
@@ -39,18 +40,63 @@ def Divide(a, b):
   return a // b
 
 
+def Minuend(subtrahend, difference):
+  """Given a subtrahend and a difference, return the minuend.
+     minuend - subtrahend = difference"""
+  return difference + subtrahend
+
+
+def Subtrahend(minuend, difference):
+  """Given a minuend and a difference, return the subtrahend.
+     minuend - subtrahend = difference"""
+  return minuend - difference
+
+
+def Divisor(dividend, quotient):
+  """Given a divident and a quotient, return the divisor.
+     dividend / divisor = quotient"""
+  if dividend % quotient:
+    raise SuspiciousDivision
+  return dividend // quotient
+
+
+def Dividend(divisor, quotient):
+  """Given a divisor and a quotient, return the dividend.
+     dividend / divisor = quotient"""
+  return quotient * divisor
+
+
+def Factor(factor, product):
+  """Given a factor and a product, return the other factor.
+     factor * factor = product"""
+  if product % factor:
+    raise SuspiciousDivision
+  return product // factor
+
+
+def Addend(addend, summation):
+  """Given an addend and a sum, return the other addend.
+     addend + addend = summation (sum is a reserved word)"""
+  return summation - addend
+
+
 def CharToOp(c):
   """Return a funtion based on the operator character."""
-  optable = {'+': Add, '-': Subtract, '*': Multiply, '/': Divide}
+  optable = {'+': Add,
+             '-': Subtract,
+             '*': Multiply,
+             '/': Divide,
+             None: None}
   return optable[c]
 
 
 class Monkey():
   """A monkey node class."""
-  def __init__(self, name, value=None, op=None, peons=None):
+  def __init__(self, name, value=None, op_symbol=None, peons=None):
     self.name = name
     self.value = value
-    self.op = op
+    self.op_symbol = op_symbol
+    self.op = CharToOp(op_symbol)
     self.peons = peons
 
   def __str__(self):
@@ -72,11 +118,11 @@ class Monkey():
     return self.op(self.peons[0].Value(), self.peons[1].Value())
 
   def Find(self, name):
-    """Find the named monkey."""
+    """Find the named monkey and return a reference to it or None."""
     if self.name == name:
       return self
     if self.peons is None:
-      return False
+      return None
     return self.peons[0].Find(name) or self.peons[1].Find(name)
 
 
@@ -96,58 +142,78 @@ def TreeFromDict(name, md):
   if len(md[name]) == 1:
     return Monkey(name, value=int(md[name][0]))
   tokens = md[name]
-  return Monkey(name, op=CharToOp(tokens[1]),
+  return Monkey(name, op_symbol=tokens[1],
                 peons=[TreeFromDict(tokens[0], md),
                        TreeFromDict(tokens[2], md)])
 
+
+def GetMonkeyTree(input_file):
+  """Return the root node of a monkey tree given the input file name."""
+  lines = GetData(input_file)
+  md = BuildMonkeyDict(lines)
+  return TreeFromDict('root', md)
+
+
+def OrderPeons(monkey):
+  """Of the two peons in this node, return the one that is the ancestor
+     of the human, the other one, and the index of the first."""
+  if not monkey.peons:
+    raise Exception
+  if monkey.peons[0].Find('humn'):
+    return monkey.peons[0], monkey.peons[1], 0
+  if monkey.peons[1].Find('humn'):
+    return monkey.peons[1], monkey.peons[0], 1
+  raise Exception
+
+
+def SubPeonAndTargetValue(monkey, target):
+  """This is the heavy lifting function for part 2. Given a monkey and a
+     target value that this monkey should have, calculate the value that
+     the human ancestor peon below this monkey should have."""
+  human_peon, other_peon, human_idx = OrderPeons(monkey)
+  if monkey.op_symbol == '+':
+    new_target = Addend(other_peon.Value(), target)
+  elif monkey.op_symbol == '*':
+    new_target = Factor(other_peon.Value(), target)
+  elif monkey.op_symbol == '/' and human_idx == 0:
+    new_target = Dividend(other_peon.Value(), target)
+  elif monkey.op_symbol == '/' and human_idx == 1:
+    new_target = Divisor(other_peon.Value(), target)
+  elif monkey.op_symbol == '-' and human_idx == 0:
+    new_target = Minuend(other_peon.Value(), target)
+  elif monkey.op_symbol == '-' and human_idx == 1:
+    new_target = Subtrahend(other_peon.Value(), target)
+  else:
+    print(f'Error: {monkey.name} {monkey.op_symbol}')
+    raise Exception
+  return human_peon, new_target
+
+
 def Part1():
   """Just report the value of the tree."""
-  lines = GetData(DATA)
-  md = BuildMonkeyDict(lines)
-  monkey_tree = TreeFromDict('root', md)
+  monkey_tree = GetMonkeyTree(DATA)
   print(f'Part 1: {monkey_tree.Value()}')
 
 
 def Part2():
-  """This doesn't actually solve part 2."""
-  lines = GetData(DATA)
-  md = BuildMonkeyDict(lines)
-  peon1 = TreeFromDict(md['root'][0], md)
-  peon2 = TreeFromDict(md['root'][2], md)
-  print(f'peon1 is {peon1.name} worth {peon1.Value()}')
-  print(f'peon2 is {peon2.name} worth {peon2.Value()}')
-  if peon1.Find('humn'):
-    human = peon1.Find('humn')
-    target_value = peon2.Value()
-    print(f'The human is under {peon1.name}')
-    print(f'The target value is {target_value}')
-  else:
-    human = peon2.Find('humn')
-    target_value = peon1.Value()
-    print(f'The human is under {peon2.name}')
-    print(f'The target value is {target_value}')
+  """The starting node is human_peon, the peon of root that is the
+     ancestor of humn. The starting target is the value of the tree
+     starting at the other peon. As you traverse down the tree we
+     keep descending the branch where humn is, and calculate what value
+     we need at each step down the tree."""
+  root = GetMonkeyTree(DATA)
+  human_peon, other_peon, _ = OrderPeons(root)
+  target_value = other_peon.Value()
+  peon, target = SubPeonAndTargetValue(human_peon, target_value)
 
-  # from here, I kept changing this base number and incrementing until
-  # I found the answer through exhaustive searching. I'm sure this was
-  # the wrong way to do it.
-  # human.value = 3349136384441
-  human.value = 2906
-  peon1_value = float('inf')
-
-  while peon1_value > target_value:
-    human.value += 1
-    try:
-      peon1_value = peon1.Value()
-    except SuspiciousDivision:
-      continue
-    print(f'{human.value} -> {peon1_value}')
-    if peon1_value == target_value:
-      print(f'human needs to shout {human.value}')
-      break
+  while peon.name != 'humn':
+    peon, target = SubPeonAndTargetValue(peon, target)
+  print(f'Part 2: {target}')
 
 
 def main():
   """main"""
+  Part1()
   Part2()
 
 
