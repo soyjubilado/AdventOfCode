@@ -6,8 +6,17 @@ DATA = 'data202221.txt'
 # DATA = 'testdata202221.txt'
 
 
-class SuspiciousDivision(Exception):
-  """Non-integer division happened."""
+# Note: integer division is used here due to known clean input
+Add = lambda a, b: a + b
+Subtract = lambda a, b: a - b
+Multiply = lambda a, b: a * b
+Divide = lambda a, b: a // b
+Minuend = lambda subtrahend, difference: subtrahend + difference
+Subtrahend = lambda minuend, difference: minuend - difference
+Divisor = lambda dividend, quotient: dividend // quotient
+Dividend = lambda divisor, quotient: divisor * quotient
+Factor = lambda factor, product: product // factor
+Addend = lambda addend, summation: summation - addend
 
 
 def GetData(datafile):
@@ -18,70 +27,8 @@ def GetData(datafile):
   return lines
 
 
-def Add(a, b):
-  """Add two numbers."""
-  return a + b
-
-
-def Subtract(a, b):
-  """Subtract b from a."""
-  return a - b
-
-
-def Multiply(a, b):
-  """Multiply two numbers."""
-  return a * b
-
-
-def Divide(a, b):
-  """Divide a by b."""
-  if a % b:
-    raise SuspiciousDivision
-  return a // b
-
-
-def Minuend(subtrahend, difference):
-  """Given a subtrahend and a difference, return the minuend.
-     minuend - subtrahend = difference"""
-  return difference + subtrahend
-
-
-def Subtrahend(minuend, difference):
-  """Given a minuend and a difference, return the subtrahend.
-     minuend - subtrahend = difference"""
-  return minuend - difference
-
-
-def Divisor(dividend, quotient):
-  """Given a divident and a quotient, return the divisor.
-     dividend / divisor = quotient"""
-  if dividend % quotient:
-    raise SuspiciousDivision
-  return dividend // quotient
-
-
-def Dividend(divisor, quotient):
-  """Given a divisor and a quotient, return the dividend.
-     dividend / divisor = quotient"""
-  return quotient * divisor
-
-
-def Factor(factor, product):
-  """Given a factor and a product, return the other factor.
-     factor * factor = product"""
-  if product % factor:
-    raise SuspiciousDivision
-  return product // factor
-
-
-def Addend(addend, summation):
-  """Given an addend and a sum, return the other addend.
-     addend + addend = summation (sum is a reserved word)"""
-  return summation - addend
-
-
 def CharToOp(c):
-  """Return a funtion based on the operator character."""
+  """Return a function based on the operator character."""
   optable = {'+': Add,
              '-': Subtract,
              '*': Multiply,
