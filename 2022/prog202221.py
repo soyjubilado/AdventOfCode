@@ -85,13 +85,13 @@ def BuildMonkeyDict(lines):
 
 
 def TreeFromDict(name, md):
-  """Build a tree of monkeys starting with the named monkey."""
+  """Recursively build a tree of monkeys starting with the named monkey."""
   if len(md[name]) == 1:
     return Monkey(name, value=int(md[name][0]))
-  tokens = md[name]
-  return Monkey(name, op_symbol=tokens[1],
-                peons=[TreeFromDict(tokens[0], md),
-                       TreeFromDict(tokens[2], md)])
+  left_peon, op_symbol, right_peon = md[name]
+  return Monkey(name, op_symbol=op_symbol,
+                peons=[TreeFromDict(left_peon, md),
+                       TreeFromDict(right_peon, md)])
 
 
 def GetMonkeyTree(input_file):
