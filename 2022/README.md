@@ -178,7 +178,7 @@ before finding a solution (after 3.2 million rows had been searched).
 
 ### Day 16
 
-Valves and tunnesl (and elephants).
+Valves and tunnels (and elephants).
 
 See comments at top of program. For part 1, I successfully reduced the problem
 sufficiently so that an exhaustive search of all possible paths worked (in
@@ -269,6 +269,7 @@ the orientation of the next spot, which I shouldn't have.
 Solving the general case was another example of "I have know idea how to
 tackle this." But I just went ahead and did what I could, starting with one
 step that I knew I needed, being able to identify the edges of the shape.
+Writing the solution for the general case was pretty challenging.
 
 ### Day 23
 
@@ -292,4 +293,6 @@ Create another dictionary with an explorer class. The explorer looks at the
 storm dictionary to see where it can move at any given moment. If there are
 multiple possibilities, it clones itself and goes to all of them.
 
-Part 1 goes quickly. The return trip on part 2 is very slow for some reason.
+Part 1 goes quickly. The return trip on part 2 is very slow.
+The calculation of the blizzard locations should be cached, because
+there are only a few hundred possibilities.

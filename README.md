@@ -6,9 +6,16 @@ is released at midnight (EST, or UTC-5:00) at the
 [Advent of Code website](https://adventofcode.com/).
 
 These directories contain, organized by year, some of my solutions in python
-for the puzzles. The naming convention for the programs is progYYYYDD.py. If
-there are unit tests associated with that day, they will be in the file
-testYYYYDD.py. Input data are not included here.
+for the puzzles.
+
+The naming conventions are:
+
+- progYYYYDD.py - program files
+- testYYYYDD.py - unit tests
+- dataYYYYDD.txt - expected format for data files
+
+The data files are not included, but you can get your own from the
+Advent of Code website.
 
 A discussion forum for participants is available on
 [Reddit](https://reddit.com/r/adventofcode).
