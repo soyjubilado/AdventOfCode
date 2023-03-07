@@ -16,7 +16,7 @@ STATE1 = '''\
 
 
 def testLinesToState():
-  print(f'testing testLinesToState')
+  print(f'\ntesting testLinesToState')
   lines = [l for l in dedent(STATE1).split('\n')]
   PrintLines(lines, depth=3)
   expected = set([((2, 1), 'A'),
@@ -45,7 +45,7 @@ STATE2 = '''\
            #########'''
 
 def testAlreadyHome():
-  print(f'testing testIsAlreadyHome')
+  print(f'\ntesting testIsAlreadyHome')
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -74,7 +74,7 @@ STATE2 = '''\
 """
 
 def testForeignersOccupyHome():
-  print(f'testing ForeignersOccupyHome')
+  print(f'\ntesting ForeignersOccupyHome')
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -103,7 +103,7 @@ STATE2 = '''\
 """
 
 def testBlockedInTrench():
-  print(f'testing BlockedInTrench')
+  print(f'\ntesting BlockedInTrench')
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -124,7 +124,7 @@ def testBlockedInTrench():
 
 
 def testGetOccupiedDict():
-  print(f'testing GetOccupiedDict')
+  print(f'\ntesting GetOccupiedDict')
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -143,9 +143,10 @@ def testGetOccupiedDict():
   print(f'{passing}: {state} \ngot\n {actual}'
         f'\nexpected\n {expected}')
   
-
-# testLinesToState()
-# testForeignersOccupyHome()
-# testBlockedInTrench()
-# testAlreadyHome()
+"""
+testLinesToState()
+testForeignersOccupyHome()
+testBlockedInTrench()
+testAlreadyHome()
+"""
 testGetOccupiedDict()
