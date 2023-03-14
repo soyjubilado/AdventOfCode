@@ -46,6 +46,7 @@ STATE2 = '''\
 
 def testAlreadyHome():
   print(f'\ntesting testIsAlreadyHome')
+  some_failures = False
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -61,8 +62,15 @@ def testAlreadyHome():
               ]
   for case, expected in testcases:
     actual = AlreadyHome(case, state)
-    passing = 'pass' if actual == expected else 'FAIL'
+    if actual == expected:
+      passing = 'pass'
+    else:
+      passing = 'fail'
+      some_falures = True
     print(f'{passing}: {case} got {actual} expected {expected}')
+  if some_failures:
+    raise FailedUnitTestError
+      
 
 """
 STATE2 = '''\
@@ -75,6 +83,7 @@ STATE2 = '''\
 
 def testForeignersOccupyHome():
   print(f'\ntesting ForeignersOccupyHome')
+  some_failures = False
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -90,8 +99,14 @@ def testForeignersOccupyHome():
               ]
   for case, expected in testcases:
     actual = ForeignersOccupyHome(case, state)
-    passing = 'pass' if actual == expected else 'FAIL'
+    if actual == expected:
+      passing = 'pass'
+    else:
+      passing = 'fail'
+      some_failures = True
     print(f'{passing}: {case} got {actual} expected {expected}')
+  if some_failures:
+    raise FailedUnitTestError
 
 """
 STATE2 = '''\
@@ -104,6 +119,7 @@ STATE2 = '''\
 
 def testBlockedInTrench():
   print(f'\ntesting BlockedInTrench')
+  some_failures = False
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -119,12 +135,19 @@ def testBlockedInTrench():
               ]
   for case, expected in testcases:
     actual = BlockedInTrench(case, state)
-    passing = 'pass' if actual == expected else 'FAIL'
+    if actual == expected:
+      passing = 'pass'
+    else:
+      passing = 'fail'
+      some_failures = True
     print(f'{passing}: {case} got {actual} expected {expected}')
+  if some_failures:
+    raise FailedUnitTestError
 
 
 def testGetOccupiedDict():
   print(f'\ntesting GetOccupiedDict')
+  some_failures = False
   lines = [l for l in dedent(STATE2).split('\n')]
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
@@ -139,14 +162,26 @@ def testGetOccupiedDict():
               (9, 0): 'A',
              }
   actual = GetOccupiedDict(state)
-  passing = 'pass' if actual == expected else 'FAIL'
-  print(f'{passing}: {state} \ngot\n {actual}'
-        f'\nexpected\n {expected}')
+  if actual == expected:
+    passing = 'pass'
+  else:
+    passing = 'FAIL'
+    some_failures = True
+  print(f'{passing}: {state}')
+  print(f'actual vs expected:')
+  for i in sorted(actual.keys()):
+    print(f'  {i}: {actual[i]} .. vs .. {i}: {expected[i]}')
+  if some_failures:
+    raise FailedUnitTestError
   
-"""
-testLinesToState()
-testForeignersOccupyHome()
-testBlockedInTrench()
-testAlreadyHome()
-"""
-testGetOccupiedDict()
+
+def main():
+  testLinesToState()
+  testForeignersOccupyHome()
+  testBlockedInTrench()
+  testAlreadyHome()
+  testGetOccupiedDict()
+
+
+if __name__ == '__main__':
+  main()
