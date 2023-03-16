@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 # $Id: tests202123.py,v 1.5 2022/11/17 16:41:53 hjew Exp hjew $
+"""Unit tests for prog202123.py"""
 
 from textwrap import dedent
-from prog202123 import *
+from prog202123 import PrintLines, LinesToState, AlreadyHome
+from prog202123 import ForeignersOccupyHome, BlockedInTrench, GetOccupiedDict
 
 class FailedUnitTestError(Exception):
-  pass
+  """Exception for failing test."""
+
 
 STATE1 = '''\
          #############
@@ -16,8 +19,9 @@ STATE1 = '''\
 
 
 def testLinesToState():
+  """Test LinesToState"""
   print(f'\ntesting testLinesToState')
-  lines = [l for l in dedent(STATE1).split('\n')]
+  lines = dedent(STATE1).split('\n')
   PrintLines(lines, depth=3)
   expected = set([((2, 1), 'A'),
                   ((2, 2), 'C'),
@@ -45,20 +49,21 @@ STATE2 = '''\
            #########'''
 
 def testAlreadyHome():
+  """Test AlreadyHome"""
   print(f'\ntesting testIsAlreadyHome')
   some_failures = False
-  lines = [l for l in dedent(STATE2).split('\n')]
+  lines = dedent(STATE2).split('\n')
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
-  testcases = [ [((1, 0), 'D'), False],
-                [((2, 1), 'C'), False],
-                [((2, 2), 'A'), True],
-                [((4, 2), 'B'), True],
-                [((6, 2), 'B'), False],
-                [((6, 1), 'C'), False],
-                [((8, 2), 'D'), True],
-                [((9, 0), 'A'), False],
-                [((8, 1), 'D'), True],
+  testcases = [[((1, 0), 'D'), False],
+               [((2, 1), 'C'), False],
+               [((2, 2), 'A'), True],
+               [((4, 2), 'B'), True],
+               [((6, 2), 'B'), False],
+               [((6, 1), 'C'), False],
+               [((8, 2), 'D'), True],
+               [((9, 0), 'A'), False],
+               [((8, 1), 'D'), True],
               ]
   for case, expected in testcases:
     actual = AlreadyHome(case, state)
@@ -70,7 +75,7 @@ def testAlreadyHome():
     print(f'{passing}: {case} got {actual} expected {expected}')
   if some_failures:
     raise FailedUnitTestError
-      
+
 
 """
 STATE2 = '''\
@@ -82,20 +87,21 @@ STATE2 = '''\
 """
 
 def testForeignersOccupyHome():
+  """test ForeignersOccupyHome"""
   print(f'\ntesting ForeignersOccupyHome')
   some_failures = False
-  lines = [l for l in dedent(STATE2).split('\n')]
+  lines = dedent(STATE2).split('\n')
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
-  testcases = [ [((1, 0), 'D'), False],
-                [((2, 1), 'C'), True],
-                [((2, 2), 'A'), True],
-                [((4, 2), 'B'), False],
-                [((6, 2), 'B'), False],
-                [((6, 1), 'C'), True],
-                [((8, 2), 'D'), False],
-                [((9, 0), 'A'), True],
-                [((8, 1), 'D'), False],
+  testcases = [[((1, 0), 'D'), False],
+               [((2, 1), 'C'), True],
+               [((2, 2), 'A'), True],
+               [((4, 2), 'B'), False],
+               [((6, 2), 'B'), False],
+               [((6, 1), 'C'), True],
+               [((8, 2), 'D'), False],
+               [((9, 0), 'A'), True],
+               [((8, 1), 'D'), False],
               ]
   for case, expected in testcases:
     actual = ForeignersOccupyHome(case, state)
@@ -118,20 +124,21 @@ STATE2 = '''\
 """
 
 def testBlockedInTrench():
+  """test BlockedInTrench"""
   print(f'\ntesting BlockedInTrench')
   some_failures = False
-  lines = [l for l in dedent(STATE2).split('\n')]
+  lines = dedent(STATE2).split('\n')
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
-  testcases = [ [((1, 0), 'D'), False],
-                [((2, 1), 'C'), False],
-                [((2, 2), 'A'), True],
-                [((4, 2), 'B'), False],
-                [((6, 2), 'B'), True],
-                [((6, 1), 'C'), False],
-                [((8, 2), 'D'), True],
-                [((9, 0), 'A'), False],
-                [((8, 1), 'D'), False],
+  testcases = [[((1, 0), 'D'), False],
+               [((2, 1), 'C'), False],
+               [((2, 2), 'A'), True],
+               [((4, 2), 'B'), False],
+               [((6, 2), 'B'), True],
+               [((6, 1), 'C'), False],
+               [((8, 2), 'D'), True],
+               [((9, 0), 'A'), False],
+               [((8, 1), 'D'), False],
               ]
   for case, expected in testcases:
     actual = BlockedInTrench(case, state)
@@ -146,9 +153,10 @@ def testBlockedInTrench():
 
 
 def testGetOccupiedDict():
+  """test GetOccupiedDict"""
   print(f'\ntesting GetOccupiedDict')
   some_failures = False
-  lines = [l for l in dedent(STATE2).split('\n')]
+  lines = dedent(STATE2).split('\n')
   PrintLines(lines, depth=3)
   state = LinesToState(lines)
   expected = {(1, 0): 'D',
@@ -173,9 +181,10 @@ def testGetOccupiedDict():
     print(f'  {i}: {actual[i]} .. vs .. {i}: {expected[i]}')
   if some_failures:
     raise FailedUnitTestError
-  
+
 
 def main():
+  """main"""
   testLinesToState()
   testForeignersOccupyHome()
   testBlockedInTrench()
