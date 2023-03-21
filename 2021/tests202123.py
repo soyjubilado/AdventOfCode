@@ -5,6 +5,7 @@ import unittest
 from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
 from prog202123 import BlockedInTrench, GetOccupiedDict
+from prog202123 import NumbersBetween, BlockedOutside
 
 
 class UnitTestFailure(Exception):
@@ -47,19 +48,16 @@ class TestProg202123(unittest.TestCase):
     """Test AlreadyHome"""
     lines = dedent(self.STATE2).split('\n')
     state = LinesToState(lines)
-    testcases = [[((1, 0), 'D'), False],
-                 [((2, 1), 'C'), False],
-                 [((2, 2), 'A'), True],
-                 [((4, 2), 'B'), True],
-                 [((6, 2), 'B'), False],
-                 [((6, 1), 'C'), False],
-                 [((8, 2), 'D'), True],
-                 [((9, 0), 'A'), False],
-                 [((8, 1), 'D'), True],
-                ]
-    for case, expected in testcases:
-      actual = AlreadyHome(case, state)
-      self.assertEqual(actual, expected)
+    self.assertEqual(AlreadyHome(((1, 0), 'D'), state), False)
+    self.assertEqual(AlreadyHome(((2, 1), 'C'), state), False)
+    self.assertEqual(AlreadyHome(((2, 2), 'A'), state), True)
+    self.assertEqual(AlreadyHome(((4, 2), 'B'), state), True)
+    self.assertEqual(AlreadyHome(((6, 2), 'B'), state), False)
+    self.assertEqual(AlreadyHome(((6, 1), 'C'), state), False)
+    self.assertEqual(AlreadyHome(((8, 2), 'D'), state), True)
+    self.assertEqual(AlreadyHome(((9, 0), 'A'), state), False)
+    self.assertEqual(AlreadyHome(((8, 1), 'D'), state), True)
+
 
   """
   STATE2 = '''\
@@ -74,19 +72,16 @@ class TestProg202123(unittest.TestCase):
     """Test ForeignersOccupyHome"""
     lines = dedent(self.STATE2).split('\n')
     state = LinesToState(lines)
-    testcases = [[((1, 0), 'D'), False],
-                 [((2, 1), 'C'), True],
-                 [((2, 2), 'A'), True],
-                 [((4, 2), 'B'), False],
-                 [((6, 2), 'B'), False],
-                 [((6, 1), 'C'), True],
-                 [((8, 2), 'D'), False],
-                 [((9, 0), 'A'), True],
-                 [((8, 1), 'D'), False],
-                ]
-    for case, expected in testcases:
-      actual = ForeignersOccupyHome(case, state)
-      self.assertEqual(actual, expected)
+    self.assertEqual(ForeignersOccupyHome(((1, 0), 'D'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((2, 1), 'C'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((2, 2), 'A'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((4, 2), 'B'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((6, 2), 'B'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((6, 1), 'C'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((8, 2), 'D'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((9, 0), 'A'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((8, 1), 'D'), state), False)
+
 
   """
   STATE2 = '''\
@@ -101,19 +96,15 @@ class TestProg202123(unittest.TestCase):
     """Test BlockedInTrench"""
     lines = dedent(self.STATE2).split('\n')
     state = LinesToState(lines)
-    testcases = [[((1, 0), 'D'), False],
-                 [((2, 1), 'C'), False],
-                 [((2, 2), 'A'), True],
-                 [((4, 2), 'B'), False],
-                 [((6, 2), 'B'), True],
-                 [((6, 1), 'C'), False],
-                 [((8, 2), 'D'), True],
-                 [((9, 0), 'A'), False],
-                 [((8, 1), 'D'), False],
-                ]
-    for case, expected in testcases:
-      actual = BlockedInTrench(case, state)
-      self.assertEqual(actual, expected)
+    self.assertEqual(BlockedInTrench(((1, 0), 'D'), state), False)
+    self.assertEqual(BlockedInTrench(((2, 1), 'C'), state), False)
+    self.assertEqual(BlockedInTrench(((2, 2), 'A'), state), True)
+    self.assertEqual(BlockedInTrench(((4, 2), 'B'), state), False)
+    self.assertEqual(BlockedInTrench(((6, 2), 'B'), state), True)
+    self.assertEqual(BlockedInTrench(((6, 1), 'C'), state), False)
+    self.assertEqual(BlockedInTrench(((8, 2), 'D'), state), True)
+    self.assertEqual(BlockedInTrench(((9, 0), 'A'), state), False)
+    self.assertEqual(BlockedInTrench(((8, 1), 'D'), state), False)
 
 
   def testGetOccupiedDict(self):
@@ -132,6 +123,39 @@ class TestProg202123(unittest.TestCase):
                }
     actual = GetOccupiedDict(state)
     self.assertEqual(actual, expected)
+
+
+  def testNumbersBetween(self):
+    """Test NumbersBetween"""
+    self.assertEqual(NumbersBetween(0, 0), [])
+    self.assertEqual(NumbersBetween(0, 2), [1])
+    self.assertEqual(NumbersBetween(2, 0), [1])
+    self.assertEqual(NumbersBetween(2, 1), [])
+    self.assertEqual(NumbersBetween(1, 2), [])
+    self.assertEqual(NumbersBetween(1, 4), [2, 3])
+    self.assertEqual(NumbersBetween(4, 1), [2, 3])
+
+
+  STATE3 = '''\
+           #############
+           #.D.C.....A.#
+           ###.#.#C#D###
+             #A#B#B#D#
+             #########'''
+
+  def testBlockedOutside(self):
+    """Test BlockedOutside"""
+    lines = dedent(self.STATE3).split('\n')
+    state = LinesToState(lines)
+    self.assertEqual(BlockedOutside(((1, 0), 'D'), state), True)
+    self.assertEqual(BlockedOutside(((3, 0), 'C'), state), False)
+    self.assertEqual(BlockedOutside(((2, 2), 'A'), state), False)
+    self.assertEqual(BlockedOutside(((4, 2), 'B'), state), False)
+    self.assertEqual(BlockedOutside(((6, 2), 'B'), state), False)
+    self.assertEqual(BlockedOutside(((6, 1), 'C'), state), False)
+    self.assertEqual(BlockedOutside(((8, 2), 'D'), state), False)
+    self.assertEqual(BlockedOutside(((9, 0), 'A'), state), True)
+    self.assertEqual(BlockedOutside(((8, 1), 'D'), state), False)
 
 
 if __name__ == '__main__':

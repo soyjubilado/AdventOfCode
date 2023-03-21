@@ -1,11 +1,10 @@
 #!/usr/bin/python3
-#file created 2022-Mar-14 16:02
-# $Id: prog202123.py,v 1.8 2022/11/17 16:41:32 hjew Exp hjew $
 """https://adventofcode.com/2021/day/23"""
-"""
-Top row is goes from (0,0) to (0,WIDTH-3) aka (0,10)
-Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
-"""
+# file created 2022-Mar-14 16:02
+# $Id: prog202123.py,v 1.8 2022/11/17 16:41:32 hjew Exp hjew $
+# https://adventofcode.com/2021/day/23
+# Top row is goes from (0,0) to (0,WIDTH-3) aka (0,10)
+# Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
 
 
 DATA = 'data202123.txt'
@@ -16,13 +15,22 @@ WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
 
 
-
 def GetData(datafile):
+  """Return input data as a list of strings."""
   lines = []
   with open(datafile, 'r') as fh:
     # lines = [i.replace('\n', '').replace(' ', '#') for i in fh]
     lines = [i.rstrip() for i in fh]
   return lines
+
+
+def NumbersBetween(a, b):
+  """Return a list of numbers between a and b, exclusive."""
+  if a == b:
+    return []
+  if a > b:
+    a, b = b, a
+  return list(range(a + 1, b))
 
 
 def LinesToState(lines):
@@ -42,7 +50,7 @@ def LinesToState(lines):
 
 def StateToLines(state, depth=DEPTH, width=WIDTH):
   """converts set of tuples to printable list of lines."""
-  occupied = {coord: pod for coord, pod in state}
+  occupied = dict(state)
   lines = []
   line1 = '#' * width
   lines.append(line1)
@@ -74,7 +82,7 @@ def StateToLines(state, depth=DEPTH, width=WIDTH):
   return lines
 
 
-def NextStates(pod, state, depth=DEPTH):
+def NextStateForPod(pod, state, depth=DEPTH):
   """
   Args:
     pod: a single tuple, one of the ones in state
@@ -107,12 +115,38 @@ def BlockedInTrench(pod, state):
   """
   assert pod in state
   occupied_dict = GetOccupiedDict(state)
-  location, pod_type = pod
+  location, _ = pod
   x, y = location
   if y == 0:
     return False
   for row in range(y-1, 0, -1):
     if (x, row) in occupied_dict:
+      return True
+  return False
+
+
+def BlockedOutside(pod, state):
+  """
+  Args:
+    pod: a single tuple, one of the ones in state
+    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
+
+  Returns:
+    boolean: True if the pod is not in trench and someone is between
+             him and his home trench.
+
+  Status of this function: untested
+  """
+  assert pod in state
+  occupied_dict = GetOccupiedDict(state)
+  location, pod_type = pod
+  x, y = location
+  if y != 0: # not outside trench
+    return False
+  home_col = HOME_COL[pod_type]
+  cols_between = NumbersBetween(home_col, x)
+  for n in cols_between:
+    if (n, 0) in occupied_dict:
       return True
   return False
 
@@ -133,14 +167,15 @@ def AlreadyHome(pod, state, depth=DEPTH):
   home_col = HOME_COL[pod_type]
   if y == 0:
     return False
-  elif x != home_col:
+  if x != home_col:
     return False
-  else: # x is home column
-    for row in range(depth-1, y-1, -1):
-      occupant = occupied_dict.get((x, row), pod_type)
-      # print(f'({x}, {row}): {occupant}')
-      if occupant != pod_type:
-        return False
+
+  # so x is home column
+  for row in range(depth-1, y-1, -1):
+    occupant = occupied_dict.get((x, row), pod_type)
+    # print(f'({x}, {row}): {occupant}')
+    if occupant != pod_type:
+      return False
   return True
 
 
@@ -156,8 +191,7 @@ def ForeignersOccupyHome(pod, state, depth=DEPTH):
   """
   assert pod in state
   occupied_dict = GetOccupiedDict(state)
-  location, pod_type = pod
-  x, y = location
+  _, pod_type = pod
   home_col = HOME_COL[pod_type]
   for row in range(depth-1, 0, -1):
     occupant = occupied_dict.get((home_col, row), pod_type)
@@ -175,12 +209,14 @@ def GetOccupiedDict(state):
 
 
 def PrintLines(lines, depth=DEPTH, width=WIDTH):
+  """Verify output."""
   print('\n'.join(lines))
   print(f'depth: {depth}')
   print(f'width: {width}')
 
 
 def main():
+  """main"""
   lines = GetData(DATA)
   global DEPTH
   DEPTH = len(lines) - 2
