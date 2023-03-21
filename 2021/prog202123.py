@@ -74,7 +74,7 @@ def StateToLines(state, depth=DEPTH, width=WIDTH):
   return lines
 
 
-def NextStates(pod, state):
+def NextStates(pod, state, depth=DEPTH):
   """
   Args:
     pod: a single tuple, one of the ones in state
@@ -117,7 +117,7 @@ def BlockedInTrench(pod, state):
   return False
 
 
-def AlreadyHome(pod, state):
+def AlreadyHome(pod, state, depth=DEPTH):
   """
   Args:
     pod: a single tuple, one of the ones in state
@@ -136,7 +136,7 @@ def AlreadyHome(pod, state):
   elif x != home_col:
     return False
   else: # x is home column
-    for row in range(DEPTH-1, y-1, -1):
+    for row in range(depth-1, y-1, -1):
       occupant = occupied_dict.get((x, row), pod_type)
       # print(f'({x}, {row}): {occupant}')
       if occupant != pod_type:
@@ -144,7 +144,7 @@ def AlreadyHome(pod, state):
   return True
 
 
-def ForeignersOccupyHome(pod, state):
+def ForeignersOccupyHome(pod, state, depth=DEPTH):
   """
   Args:
     pod: a single tuple, one of the ones in state
@@ -159,7 +159,7 @@ def ForeignersOccupyHome(pod, state):
   location, pod_type = pod
   x, y = location
   home_col = HOME_COL[pod_type]
-  for row in range(DEPTH-1, 0, -1):
+  for row in range(depth-1, 0, -1):
     occupant = occupied_dict.get((home_col, row), pod_type)
     if occupant != pod_type:
       return True
