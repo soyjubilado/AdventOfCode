@@ -105,14 +105,12 @@ def NextStatesForPod(pod, state, depth=DEPTH):
   """
   assert pod in state
   if (AlreadyHome(pod, state) or BlockedInTrench(pod, state) or
-      BlockedOutside(pod, state)):
+      BlockedOutside(pod, state)) or ForeignersOccupyHome(pod, state):
     return {}
 
   if PodInTrench(pod):
     raise Unimplemented
   else:
-    if ForeignersOccupyHome(pod, state):
-      return {}
     raise Unimplemented
 
 
@@ -206,12 +204,18 @@ def ForeignersOccupyHome(pod, state, depth=DEPTH):
     state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
 
   Returns:
-    boolean: True if this pod is not home, and there are foreign
-             pods in the home trench.
+    boolean: True if this pod is on the top line, AND there are foreign
+             pods in the home trench. That is, they are blocked from
+             going home. If they are in any trench, return False
+             becaue they are not being blocked in this manner.
   """
   assert pod in state
   occupied_dict = GetOccupiedDict(state)
-  _, pod_type = pod
+  location, pod_type = pod
+  _, y = location
+  if y != 0:
+    return False
+
   home_col = HOME_COL[pod_type]
   for row in range(depth-1, 0, -1):
     occupant = occupied_dict.get((home_col, row), pod_type)

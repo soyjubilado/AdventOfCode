@@ -60,23 +60,23 @@ class TestProg202123(unittest.TestCase):
 
   def testForeignersOccupyHome(self):
     """Test ForeignersOccupyHome"""
-    state2 = '''\
-             #############
-             #.D.......A.#
-             ###C#.#C#D###
-               #A#B#B#D#
-               #########'''
-    lines = dedent(state2).split('\n')
+    state = '''\
+            #############
+            #.D.......A.#
+            ###C#.#C#A###
+              #A#B#B#D#
+              #########'''
+    lines = dedent(state).split('\n')
     state = LinesToState(lines)
-    self.assertEqual(ForeignersOccupyHome(((1, 0), 'D'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((2, 1), 'C'), state), True)
-    self.assertEqual(ForeignersOccupyHome(((2, 2), 'A'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((1, 0), 'D'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((2, 1), 'C'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((2, 2), 'A'), state), False)
     self.assertEqual(ForeignersOccupyHome(((4, 2), 'B'), state), False)
     self.assertEqual(ForeignersOccupyHome(((6, 2), 'B'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((6, 1), 'C'), state), True)
+    self.assertEqual(ForeignersOccupyHome(((6, 1), 'C'), state), False)
     self.assertEqual(ForeignersOccupyHome(((8, 2), 'D'), state), False)
     self.assertEqual(ForeignersOccupyHome(((9, 0), 'A'), state), True)
-    self.assertEqual(ForeignersOccupyHome(((8, 1), 'D'), state), False)
+    self.assertEqual(ForeignersOccupyHome(((8, 1), 'A'), state), False)
 
   def testBlockedInTrench(self):
     """Test BlockedInTrench"""
