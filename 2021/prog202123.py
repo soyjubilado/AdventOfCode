@@ -15,6 +15,10 @@ WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
 
 
+class Unimplemented(Exception):
+  """Unimplemented feature."""
+
+
 def GetData(datafile):
   """Return input data as a list of strings."""
   lines = []
@@ -82,7 +86,7 @@ def StateToLines(state, depth=DEPTH, width=WIDTH):
   return lines
 
 
-def NextStateForPod(pod, state, depth=DEPTH):
+def NextStatesForPod(pod, state, depth=DEPTH):
   """
   Args:
     pod: a single tuple, one of the ones in state
@@ -95,12 +99,28 @@ def NextStateForPod(pod, state, depth=DEPTH):
 
   Return empty set early if:
     * pod is already home. (AlreadyHome)
-    * pod is not home, but a foreigner is home. (ForeignerIsHome)
+    * pod is not home, but a foreigner is home. (ForeignersOccupyHome)
     * pod is in a trench, but there's someone above it. (BlockedInTrench)
     * pod is not home, but can't reach trench. (BlockedOutside)
   """
   assert pod in state
-  # TODO: rest of this function
+  if (AlreadyHome(pod, state) or BlockedInTrench(pod, state) or
+      BlockedOutside(pod, state)):
+    return {}
+
+  if PodInTrench(pod):
+    raise Unimplemented
+  else:
+    if ForeignersOccupyHome(pod, state):
+      return {}
+    raise Unimplemented
+
+
+def PodInTrench(pod):
+  """Is a pod in a trench?"""
+  coords, _ = pod
+  _, y = coords
+  return y != 0
 
 
 def BlockedInTrench(pod, state):

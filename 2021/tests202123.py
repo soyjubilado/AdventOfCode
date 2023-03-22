@@ -4,8 +4,9 @@
 import unittest
 from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
-from prog202123 import BlockedInTrench, GetOccupiedDict
-from prog202123 import NumbersBetween, BlockedOutside
+from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
+from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
+from prog202123 import Unimplemented
 
 
 class UnitTestFailure(Exception):
@@ -149,6 +150,44 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(BlockedOutside(((8, 2), 'D'), state), False)
     self.assertEqual(BlockedOutside(((9, 0), 'A'), state), True)
     self.assertEqual(BlockedOutside(((8, 1), 'D'), state), False)
+
+  def testPodInTrench(self):
+    """Test PodInTrench"""
+    state3 = '''\
+             #############
+             #.D.C.....A.#
+             ###.#.#C#D###
+               #A#B#B#D#
+               #########'''
+    lines = dedent(state3).split('\n')
+    state = LinesToState(lines)
+    self.assertEqual(PodInTrench(((1, 0), 'D')), False)
+    self.assertEqual(PodInTrench(((3, 0), 'C')), False)
+    self.assertEqual(PodInTrench(((2, 2), 'A')), True)
+    self.assertEqual(PodInTrench(((4, 2), 'B')), True)
+    self.assertEqual(PodInTrench(((6, 2), 'B')), True)
+    self.assertEqual(PodInTrench(((6, 1), 'C')), True)
+    self.assertEqual(PodInTrench(((8, 2), 'D')), True)
+    self.assertEqual(PodInTrench(((9, 0), 'A')), False)
+    self.assertEqual(PodInTrench(((8, 1), 'D')), True)
+
+  def testNextStatesForPod(self):
+    state4 = '''\
+             #############
+             #.D.C.....A.#
+             ###.#C#.#.###
+               #A#B#B#D#
+               #########'''
+    lines = dedent(state4).split('\n')
+    state = LinesToState(lines)
+    self.assertEqual(NextStatesForPod(((2, 2), 'A'), state), {})
+    self.assertEqual(NextStatesForPod(((1, 0), 'D'), state), {})
+    self.assertEqual(NextStatesForPod(((9, 0), 'A'), state), {})
+    self.assertEqual(NextStatesForPod(((8, 2), 'D'), state), {})
+    self.assertEqual(NextStatesForPod(((4, 2), 'B'), state), {})
+    self.assertEqual(NextStatesForPod(((3, 0), 'C'), state), {})
+    self.assertRaises(Unimplemented, NextStatesForPod, *(((4, 1), 'C'), state))
+    self.assertRaises(Unimplemented, NextStatesForPod, *(((6, 2), 'B'), state))
 
 
 if __name__ == '__main__':
