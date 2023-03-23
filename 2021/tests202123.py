@@ -6,7 +6,7 @@ from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
 from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
 from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-from prog202123 import Unimplemented
+from prog202123 import Unimplemented, GoHome
 
 
 class UnitTestFailure(Exception):
@@ -172,13 +172,13 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(PodInTrench(((8, 1), 'D')), True)
 
   def testNextStatesForPod(self):
-    state4 = '''\
-             #############
-             #.D.C.....A.#
-             ###.#C#.#.###
-               #A#B#B#D#
-               #########'''
-    lines = dedent(state4).split('\n')
+    state = '''\
+            #############
+            #.D.C.....A.#
+            ###.#C#.#.###
+              #A#B#B#D#
+              #########'''
+    lines = dedent(state).split('\n')
     state = LinesToState(lines)
     self.assertEqual(NextStatesForPod(((2, 2), 'A'), state), {})
     self.assertEqual(NextStatesForPod(((1, 0), 'D'), state), {})
@@ -188,6 +188,24 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(NextStatesForPod(((3, 0), 'C'), state), {})
     self.assertRaises(Unimplemented, NextStatesForPod, *(((4, 1), 'C'), state))
     self.assertRaises(Unimplemented, NextStatesForPod, *(((6, 2), 'B'), state))
+
+  def testGoHome(self):
+    state = '''\
+            #############
+            #.D.C...B.A.#
+            ###.#C#.#.###
+              #A#B#.#D#
+              #########'''
+    lines = dedent(state).split('\n')
+    state = LinesToState(lines)
+    ret_dict = GoHome(((3, 0), 'C'), state, depth=3)
+    self.assertEqual(len(ret_dict), 1)
+    new_state = list(ret_dict.keys())[0]
+    print(new_state)
+    self.assertTrue(((6, 2), 'C') in new_state)
+    next_dict_for_pod = NextStatesForPod(((3, 0), 'C'), state)
+    next_state_for_pod = list(next_dict_for_pod.keys())[0]
+    self.assertEqual(new_state, next_state_for_pod)
 
 
 if __name__ == '__main__':

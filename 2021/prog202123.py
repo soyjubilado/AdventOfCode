@@ -10,9 +10,11 @@
 DATA = 'data202123.txt'
 #DATA = 'testdata202123.txt'
 
+# DEPTH is the number of rows
 DEPTH = 3
 WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
+COST_MULTIPLIER = {'A': 1, 'B': 10, 'C': 100, 'D': 1000}
 
 
 class Unimplemented(Exception):
@@ -91,6 +93,7 @@ def NextStatesForPod(pod, state, depth=DEPTH):
   Args:
     pod: a single tuple, one of the ones in state
     state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
+    depth: number of rows of possible positions
 
   Returns:
     a dictionary of states: {next_state: cost}
@@ -110,8 +113,37 @@ def NextStatesForPod(pod, state, depth=DEPTH):
 
   if PodInTrench(pod):
     raise Unimplemented
-  else:
-    raise Unimplemented
+  else: # pod is on the top row, nothing blocking its path home
+    return GoHome(pod, state, depth)
+
+
+def GoHome(pod, state, depth):
+  """Assumes the path is clear to go home.
+  Args:
+    pod: an amphipod ((x, y), 'Type')
+    state: a set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
+    depth: number of rows of possible positions
+ 
+  Returns:
+    A dictionary with the next state as key, and the value is the cost to get
+    to that state fro the current state.
+  """
+  location, pod_type = pod
+  x1, y1 = location
+  home_column = HOME_COL[pod_type]
+  occupied_dict = GetOccupiedDict(state)
+  target_y = depth - 1
+  while (home_column, target_y) in occupied_dict and target_y > 0:
+    target_y -= 1
+  if target_y == 0:
+    raise Exception
+
+  distance = abs(x1 - home_column) + target_y
+  cost = distance * COST_MULTIPLIER[pod_type]
+  new_state = state.copy()
+  new_state.remove(pod)
+  new_state.add(((home_column, target_y), pod_type))
+  return {frozenset(new_state): cost}
 
 
 def PodInTrench(pod):
