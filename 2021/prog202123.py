@@ -113,9 +113,33 @@ def NextStatesForPod(pod, state, depth=DEPTH):
     return {}
 
   if PodInTrench(pod):
-    raise Unimplemented
-  else: # pod is on the top row, nothing blocking its path home
-    return GoHome(pod, state, depth)
+    return NextStatesFromTrench(pod, state)
+  # else pod is on the top row, nothing blocking its path home
+  return GoHome(pod, state, depth)
+
+
+def NextStatesFromTrench(pod, state):
+  """Assume pod is in trench, but not AlreadyHome(). Return a dict keyed on
+  the new states that result from that particular pod moving to the top row,
+  and the cost of reaching each of those states:
+  {frozenset(new_state): cost_to_reach}
+  """
+  assert PodInTrench(pod)
+  assert not AlreadyHome(pod, state)
+  answer_dict = {}
+  dest_cols = FreeColumns(pod, state)
+  pod_col = pod[0][0]
+  pod_row = pod[0][1]
+  pod_type = pod[1]
+  state_sans_pod = state.copy()
+  state_sans_pod.remove(pod)
+  for c in dest_cols:
+    new_state = state_sans_pod.copy()
+    new_state.add(((c, 0), pod_type))
+    distance = pod_row + abs(pod_col - c)
+    cost = distance * COST_MULTIPLIER[pod_type]
+    answer_dict[frozenset(new_state)] = cost
+  return answer_dict
 
 
 def GoHome(pod, state, depth):
@@ -124,13 +148,13 @@ def GoHome(pod, state, depth):
     pod: an amphipod ((x, y), 'Type')
     state: a set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
     depth: number of rows of possible positions
- 
+
   Returns:
     A dictionary with the next state as key, and the value is the cost to get
     to that state fro the current state.
   """
   location, pod_type = pod
-  x1, y1 = location
+  x1, _ = location
   home_column = HOME_COL[pod_type]
   occupied_dict = GetOccupiedDict(state)
   target_y = depth - 1

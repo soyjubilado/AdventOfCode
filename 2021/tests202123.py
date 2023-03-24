@@ -6,7 +6,8 @@ from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
 from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
 from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-from prog202123 import Unimplemented, GoHome, FreeColumns
+from prog202123 import GoHome, FreeColumns
+# from prog202123 import Unimplemented
 
 
 class UnitTestFailure(Exception):
@@ -153,14 +154,6 @@ class TestProg202123(unittest.TestCase):
 
   def testPodInTrench(self):
     """Test PodInTrench"""
-    state3 = '''\
-             #############
-             #.D.C.....A.#
-             ###.#.#C#D###
-               #A#B#B#D#
-               #########'''
-    lines = dedent(state3).split('\n')
-    state = LinesToState(lines)
     self.assertEqual(PodInTrench(((1, 0), 'D')), False)
     self.assertEqual(PodInTrench(((3, 0), 'C')), False)
     self.assertEqual(PodInTrench(((2, 2), 'A')), True)
@@ -172,6 +165,7 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(PodInTrench(((8, 1), 'D')), True)
 
   def testNextStatesForPod(self):
+    """Test NextStatesForPod"""
     state = '''\
             #############
             #.D.C.....A.#
@@ -186,10 +180,32 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(NextStatesForPod(((8, 2), 'D'), state), {})
     self.assertEqual(NextStatesForPod(((4, 2), 'B'), state), {})
     self.assertEqual(NextStatesForPod(((3, 0), 'C'), state), {})
-    self.assertRaises(Unimplemented, NextStatesForPod, *(((4, 1), 'C'), state))
-    self.assertRaises(Unimplemented, NextStatesForPod, *(((6, 2), 'B'), state))
+
+    new_states = NextStatesForPod(((4, 1), 'C'), state)
+    self.assertEqual(len(new_states), 2)
+    state_1 = '''\
+              #############
+              #.D.C...C.A.#
+              ###.#.#.#.###
+                #A#B#B#D#
+                #########'''
+    state_2 = '''\
+              #############
+              #.D.C.C...A.#
+              ###.#.#.#.###
+                #A#B#B#D#
+                #########'''
+    state_next_1 = LinesToState(dedent(state_1).split('\n'))
+    self.assertTrue(frozenset(state_next_1) in new_states)
+    state_next_2 = LinesToState(dedent(state_2).split('\n'))
+    self.assertTrue(frozenset(state_next_2) in new_states)
+
+    new_states = NextStatesForPod(((6, 2), 'B'), state)
+    self.assertEqual(len(new_states), 2)
+
 
   def testGoHome(self):
+    """Test GoHome"""
     state = '''\
             #############
             #.D.C...B.A.#
@@ -208,6 +224,7 @@ class TestProg202123(unittest.TestCase):
     self.assertEqual(new_state, next_state_for_pod)
 
   def testFreeColumns(self):
+    """Test FreeColumns"""
     state = '''\
             #############
             #...........#
