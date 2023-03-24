@@ -6,7 +6,7 @@ from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
 from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
 from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-from prog202123 import Unimplemented, GoHome
+from prog202123 import Unimplemented, GoHome, FreeColumns
 
 
 class UnitTestFailure(Exception):
@@ -201,11 +201,48 @@ class TestProg202123(unittest.TestCase):
     ret_dict = GoHome(((3, 0), 'C'), state, depth=3)
     self.assertEqual(len(ret_dict), 1)
     new_state = list(ret_dict.keys())[0]
-    print(new_state)
+    # print(new_state)
     self.assertTrue(((6, 2), 'C') in new_state)
     next_dict_for_pod = NextStatesForPod(((3, 0), 'C'), state)
     next_state_for_pod = list(next_dict_for_pod.keys())[0]
     self.assertEqual(new_state, next_state_for_pod)
+
+  def testFreeColumns(self):
+    state = '''\
+            #############
+            #...........#
+            ###A#B#C#D###
+              #A#B#C#D#
+              #########'''
+    lines = dedent(state).split('\n')
+    state = LinesToState(lines)
+    pod = ((2, 1), 'A')
+    free = FreeColumns(pod, state)
+    self.assertEqual(free, {0, 1, 3, 5, 7, 9, 10, 11})
+
+    state = '''\
+            #############
+            #.A.....C...#
+            ###.#B#.#D###
+              #A#B#C#D#
+              #########'''
+    lines = dedent(state).split('\n')
+    state = LinesToState(lines)
+    pod = ((4, 1), 'B')
+    free = FreeColumns(pod, state)
+    self.assertEqual(free, set({3, 5}))
+
+    state = '''\
+            #############
+            #...A.C.....#
+            ###.#B#.#D###
+              #A#B#C#D#
+              #########'''
+    lines = dedent(state).split('\n')
+    state = LinesToState(lines)
+    pod = ((4, 1), 'B')
+    free = FreeColumns(pod, state)
+    self.assertEqual(free, set({}))
 
 
 if __name__ == '__main__':

@@ -14,6 +14,7 @@ DATA = 'data202123.txt'
 DEPTH = 3
 WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
+NO_STOPPING = set(HOME_COL.values())
 COST_MULTIPLIER = {'A': 1, 'B': 10, 'C': 100, 'D': 1000}
 
 
@@ -146,11 +147,31 @@ def GoHome(pod, state, depth):
   return {frozenset(new_state): cost}
 
 
+def FreeColumns(pod, state, width=WIDTH):
+  """Given a pod *in a trench* and a state, list all the columns on the top
+     row that are a possible landing site."""
+  assert pod in state
+  answers = set([])
+  max_index = width - 2
+  occupied_dict = GetOccupiedDict(state)
+  pod_column = pod[0][0]
+  assert pod_column in NO_STOPPING
+  current = pod_column
+  while (current <= max_index and (current, 0) not in occupied_dict):
+    if current not in NO_STOPPING:
+      answers.add(current)
+    current += 1
+  current = pod_column
+  while current >= 0 and (current, 0) not in occupied_dict:
+    if current not in NO_STOPPING:
+      answers.add(current)
+    current -= 1
+  return answers
+
+
 def PodInTrench(pod):
   """Is a pod in a trench?"""
-  coords, _ = pod
-  _, y = coords
-  return y != 0
+  return pod[0][1] != 0
 
 
 def BlockedInTrench(pod, state):
