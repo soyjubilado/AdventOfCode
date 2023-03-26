@@ -204,6 +204,7 @@ class State():
     while (home_column, target_y) in self.occupied and target_y > 0:
       target_y -= 1
     if target_y == 0:
+      # target row can't be the top
       raise Exception
 
     distance = abs(x1 - home_column) + target_y
@@ -220,7 +221,7 @@ class State():
     width = self.width
     assert pod in state
     answers = set([])
-    max_index = width - 2
+    max_index = width - 3
     pod_column = pod[0][0]
     assert pod_column in NO_STOPPING
     current = pod_column

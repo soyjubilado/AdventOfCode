@@ -260,7 +260,7 @@ class TestProg202123(unittest.TestCase):
     s = State(lines=dedent(state).split('\n'))
     pod = ((2, 1), 'A')
     free = s.FreeColumns(pod)
-    self.assertEqual(free, {0, 1, 3, 5, 7, 9, 10, 11})
+    self.assertEqual(free, {0, 1, 3, 5, 7, 9, 10})
 
     state = '''\
             #############
@@ -322,6 +322,16 @@ class TestProg202123(unittest.TestCase):
                 ((8, 2), 'D'),
                }
     self.assertEqual(list(next_states.keys())[0].state, expected)
+
+    state_lines = '''\
+                  #############
+                  #...........#
+                  ###A#D#A#B###
+                    #C#C#D#B#
+                    #########'''
+    s = State(dedent(state_lines).split('\n'))
+    next_states = s.NextStatesForPod(((6,1), 'A'))
+    self.assertEqual(len(next_states), 7)
 
 
 if __name__ == '__main__':
