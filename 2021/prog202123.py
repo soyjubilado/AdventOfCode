@@ -63,7 +63,7 @@ def StateToLines(state, depth=DEPTH, width=WIDTH):
   lines.append(line1)
 
   line2 = '#'
-  for x in range(1, width-1):
+  for x in range(0, width-2):
     next_char = '.' if (x, 0) not in occupied else occupied[(x, 0)]
     line2 += next_char
   line2 += '#'
@@ -87,6 +87,17 @@ def StateToLines(state, depth=DEPTH, width=WIDTH):
 
   lines.append('  #########')
   return lines
+
+
+def AllNextStates(state, depth=DEPTH):
+  """Return a dict of all the possible next states and the cost to get
+     there."""
+  all_next_states = {}
+  for pod in state:
+    next_states_dict = NextStatesForPod(pod, state, depth)
+    for s, cost in next_states_dict.items():
+      all_next_states[s] = cost
+  return all_next_states
 
 
 def NextStatesForPod(pod, state, depth=DEPTH):

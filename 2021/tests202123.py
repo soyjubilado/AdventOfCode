@@ -6,7 +6,8 @@ from textwrap import dedent
 from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
 from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
 from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-from prog202123 import GoHome, FreeColumns
+from prog202123 import GoHome, FreeColumns, AllNextStates
+from prog202123 import StateToLines, PrintLines
 # from prog202123 import Unimplemented
 
 
@@ -260,6 +261,47 @@ class TestProg202123(unittest.TestCase):
     pod = ((4, 1), 'B')
     free = FreeColumns(pod, state)
     self.assertEqual(free, set({}))
+
+  def testLinesToState(self):
+    """Test LinesToState and StateToLines"""
+    state_lines = '''\
+                  #############
+                  #...A.C.....#
+                  ###.#B#.#D###
+                    #A#B#C#D#
+                    #########'''
+    lines1 = dedent(state_lines).split('\n')
+    state1 = LinesToState(lines1)
+    lines2 = StateToLines(state1)
+    state2 = LinesToState(lines2)
+    self.assertEqual(lines1, lines2)
+    self.assertEqual(state1, state2)
+
+  def testAllNextStates(self):
+    """Test AllNextStates"""
+    state_lines = '''\
+                  #############
+                  #.....B.....#
+                  ###A#.#C#D###
+                    #A#B#C#D#
+                    #########'''
+    lines = dedent(state_lines).split('\n')
+    state = LinesToState(lines)
+    # print('original:')
+    # PrintLines(lines)
+    # print('next states:')
+    next_states = AllNextStates(state)
+    self.assertEqual(len(next_states), 1)
+    expected = {((2, 1), 'A'),
+                ((2, 2), 'A'),
+                ((4, 1), 'B'),
+                ((4, 2), 'B'),
+                ((6, 1), 'C'),
+                ((6, 2), 'C'),
+                ((8, 1), 'D'),
+                ((8, 2), 'D'),
+               }
+    self.assertEqual(list(next_states.keys())[0], expected)
 
 
 if __name__ == '__main__':
