@@ -40,7 +40,12 @@ def NumbersBetween(a, b):
   return list(range(a + 1, b))
 
 
-def LinesToState(lines):
+def PodInTrench(pod):
+  """Is a pod in a trench?"""
+  return pod[0][1] != 0
+
+
+def LinesToTupleSet(lines):
   """converts ascii lines to a set of tuples of occupied spaces.
   Args:
     lines: a list of strings
@@ -52,294 +57,286 @@ def LinesToState(lines):
     for x, char in enumerate(row_str):
       if char in HOME_COL:
         state.add(((x-1, y-1), char))
-  return state
+  return frozenset(state)
 
 
-def StateToLines(state, depth=DEPTH, width=WIDTH):
-  """converts set of tuples to printable list of lines."""
-  occupied = dict(state)
-  lines = []
-  line1 = '#' * width
-  lines.append(line1)
+class State():
+  """Class to define a state, defined by pod locations."""
+  def __init__(self, lines=None, tuple_set=None):
 
-  line2 = '#'
-  for x in range(0, width-2):
-    next_char = '.' if (x, 0) not in occupied else occupied[(x, 0)]
-    line2 += next_char
-  line2 += '#'
-  lines.append(line2)
+    if not tuple_set:
+      self.state = LinesToTupleSet(lines)
+      self.depth = len(lines) - 2
+    else:
+      self.state = frozenset(tuple_set)
+      self.depth = DEPTH
+    self.width = WIDTH
+    self.occupied = self.GetOccupiedDict()
 
-  # lines 3 to Depth - 2
-  for y in range(1, depth):
-    line_n = '  #'
-    for x in range(2, width - 3):
-      if x not in [2, 4, 6, 8]:
-        next_char = '#'
-      elif (x, y) in occupied:
-        next_char = occupied[(x, y)]
-      else:
-        next_char = '.'
-      line_n += next_char
-    lines.append(line_n)
+  def __hash__(self):
+    return hash(self.state)
 
-  # fix line 3
-  lines[2] = lines[2].replace(' ', '#') + '##'
+  def __eq__(self, other):
+    return self.state == other.state
 
-  lines.append('  #########')
-  return lines
+  def GetOccupiedDict(self):
+    """Given a state, return a dict keyed on coordinates."""
+    my_dict = {}
+    for coord, pod in self.state:
+      my_dict[coord] = pod
+    return my_dict
 
+  def PrintSelf(self):
+    """Verify output."""
+    lines = self.SelfToLines()
+    print('\n'.join(lines))
+    print(f'depth: {self.depth}')
+    print(f'width: {self.width}')
 
-def AllNextStates(state, depth=DEPTH):
-  """Return a dict of all the possible next states and the cost to get
-     there."""
-  all_next_states = {}
-  for pod in state:
-    next_states_dict = NextStatesForPod(pod, state, depth)
-    for s, cost in next_states_dict.items():
-      all_next_states[s] = cost
-  return all_next_states
+  def SelfToLines(self):
+    """converts set of tuples to printable list of lines."""
+    lines = []
+    line1 = '#' * self.width
+    lines.append(line1)
 
+    line2 = '#'
+    for x in range(0, self.width - 2):
+      next_char = '.' if (x, 0) not in self.occupied else self.occupied[(x, 0)]
+      line2 += next_char
+    line2 += '#'
+    lines.append(line2)
 
-def NextStatesForPod(pod, state, depth=DEPTH):
-  """
-  Args:
-    pod: a single tuple, one of the ones in state
-    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-    depth: number of rows of possible positions
+    # lines 3 to Depth - 2
+    for y in range(1, self.depth):
+      line_n = '  #'
+      for x in range(2, self.width - 3):
+        if x not in [2, 4, 6, 8]:
+          next_char = '#'
+        elif (x, y) in self.occupied:
+          next_char = self.occupied[(x, y)]
+        else:
+          next_char = '.'
+        line_n += next_char
+      lines.append(line_n)
 
-  Returns:
-    a dictionary of states: {next_state: cost}
-      next_state: set of tuples (like state)
-      cost: int
+    # fix line 3
+    lines[2] = lines[2].replace(' ', '#') + '##'
 
-  Return empty set early if:
-    * pod is already home. (AlreadyHome)
-    * pod is not home, but a foreigner is home. (ForeignersOccupyHome)
-    * pod is in a trench, but there's someone above it. (BlockedInTrench)
-    * pod is not home, but can't reach trench. (BlockedOutside)
-  """
-  assert pod in state
-  if (AlreadyHome(pod, state) or BlockedInTrench(pod, state) or
-      BlockedOutside(pod, state)) or ForeignersOccupyHome(pod, state):
-    return {}
+    lines.append('  #########')
+    return lines
 
-  if PodInTrench(pod):
-    return NextStatesFromTrench(pod, state)
-  # else pod is on the top row, nothing blocking its path home
-  return GoHome(pod, state, depth)
+  def AllNextStates(self):
+    """Return a dict of all the possible next states and the cost to get
+       there."""
+    all_next_states = {}
+    for pod in self.state:
+      next_states_dict = self.NextStatesForPod(pod)
+      for s, cost in next_states_dict.items():
+        all_next_states[s] = cost
+    return all_next_states
 
+  def NextStatesForPod(self, pod):
+    """
+    Args:
+      pod: a single tuple, one of the ones in state
+      state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
+      depth: number of rows of possible positions
 
-def NextStatesFromTrench(pod, state):
-  """Assume pod is in trench, but not AlreadyHome(). Return a dict keyed on
-  the new states that result from that particular pod moving to the top row,
-  and the cost of reaching each of those states:
-  {frozenset(new_state): cost_to_reach}
-  """
-  assert PodInTrench(pod)
-  assert not AlreadyHome(pod, state)
-  answer_dict = {}
-  dest_cols = FreeColumns(pod, state)
-  pod_col = pod[0][0]
-  pod_row = pod[0][1]
-  pod_type = pod[1]
-  state_sans_pod = state.copy()
-  state_sans_pod.remove(pod)
-  for c in dest_cols:
-    new_state = state_sans_pod.copy()
-    new_state.add(((c, 0), pod_type))
-    distance = pod_row + abs(pod_col - c)
+    Returns:
+      a dictionary of states: {next_state: cost}
+        next_state: set of tuples (like state)
+        cost: int
+
+    Return empty set early if:
+      * pod is already home. (AlreadyHome)
+      * pod is not home, but a foreigner is home. (ForeignersOccupyHome)
+      * pod is in a trench, but there's someone above it. (BlockedInTrench)
+      * pod is not home, but can't reach trench. (BlockedOutside)
+    """
+    state = self.state
+    assert pod in state
+    if (self.AlreadyHome(pod) or self.BlockedInTrench(pod) or
+        self.BlockedOutside(pod) or self.ForeignersOccupyHome(pod)):
+      return {}
+
+    if PodInTrench(pod):
+      return self.NextStatesFromTrench(pod)
+    # else pod is on the top row, nothing blocking its path home
+    return self.GoHome(pod)
+
+  def NextStatesFromTrench(self, pod):
+    """Assume pod is in trench, but not AlreadyHome(). Return a dict keyed on
+    the new states that result from that particular pod moving to the top row,
+    and the cost of reaching each of those states:
+    {frozenset(new_state): cost_to_reach}
+    """
+    assert PodInTrench(pod)
+    assert not self.AlreadyHome(pod)
+    answer_dict = {}
+    dest_cols = self.FreeColumns(pod)
+    pod_col = pod[0][0]
+    pod_row = pod[0][1]
+    pod_type = pod[1]
+    state_sans_pod = set(self.state.copy())
+    state_sans_pod.remove(pod)
+    for c in dest_cols:
+      new_state_set = state_sans_pod.copy()
+      new_state_set.add(((c, 0), pod_type))
+      distance = pod_row + abs(pod_col - c)
+      cost = distance * COST_MULTIPLIER[pod_type]
+      answer_dict[State(tuple_set=new_state_set)] = cost
+    return answer_dict
+
+  def GoHome(self, pod):
+    """Assumes the path is clear to go home.
+    Args:
+      pod: an amphipod ((x, y), 'Type')
+
+    Returns:
+      A dictionary with the next state as key, and the value is the cost to get
+      to that state fro the current state.
+    """
+    depth = self.depth
+    location, pod_type = pod
+    x1, _ = location
+    home_column = HOME_COL[pod_type]
+    target_y = depth - 1
+    while (home_column, target_y) in self.occupied and target_y > 0:
+      target_y -= 1
+    if target_y == 0:
+      raise Exception
+
+    distance = abs(x1 - home_column) + target_y
     cost = distance * COST_MULTIPLIER[pod_type]
-    answer_dict[frozenset(new_state)] = cost
-  return answer_dict
+    new_state_tuple_set = set(self.state.copy())
+    new_state_tuple_set.remove(pod)
+    new_state_tuple_set.add(((home_column, target_y), pod_type))
+    return {State(tuple_set=new_state_tuple_set): cost}
 
+  def FreeColumns(self, pod):
+    """Given a pod *in a trench* and a state, list all the columns on the top
+       row that are a possible landing site."""
+    state = self.state
+    width = self.width
+    assert pod in state
+    answers = set([])
+    max_index = width - 2
+    pod_column = pod[0][0]
+    assert pod_column in NO_STOPPING
+    current = pod_column
+    while (current <= max_index and (current, 0) not in self.occupied):
+      if current not in NO_STOPPING:
+        answers.add(current)
+      current += 1
+    current = pod_column
+    while current >= 0 and (current, 0) not in self.occupied:
+      if current not in NO_STOPPING:
+        answers.add(current)
+      current -= 1
+    return answers
 
-def GoHome(pod, state, depth):
-  """Assumes the path is clear to go home.
-  Args:
-    pod: an amphipod ((x, y), 'Type')
-    state: a set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-    depth: number of rows of possible positions
+  def BlockedInTrench(self, pod):
+    """
+    Args:
+      pod: a single tuple, one of the ones in state
 
-  Returns:
-    A dictionary with the next state as key, and the value is the cost to get
-    to that state fro the current state.
-  """
-  location, pod_type = pod
-  x1, _ = location
-  home_column = HOME_COL[pod_type]
-  occupied_dict = GetOccupiedDict(state)
-  target_y = depth - 1
-  while (home_column, target_y) in occupied_dict and target_y > 0:
-    target_y -= 1
-  if target_y == 0:
-    raise Exception
-
-  distance = abs(x1 - home_column) + target_y
-  cost = distance * COST_MULTIPLIER[pod_type]
-  new_state = state.copy()
-  new_state.remove(pod)
-  new_state.add(((home_column, target_y), pod_type))
-  return {frozenset(new_state): cost}
-
-
-def FreeColumns(pod, state, width=WIDTH):
-  """Given a pod *in a trench* and a state, list all the columns on the top
-     row that are a possible landing site."""
-  assert pod in state
-  answers = set([])
-  max_index = width - 2
-  occupied_dict = GetOccupiedDict(state)
-  pod_column = pod[0][0]
-  assert pod_column in NO_STOPPING
-  current = pod_column
-  while (current <= max_index and (current, 0) not in occupied_dict):
-    if current not in NO_STOPPING:
-      answers.add(current)
-    current += 1
-  current = pod_column
-  while current >= 0 and (current, 0) not in occupied_dict:
-    if current not in NO_STOPPING:
-      answers.add(current)
-    current -= 1
-  return answers
-
-
-def PodInTrench(pod):
-  """Is a pod in a trench?"""
-  return pod[0][1] != 0
-
-
-def BlockedInTrench(pod, state):
-  """
-  Args:
-    pod: a single tuple, one of the ones in state
-    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-
-  Returns:
-    boolean: True if the pod is in a trench but can't move because someone
-             is in the same trench above him.
-  """
-  assert pod in state
-  occupied_dict = GetOccupiedDict(state)
-  location, _ = pod
-  x, y = location
-  if y == 0:
-    return False
-  for row in range(y-1, 0, -1):
-    if (x, row) in occupied_dict:
-      return True
-  return False
-
-
-def BlockedOutside(pod, state):
-  """
-  Args:
-    pod: a single tuple, one of the ones in state
-    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-
-  Returns:
-    boolean: True if the pod is not in trench and someone is between
-             him and his home trench.
-
-  Status of this function: untested
-  """
-  assert pod in state
-  occupied_dict = GetOccupiedDict(state)
-  location, pod_type = pod
-  x, y = location
-  if y != 0: # not outside trench
-    return False
-  home_col = HOME_COL[pod_type]
-  cols_between = NumbersBetween(home_col, x)
-  for n in cols_between:
-    if (n, 0) in occupied_dict:
-      return True
-  return False
-
-
-def AlreadyHome(pod, state, depth=DEPTH):
-  """
-  Args:
-    pod: a single tuple, one of the ones in state
-    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-
-  Returns:
-    boolean: True if the pod is already home and no foreign pods are below.
-  """
-  assert pod in state
-  occupied_dict = GetOccupiedDict(state)
-  location, pod_type = pod
-  x, y = location
-  home_col = HOME_COL[pod_type]
-  if y == 0:
-    return False
-  if x != home_col:
-    return False
-
-  # so x is home column
-  for row in range(depth-1, y-1, -1):
-    occupant = occupied_dict.get((x, row), pod_type)
-    # print(f'({x}, {row}): {occupant}')
-    if occupant != pod_type:
+    Returns:
+      boolean: True if the pod is in a trench but can't move because someone
+               is in the same trench above him.
+    """
+    state = self.state
+    assert pod in state
+    location, _ = pod
+    x, y = location
+    if y == 0:
       return False
-  return True
-
-
-def ForeignersOccupyHome(pod, state, depth=DEPTH):
-  """
-  Args:
-    pod: a single tuple, one of the ones in state
-    state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-
-  Returns:
-    boolean: True if this pod is on the top line, AND there are foreign
-             pods in the home trench. That is, they are blocked from
-             going home. If they are in any trench, return False
-             becaue they are not being blocked in this manner.
-  """
-  assert pod in state
-  occupied_dict = GetOccupiedDict(state)
-  location, pod_type = pod
-  _, y = location
-  if y != 0:
+    for row in range(y-1, 0, -1):
+      if (x, row) in self.occupied:
+        return True
     return False
 
-  home_col = HOME_COL[pod_type]
-  for row in range(depth-1, 0, -1):
-    occupant = occupied_dict.get((home_col, row), pod_type)
-    if occupant != pod_type:
-      return True
-  return False
+  def BlockedOutside(self, pod):
+    """
+    Args:
+      pod: a single tuple, one of the ones in state
+      state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
 
+    Returns:
+      boolean: True if the pod is not in trench and someone is between
+               him and his home trench.
 
-def GetOccupiedDict(state):
-  """Given a state, return a dict keyed on coordinates."""
-  my_dict = {}
-  for coord, pod in state:
-    my_dict[coord] = pod
-  return my_dict
+    Status of this function: untested
+    """
+    state = self.state
+    assert pod in state
+    location, pod_type = pod
+    x, y = location
+    if y != 0: # not outside trench
+      return False
+    home_col = HOME_COL[pod_type]
+    cols_between = NumbersBetween(home_col, x)
+    for n in cols_between:
+      if (n, 0) in self.occupied:
+        return True
+    return False
 
+  def AlreadyHome(self, pod):
+    """
+    Args:
+      pod: a single tuple, one of the ones in state
 
-def PrintLines(lines, depth=DEPTH, width=WIDTH):
-  """Verify output."""
-  print('\n'.join(lines))
-  print(f'depth: {depth}')
-  print(f'width: {width}')
+    Returns:
+      boolean: True if the pod is already home and no foreign pods are below.
+    """
+    state = self.state
+    depth = self.depth
+    assert pod in state
+    location, pod_type = pod
+    x, y = location
+    home_col = HOME_COL[pod_type]
+    if y == 0:
+      return False
+    if x != home_col:
+      return False
+
+    # so x is home column
+    for row in range(depth-1, y-1, -1):
+      occupant = self.occupied.get((x, row), pod_type)
+      if occupant != pod_type:
+        return False
+    return True
+
+  def ForeignersOccupyHome(self, pod):
+    """
+    Args:
+      pod: a single tuple, one of the ones in state
+
+    Returns:
+      True if this pod is on the top line, AND there are foreign pods in the
+      home trench. That is, they are blocked from going home. If they are in
+      any trench, return False becaue they are not being blocked in this
+      manner.
+    """
+    state = self.state
+    assert pod in state
+    location, pod_type = pod
+    _, y = location
+    if y != 0:
+      return False
+
+    home_col = HOME_COL[pod_type]
+    for row in range(self.depth-1, 0, -1):
+      occupant = self.occupied.get((home_col, row), pod_type)
+      if occupant != pod_type:
+        return True
+    return False
 
 
 def main():
   """main"""
   lines = GetData(DATA)
-  global DEPTH
-  DEPTH = len(lines) - 2
-  PrintLines(lines)
-  state = LinesToState(lines)
-  # for k,v in sorted(state):
-    # print(f'  {k}: {v}')
-  for s in sorted(state):
-    print(s)
-  lines_redux = StateToLines(state)
-  PrintLines(lines_redux)
+  s = State(lines=lines)
+  s.PrintSelf()
 
 
 if __name__ == '__main__':

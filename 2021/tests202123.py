@@ -3,11 +3,12 @@
 
 import unittest
 from textwrap import dedent
-from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
-from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
-from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-from prog202123 import GoHome, FreeColumns, AllNextStates
-from prog202123 import StateToLines, PrintLines
+from prog202123 import State, NumbersBetween, PodInTrench
+# from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
+# from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
+# from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
+# from prog202123 import GoHome, FreeColumns, AllNextStates
+# from prog202123 import StateToLines, PrintLines
 # from prog202123 import Unimplemented
 
 
@@ -18,7 +19,7 @@ class UnitTestFailure(Exception):
 class TestProg202123(unittest.TestCase):
   """Unit tests class."""
 
-  def testLinesToState(self):
+  def testLinesToTupleSet(self):
     """Test LinesToState"""
     state1 = '''\
              #############
@@ -27,6 +28,7 @@ class TestProg202123(unittest.TestCase):
                #C#C#D#B#
                #########'''
     lines = dedent(state1).split('\n')
+    s = State(lines=lines)
     expected = set([((2, 1), 'A'),
                     ((2, 2), 'C'),
                     ((4, 1), 'D'),
@@ -37,7 +39,13 @@ class TestProg202123(unittest.TestCase):
                     ((8, 2), 'B'),
                    ])
 
-    self.assertTrue(LinesToState(lines) == expected)
+    self.assertTrue(s.state == expected)
+    # test hashable
+    _ = {s: 5}
+    # test __eq__
+    new_obj = State(lines=lines)
+    self.assertTrue(s is not new_obj)
+    self.assertTrue(s == new_obj)
 
   def testAlreadyHome(self):
     """Test AlreadyHome"""
@@ -49,16 +57,17 @@ class TestProg202123(unittest.TestCase):
                #########'''
 
     lines = dedent(state2).split('\n')
-    state = LinesToState(lines)
-    self.assertEqual(AlreadyHome(((1, 0), 'D'), state), False)
-    self.assertEqual(AlreadyHome(((2, 1), 'C'), state), False)
-    self.assertEqual(AlreadyHome(((2, 2), 'A'), state), True)
-    self.assertEqual(AlreadyHome(((4, 2), 'B'), state), True)
-    self.assertEqual(AlreadyHome(((6, 2), 'B'), state), False)
-    self.assertEqual(AlreadyHome(((6, 1), 'C'), state), False)
-    self.assertEqual(AlreadyHome(((8, 2), 'D'), state), True)
-    self.assertEqual(AlreadyHome(((9, 0), 'A'), state), False)
-    self.assertEqual(AlreadyHome(((8, 1), 'D'), state), True)
+    s = State(lines=lines)
+    # self.assertEqual(s.AlreadyHome(((1, 0), 'D'), state), False)
+    self.assertEqual(s.AlreadyHome(((1, 0), 'D')), False)
+    self.assertEqual(s.AlreadyHome(((2, 1), 'C')), False)
+    self.assertEqual(s.AlreadyHome(((2, 2), 'A')), True)
+    self.assertEqual(s.AlreadyHome(((4, 2), 'B')), True)
+    self.assertEqual(s.AlreadyHome(((6, 2), 'B')), False)
+    self.assertEqual(s.AlreadyHome(((6, 1), 'C')), False)
+    self.assertEqual(s.AlreadyHome(((8, 2), 'D')), True)
+    self.assertEqual(s.AlreadyHome(((9, 0), 'A')), False)
+    self.assertEqual(s.AlreadyHome(((8, 1), 'D')), True)
 
   def testForeignersOccupyHome(self):
     """Test ForeignersOccupyHome"""
@@ -69,16 +78,16 @@ class TestProg202123(unittest.TestCase):
               #A#B#B#D#
               #########'''
     lines = dedent(state).split('\n')
-    state = LinesToState(lines)
-    self.assertEqual(ForeignersOccupyHome(((1, 0), 'D'), state), True)
-    self.assertEqual(ForeignersOccupyHome(((2, 1), 'C'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((2, 2), 'A'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((4, 2), 'B'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((6, 2), 'B'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((6, 1), 'C'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((8, 2), 'D'), state), False)
-    self.assertEqual(ForeignersOccupyHome(((9, 0), 'A'), state), True)
-    self.assertEqual(ForeignersOccupyHome(((8, 1), 'A'), state), False)
+    s = State(lines=lines)
+    self.assertEqual(s.ForeignersOccupyHome(((1, 0), 'D')), True)
+    self.assertEqual(s.ForeignersOccupyHome(((2, 1), 'C')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((2, 2), 'A')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((4, 2), 'B')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((6, 2), 'B')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((6, 1), 'C')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((8, 2), 'D')), False)
+    self.assertEqual(s.ForeignersOccupyHome(((9, 0), 'A')), True)
+    self.assertEqual(s.ForeignersOccupyHome(((8, 1), 'A')), False)
 
   def testBlockedInTrench(self):
     """Test BlockedInTrench"""
@@ -89,16 +98,16 @@ class TestProg202123(unittest.TestCase):
                #A#B#B#D#
                #########'''
     lines = dedent(state2).split('\n')
-    state = LinesToState(lines)
-    self.assertEqual(BlockedInTrench(((1, 0), 'D'), state), False)
-    self.assertEqual(BlockedInTrench(((2, 1), 'C'), state), False)
-    self.assertEqual(BlockedInTrench(((2, 2), 'A'), state), True)
-    self.assertEqual(BlockedInTrench(((4, 2), 'B'), state), False)
-    self.assertEqual(BlockedInTrench(((6, 2), 'B'), state), True)
-    self.assertEqual(BlockedInTrench(((6, 1), 'C'), state), False)
-    self.assertEqual(BlockedInTrench(((8, 2), 'D'), state), True)
-    self.assertEqual(BlockedInTrench(((9, 0), 'A'), state), False)
-    self.assertEqual(BlockedInTrench(((8, 1), 'D'), state), False)
+    s = State(lines=lines)
+    self.assertEqual(s.BlockedInTrench(((1, 0), 'D')), False)
+    self.assertEqual(s.BlockedInTrench(((2, 1), 'C')), False)
+    self.assertEqual(s.BlockedInTrench(((2, 2), 'A')), True)
+    self.assertEqual(s.BlockedInTrench(((4, 2), 'B')), False)
+    self.assertEqual(s.BlockedInTrench(((6, 2), 'B')), True)
+    self.assertEqual(s.BlockedInTrench(((6, 1), 'C')), False)
+    self.assertEqual(s.BlockedInTrench(((8, 2), 'D')), True)
+    self.assertEqual(s.BlockedInTrench(((9, 0), 'A')), False)
+    self.assertEqual(s.BlockedInTrench(((8, 1), 'D')), False)
 
   def testGetOccupiedDict(self):
     """Test GetOccupiedDict"""
@@ -109,7 +118,7 @@ class TestProg202123(unittest.TestCase):
                #A#B#B#D#
                #########'''
     lines = dedent(state2).split('\n')
-    state = LinesToState(lines)
+    s = State(lines=lines)
     expected = {(1, 0): 'D',
                 (2, 1): 'C',
                 (2, 2): 'A',
@@ -120,7 +129,7 @@ class TestProg202123(unittest.TestCase):
                 (8, 1): 'D',
                 (9, 0): 'A',
                }
-    actual = GetOccupiedDict(state)
+    actual = s.occupied
     self.assertEqual(actual, expected)
 
   def testNumbersBetween(self):
@@ -142,16 +151,16 @@ class TestProg202123(unittest.TestCase):
                #A#B#B#D#
                #########'''
     lines = dedent(state3).split('\n')
-    state = LinesToState(lines)
-    self.assertEqual(BlockedOutside(((1, 0), 'D'), state), True)
-    self.assertEqual(BlockedOutside(((3, 0), 'C'), state), False)
-    self.assertEqual(BlockedOutside(((2, 2), 'A'), state), False)
-    self.assertEqual(BlockedOutside(((4, 2), 'B'), state), False)
-    self.assertEqual(BlockedOutside(((6, 2), 'B'), state), False)
-    self.assertEqual(BlockedOutside(((6, 1), 'C'), state), False)
-    self.assertEqual(BlockedOutside(((8, 2), 'D'), state), False)
-    self.assertEqual(BlockedOutside(((9, 0), 'A'), state), True)
-    self.assertEqual(BlockedOutside(((8, 1), 'D'), state), False)
+    s = State(lines=lines)
+    self.assertEqual(s.BlockedOutside(((1, 0), 'D')), True)
+    self.assertEqual(s.BlockedOutside(((3, 0), 'C')), False)
+    self.assertEqual(s.BlockedOutside(((2, 2), 'A')), False)
+    self.assertEqual(s.BlockedOutside(((4, 2), 'B')), False)
+    self.assertEqual(s.BlockedOutside(((6, 2), 'B')), False)
+    self.assertEqual(s.BlockedOutside(((6, 1), 'C')), False)
+    self.assertEqual(s.BlockedOutside(((8, 2), 'D')), False)
+    self.assertEqual(s.BlockedOutside(((9, 0), 'A')), True)
+    self.assertEqual(s.BlockedOutside(((8, 1), 'D')), False)
 
   def testPodInTrench(self):
     """Test PodInTrench"""
@@ -174,15 +183,15 @@ class TestProg202123(unittest.TestCase):
               #A#B#B#D#
               #########'''
     lines = dedent(state).split('\n')
-    state = LinesToState(lines)
-    self.assertEqual(NextStatesForPod(((2, 2), 'A'), state), {})
-    self.assertEqual(NextStatesForPod(((1, 0), 'D'), state), {})
-    self.assertEqual(NextStatesForPod(((9, 0), 'A'), state), {})
-    self.assertEqual(NextStatesForPod(((8, 2), 'D'), state), {})
-    self.assertEqual(NextStatesForPod(((4, 2), 'B'), state), {})
-    self.assertEqual(NextStatesForPod(((3, 0), 'C'), state), {})
+    s = State(lines=lines)
+    self.assertEqual(s.NextStatesForPod(((2, 2), 'A')), {})
+    self.assertEqual(s.NextStatesForPod(((1, 0), 'D')), {})
+    self.assertEqual(s.NextStatesForPod(((9, 0), 'A')), {})
+    self.assertEqual(s.NextStatesForPod(((8, 2), 'D')), {})
+    self.assertEqual(s.NextStatesForPod(((4, 2), 'B')), {})
+    self.assertEqual(s.NextStatesForPod(((3, 0), 'C')), {})
 
-    new_states = NextStatesForPod(((4, 1), 'C'), state)
+    new_states = s.NextStatesForPod(((4, 1), 'C'))
     self.assertEqual(len(new_states), 2)
     state_1 = '''\
               #############
@@ -196,14 +205,29 @@ class TestProg202123(unittest.TestCase):
               ###.#.#.#.###
                 #A#B#B#D#
                 #########'''
-    state_next_1 = LinesToState(dedent(state_1).split('\n'))
-    self.assertTrue(frozenset(state_next_1) in new_states)
-    state_next_2 = LinesToState(dedent(state_2).split('\n'))
-    self.assertTrue(frozenset(state_next_2) in new_states)
+    state_next_1 = State(lines=dedent(state_1).split('\n'))
+    self.assertTrue(state_next_1 in new_states)
+    state_next_2 = State(lines=dedent(state_2).split('\n'))
+    self.assertTrue(state_next_2 in new_states)
 
-    new_states = NextStatesForPod(((6, 2), 'B'), state)
+    new_states = s.NextStatesForPod(((6, 2), 'B'))
     self.assertEqual(len(new_states), 2)
-
+    state_1 = '''\
+              #############
+              #.D.C...B.A.#
+              ###.#C#.#.###
+                #A#B#.#D#
+                #########'''
+    state_2 = '''\
+              #############
+              #.D.C.B...A.#
+              ###.#C#.#.###
+                #A#B#.#D#
+                #########'''
+    state_next_1 = State(lines=dedent(state_1).split('\n'))
+    self.assertTrue(state_next_1 in new_states)
+    state_next_2 = State(lines=dedent(state_2).split('\n'))
+    self.assertTrue(state_next_2 in new_states)
 
   def testGoHome(self):
     """Test GoHome"""
@@ -214,13 +238,14 @@ class TestProg202123(unittest.TestCase):
               #A#B#.#D#
               #########'''
     lines = dedent(state).split('\n')
-    state = LinesToState(lines)
-    ret_dict = GoHome(((3, 0), 'C'), state, depth=3)
+    s = State(lines=lines)
+    ret_dict = s.GoHome(((3, 0), 'C'))
+
     self.assertEqual(len(ret_dict), 1)
     new_state = list(ret_dict.keys())[0]
     # print(new_state)
-    self.assertTrue(((6, 2), 'C') in new_state)
-    next_dict_for_pod = NextStatesForPod(((3, 0), 'C'), state)
+    self.assertTrue(((6, 2), 'C') in new_state.state)
+    next_dict_for_pod = s.NextStatesForPod(((3, 0), 'C'))
     next_state_for_pod = list(next_dict_for_pod.keys())[0]
     self.assertEqual(new_state, next_state_for_pod)
 
@@ -232,10 +257,9 @@ class TestProg202123(unittest.TestCase):
             ###A#B#C#D###
               #A#B#C#D#
               #########'''
-    lines = dedent(state).split('\n')
-    state = LinesToState(lines)
+    s = State(lines=dedent(state).split('\n'))
     pod = ((2, 1), 'A')
-    free = FreeColumns(pod, state)
+    free = s.FreeColumns(pod)
     self.assertEqual(free, {0, 1, 3, 5, 7, 9, 10, 11})
 
     state = '''\
@@ -244,10 +268,9 @@ class TestProg202123(unittest.TestCase):
             ###.#B#.#D###
               #A#B#C#D#
               #########'''
-    lines = dedent(state).split('\n')
-    state = LinesToState(lines)
+    s = State(lines=dedent(state).split('\n'))
     pod = ((4, 1), 'B')
-    free = FreeColumns(pod, state)
+    free = s.FreeColumns(pod)
     self.assertEqual(free, set({3, 5}))
 
     state = '''\
@@ -256,14 +279,13 @@ class TestProg202123(unittest.TestCase):
             ###.#B#.#D###
               #A#B#C#D#
               #########'''
-    lines = dedent(state).split('\n')
-    state = LinesToState(lines)
+    s = State(lines=dedent(state).split('\n'))
     pod = ((4, 1), 'B')
-    free = FreeColumns(pod, state)
+    free = s.FreeColumns(pod)
     self.assertEqual(free, set({}))
 
   def testLinesToState(self):
-    """Test LinesToState and StateToLines"""
+    """Test conversion from State to lines and back."""
     state_lines = '''\
                   #############
                   #...A.C.....#
@@ -271,11 +293,12 @@ class TestProg202123(unittest.TestCase):
                     #A#B#C#D#
                     #########'''
     lines1 = dedent(state_lines).split('\n')
-    state1 = LinesToState(lines1)
-    lines2 = StateToLines(state1)
-    state2 = LinesToState(lines2)
+    s1 = State(lines=lines1)
+    lines2 = s1.SelfToLines()
+    s2 = State(lines=lines2)
     self.assertEqual(lines1, lines2)
-    self.assertEqual(state1, state2)
+    self.assertEqual(s1, s2)
+    assert s1 is not s2
 
   def testAllNextStates(self):
     """Test AllNextStates"""
@@ -286,11 +309,8 @@ class TestProg202123(unittest.TestCase):
                     #A#B#C#D#
                     #########'''
     lines = dedent(state_lines).split('\n')
-    state = LinesToState(lines)
-    # print('original:')
-    # PrintLines(lines)
-    # print('next states:')
-    next_states = AllNextStates(state)
+    s = State(lines)
+    next_states = s.AllNextStates()
     self.assertEqual(len(next_states), 1)
     expected = {((2, 1), 'A'),
                 ((2, 2), 'A'),
@@ -301,7 +321,7 @@ class TestProg202123(unittest.TestCase):
                 ((8, 1), 'D'),
                 ((8, 2), 'D'),
                }
-    self.assertEqual(list(next_states.keys())[0], expected)
+    self.assertEqual(list(next_states.keys())[0].state, expected)
 
 
 if __name__ == '__main__':
