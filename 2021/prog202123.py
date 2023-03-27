@@ -6,6 +6,7 @@
 # Top row is goes from (0,0) to (0,WIDTH-3) aka (0,10)
 # Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
 
+from heapq import heappush, heappop
 
 DATA = 'data202123.txt'
 #DATA = 'testdata202123.txt'
@@ -79,6 +80,10 @@ class State():
   def __eq__(self, other):
     return self.state == other.state
 
+  def __lt__(self, other):
+    """There's no way to sort these."""
+    return False
+
   def GetOccupiedDict(self):
     """Given a state, return a dict keyed on coordinates."""
     my_dict = {}
@@ -90,8 +95,8 @@ class State():
     """Verify output."""
     lines = self.SelfToLines()
     print('\n'.join(lines))
-    print(f'depth: {self.depth}')
-    print(f'width: {self.width}')
+    # print(f'depth: {self.depth}')
+    # print(f'width: {self.width}')
 
   def SelfToLines(self):
     """converts set of tuples to printable list of lines."""
@@ -333,11 +338,46 @@ class State():
     return False
 
 
+def GenCostDict(start_state, target_state):
+  """Use shortest path algorithm to generate a dictionary of lowest cost to get
+     to each state, and keep updating this dictionary until all the nodes have
+     been visited. This may or may not be Dijkstras algorithm.
+  """
+  cost_dict = {start_state: 0,}
+  priority_q = [(0, start_state),]
+  visited = set([])
+
+  while priority_q:
+    current_val, this_state = heappop(priority_q)
+    if this_state in visited:
+      continue
+    visited.add(this_state)
+    next_states_dict = {k:v for k, v in this_state.AllNextStates().items()
+                        if k not in visited}
+    for state, cost in next_states_dict.items():
+      new_cost = current_val + cost
+      if state in cost_dict and new_cost < cost_dict[state]:
+        cost_dict[state] = new_cost
+      elif state not in cost_dict:
+        cost_dict[state] = new_cost
+      else: # previous cost to that state was lower than current cost
+        pass
+      heappush(priority_q, (new_cost, state))
+  print(f'visited {len(visited)} nodes')
+  return cost_dict
+
+
 def main():
   """main"""
   lines = GetData(DATA)
-  s = State(lines=lines)
+  s = State(lines)
   s.PrintSelf()
+  next_states = s.AllNextStates()
+  for n, cost in next_states.items():
+    print(f'\ncost: {cost}')
+    n.PrintSelf()
+
+  print(f'number of next states: {len(next_states)}')
 
 
 if __name__ == '__main__':

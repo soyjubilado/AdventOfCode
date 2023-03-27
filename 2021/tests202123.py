@@ -3,13 +3,7 @@
 
 import unittest
 from textwrap import dedent
-from prog202123 import State, NumbersBetween, PodInTrench
-# from prog202123 import LinesToState, AlreadyHome, ForeignersOccupyHome
-# from prog202123 import BlockedInTrench, GetOccupiedDict, NumbersBetween
-# from prog202123 import BlockedOutside, PodInTrench, NextStatesForPod
-# from prog202123 import GoHome, FreeColumns, AllNextStates
-# from prog202123 import StateToLines, PrintLines
-# from prog202123 import Unimplemented
+from prog202123 import State, NumbersBetween, PodInTrench, GenCostDict
 
 
 class UnitTestFailure(Exception):
@@ -332,6 +326,94 @@ class TestProg202123(unittest.TestCase):
     s = State(dedent(state_lines).split('\n'))
     next_states = s.NextStatesForPod(((6,1), 'A'))
     self.assertEqual(len(next_states), 7)
+
+  def testGenCostDict(self):
+    state_lines = '''\
+                  #############
+                  #...........#
+                  ###B#C#B#D###
+                    #A#D#C#A#
+                    #########'''
+    lines = dedent(state_lines).split('\n')
+    s = State(lines)
+
+    target_lines =  '''\
+                    #############
+                    #...B.......#
+                    ###B#C#.#D###
+                      #A#D#C#A#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    t = State(lines)
+    cost_dict = GenCostDict(s, t)
+    self.assertEqual(cost_dict[t], 40)
+
+    target_lines =  '''\
+                    #############
+                    #...B.......#
+                    ###B#.#C#D###
+                      #A#D#C#A#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    u = State(lines)
+    cost_dict = GenCostDict(t, u)
+    self.assertEqual(cost_dict[u], 400)
+
+    target_lines =  '''\
+                    #############
+                    #.....D.....#
+                    ###B#.#C#D###
+                      #A#B#C#A#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    v = State(lines)
+    cost_dict = GenCostDict(u, v)
+    self.assertEqual(cost_dict[v], 3030)
+
+    target_lines =  '''\
+                    #############
+                    #...B.D.....#
+                    ###.#.#C#D###
+                      #A#B#C#A#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    w = State(lines)
+    cost_dict = GenCostDict(v, w)
+    self.assertEqual(cost_dict[w], 20)
+
+    target_lines =  '''\
+                    #############
+                    #.....D.....#
+                    ###.#B#C#D###
+                      #A#B#C#A#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    x = State(lines)
+    cost_dict = GenCostDict(w, x)
+    self.assertEqual(cost_dict[x], 20)
+
+    cost_dict = GenCostDict(v, x)
+    self.assertEqual(cost_dict[x], 40)
+
+    state_lines = '''\
+                  #############
+                  #...........#
+                  ###B#C#B#D###
+                    #A#D#C#A#
+                    #########'''
+    lines = dedent(state_lines).split('\n')
+    a = State(lines)
+
+    target_lines =  '''\
+                    #############
+                    #...........#
+                    ###A#B#C#D###
+                      #A#B#C#D#
+                      #########'''
+    lines = dedent(target_lines).split('\n')
+    b = State(lines)
+    cost_dict = GenCostDict(a, b)
+    self.assertEqual(cost_dict[b], 12521)
 
 
 if __name__ == '__main__':
