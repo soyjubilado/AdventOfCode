@@ -349,39 +349,45 @@ def GenCostDict(start_state, target_state, return_path=False):
   return cost_dict
 
 
-def Part1(lines):
-  """Solve Part 1 and return the answer."""
-  start_state = State(lines)
-  target_lines = '''\
-                 #############
-                 #...........#
-                 ###A#B#C#D###
-                   #A#B#C#D#
-                   #########'''
-  target_state = State(dedent(target_lines).split('\n'))
-  start_state.PrintSelf()
-  target_state.PrintSelf()
-  cost_dict, path_dict = GenCostDict(start_state, target_state,
-                                     return_path=True)
-  return cost_dict[target_state], path_dict
+def TargetState(part):
+  """Return target state for 'Part 1' or 'Part 2'"""
+  if part == 'Part 1':
+    target_lines = '''\
+                   #############
+                   #...........#
+                   ###A#B#C#D###
+                     #A#B#C#D#
+                     #########'''
+  elif part == 'Part 2':
+    target_lines = '''\
+                   #############
+                   #...........#
+                   ###A#B#C#D###
+                     #A#B#C#D#
+                     #A#B#C#D#
+                     #A#B#C#D#
+                     #########'''
+  else:
+    raise Unimplemented
+  return State(dedent(target_lines).split('\n'))
 
 
-def Part2(lines):
-  """Solve part 2."""
+def StartState(lines, part):
+  if part == 'Part 1':
+    return State(lines)
+  elif part != 'Part 2':
+    raise Unimplemented
+
   new_lines = lines[:3]
   new_lines.extend(["  #D#C#B#A#", "  #D#B#A#C#",])
   new_lines.extend(lines[3:])
-  start_state = State(new_lines)
+  return State(new_lines)
 
-  target_lines = '''\
-                 #############
-                 #...........#
-                 ###A#B#C#D###
-                   #A#B#C#D#
-                   #A#B#C#D#
-                   #A#B#C#D#
-                   #########'''
-  target_state = State(dedent(target_lines).split('\n'))
+
+def Solve(lines, part):
+  """Solve Part 1 and return the answer."""
+  target_state = TargetState(part)
+  start_state = StartState(lines, part)
   start_state.PrintSelf()
   target_state.PrintSelf()
   cost_dict, path_dict = GenCostDict(start_state, target_state,
@@ -395,12 +401,9 @@ def main():
   parser.add_argument('-2', '--part2', help='solve part 2', action='store_true')
   args = parser.parse_args()
   lines = GetData(DATA)
-  if args.part2:
-    cost, path_dict = Part2(lines)
-    print(f'Part 2: {cost}')
-  else:
-    cost, path_dict = Part1(lines)
-    print(f'Part 1: {cost}')
+  part = 'Part 2' if args.part2 else 'Part 1'
+  cost, path_dict = Solve(lines, part)
+  print(f'{part}: {cost}')
 
 
 if __name__ == '__main__':
