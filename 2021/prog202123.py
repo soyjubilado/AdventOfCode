@@ -7,12 +7,14 @@
 # Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
 
 import argparse
+import subprocess
+import time
 from heapq import heappush, heappop
 from textwrap import dedent
 
+
 DATA = 'data202123.txt'
 # DATA = 'testdata202123.txt'
-
 WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
 NO_STOPPING = set(HOME_COL.values())
@@ -373,9 +375,10 @@ def TargetState(part):
 
 
 def StartState(lines, part):
+  """Given lines and 'Part 1' or 'Part 2' return the start state."""
   if part == 'Part 1':
     return State(lines)
-  elif part != 'Part 2':
+  if part != 'Part 2':
     raise Unimplemented
 
   new_lines = lines[:3]
@@ -384,25 +387,104 @@ def StartState(lines, part):
   return State(new_lines)
 
 
-def Solve(lines, part):
+def Solve(lines, part, verbose=True):
   """Solve Part 1 and return the answer."""
   target_state = TargetState(part)
   start_state = StartState(lines, part)
-  start_state.PrintSelf()
-  target_state.PrintSelf()
+  if verbose:
+    start_state.PrintSelf()
+    target_state.PrintSelf()
   cost_dict, path_dict = GenCostDict(start_state, target_state,
                                      return_path=True)
   return cost_dict[target_state], path_dict
+
+
+def BetweenStates(start_state, end_state):
+  """Given two states, return a set of all the in-between states."""
+  states = []
+  start_pod = [i for i in start_state.state if not i in end_state.state][0]
+  end_pod = [i for i in end_state.state if not i in start_state.state][0]
+  state_sans_pod = set(start_state.state)
+  state_sans_pod.remove(start_pod)
+  pod_type = start_pod[1]
+  start_x, start_y = start_pod[0]
+  end_x, end_y = end_pod[0]
+  if start_y == 0:
+    if start_x < end_x:
+      for x in range(start_x + 1, end_x):
+        tuple_set = state_sans_pod.copy()
+        tuple_set.add(((x, 0), pod_type))
+        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    else:
+      for x in range(start_x - 1, end_x, -1):
+        tuple_set = state_sans_pod.copy()
+        tuple_set.add(((x, 0), pod_type))
+        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    for y in range(0, end_y):
+      tuple_set = state_sans_pod.copy()
+      tuple_set.add(((end_x, y), pod_type))
+      states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+  else:
+    for y in range(start_y, 0, -1):
+      tuple_set = state_sans_pod.copy()
+      tuple_set.add(((start_x, y), pod_type))
+      states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    if start_x < end_x:
+      for x in range(start_x, end_x):
+        tuple_set = state_sans_pod.copy()
+        tuple_set.add(((x, 0), pod_type))
+        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    else:
+      for x in range(start_x, end_x, -1):
+        tuple_set = state_sans_pod.copy()
+        tuple_set.add(((x, 0), pod_type))
+        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+  return states
+
+
+def FilledStates(all_states):
+  """Given a list of states, fill in the in-between states."""
+  filled_states = []
+  for i, s in enumerate(all_states[:-1]):
+    filled_states.append(s)
+    filled_states.extend(BetweenStates(s, all_states[i+1]))
+  filled_states.append(all_states[-1])
+  return filled_states
+
+
+def Animate(path_dict, lines, part):
+  """Animate the organizing of the amphipods."""
+  start_state = StartState(lines, part)
+  target_state = TargetState(part)
+  current_state = target_state
+  all_states = []
+  while current_state != start_state:
+    all_states.append(current_state)
+    current_state = path_dict[current_state]
+  all_states.append(start_state)
+  all_states.reverse()
+  filled_states = FilledStates(all_states)
+  subprocess.call('clear')
+  for s in filled_states:
+    print(f'\033[1;1f', end='')
+    s.PrintSelf()
+    time.sleep(.1)
 
 
 def main():
   """main"""
   parser = argparse.ArgumentParser()
   parser.add_argument('-2', '--part2', help='solve part 2', action='store_true')
+  parser.add_argument('-a', '--animate', help='animate', action='store_true')
   args = parser.parse_args()
   lines = GetData(DATA)
   part = 'Part 2' if args.part2 else 'Part 1'
-  cost, path_dict = Solve(lines, part)
+  verbosity = not args.animate
+  cost, path_dict = Solve(lines, part, verbose=verbosity)
+  if args.animate:
+    print(f'\0330;0[F', end='')
+    Animate(path_dict, lines, part)
+
   print(f'{part}: {cost}')
 
 
