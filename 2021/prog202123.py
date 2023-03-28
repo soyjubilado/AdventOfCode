@@ -12,8 +12,6 @@ from textwrap import dedent
 DATA = 'data202123.txt'
 # DATA = 'testdata202123.txt'
 
-# DEPTH is the number of rows
-DEPTH = 3
 WIDTH = 13
 HOME_COL = {'A': 2, 'B': 4, 'C': 6, 'D': 8}
 NO_STOPPING = set(HOME_COL.values())
@@ -64,14 +62,16 @@ def LinesToTupleSet(lines):
 
 class State():
   """Class to define a state, defined by pod locations."""
-  def __init__(self, lines=None, tuple_set=None):
+  def __init__(self, lines=None, tuple_set=None, depth=None):
 
     if not tuple_set:
       self.state = LinesToTupleSet(lines)
       self.depth = len(lines) - 2
+    elif not depth:
+      raise Unimplemented
     else:
       self.state = frozenset(tuple_set)
-      self.depth = DEPTH
+      self.depth = depth
     self.width = WIDTH
     self.occupied = self.GetOccupiedDict()
 
@@ -92,12 +92,13 @@ class State():
       my_dict[coord] = pod
     return my_dict
 
-  def PrintSelf(self):
+  def PrintSelf(self, verbose=False):
     """Verify output."""
     lines = self.SelfToLines()
     print('\n'.join(lines))
-    # print(f'depth: {self.depth}')
-    # print(f'width: {self.width}')
+    if verbose:
+      print(f'depth: {self.depth}')
+      print(f'width: {self.width}')
 
   def SelfToLines(self):
     """converts set of tuples to printable list of lines."""
@@ -145,8 +146,6 @@ class State():
     """
     Args:
       pod: a single tuple, one of the ones in state
-      state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-      depth: number of rows of possible positions
 
     Returns:
       a dictionary of states: {next_state: cost}
@@ -190,7 +189,7 @@ class State():
       new_state_set.add(((c, 0), pod_type))
       distance = pod_row + abs(pod_col - c)
       cost = distance * COST_MULTIPLIER[pod_type]
-      answer_dict[State(tuple_set=new_state_set)] = cost
+      answer_dict[State(tuple_set=new_state_set, depth=self.depth)] = cost
     return answer_dict
 
   def GoHome(self, pod):
@@ -218,10 +217,10 @@ class State():
     new_state_tuple_set = set(self.state.copy())
     new_state_tuple_set.remove(pod)
     new_state_tuple_set.add(((home_column, target_y), pod_type))
-    return {State(tuple_set=new_state_tuple_set): cost}
+    return {State(tuple_set=new_state_tuple_set, depth=self.depth): cost}
 
   def FreeColumns(self, pod):
-    """Given a pod *in a trench* and a state, list all the columns on the top
+    """Given a pod *in a trench*, list all the columns on the top
        row that are a possible landing site."""
     state = self.state
     width = self.width
@@ -243,14 +242,8 @@ class State():
     return answers
 
   def BlockedInTrench(self, pod):
-    """
-    Args:
-      pod: a single tuple, one of the ones in state
-
-    Returns:
-      boolean: True if the pod is in a trench but can't move because someone
-               is in the same trench above him.
-    """
+    """True if the pod is in a trench but can't move because someone
+       is in the same trench above him."""
     state = self.state
     assert pod in state
     location, _ = pod
@@ -263,17 +256,8 @@ class State():
     return False
 
   def BlockedOutside(self, pod):
-    """
-    Args:
-      pod: a single tuple, one of the ones in state
-      state: set of tuples {((1,2), 'A'), ((2,2), 'B'), ...}
-
-    Returns:
-      boolean: True if the pod is not in trench and someone is between
-               him and his home trench.
-
-    Status of this function: untested
-    """
+    """True if the pod is not in trench and someone is between
+       him and his home trench."""
     state = self.state
     assert pod in state
     location, pod_type = pod
@@ -288,13 +272,7 @@ class State():
     return False
 
   def AlreadyHome(self, pod):
-    """
-    Args:
-      pod: a single tuple, one of the ones in state
-
-    Returns:
-      boolean: True if the pod is already home and no foreign pods are below.
-    """
+    """True if the pod is already home and no foreign pods are below."""
     state = self.state
     depth = self.depth
     assert pod in state
@@ -314,16 +292,10 @@ class State():
     return True
 
   def ForeignersOccupyHome(self, pod):
-    """
-    Args:
-      pod: a single tuple, one of the ones in state
-
-    Returns:
-      True if this pod is on the top line, AND there are foreign pods in the
-      home trench. That is, they are blocked from going home. If they are in
-      any trench, return False becaue they are not being blocked in this
-      manner.
-    """
+    """True if this pod is on the top line, AND there are foreign pods in the
+       home trench. That is, they are blocked from going home. If they are in
+       any trench, return False becaue they are not being blocked in this
+       manner."""
     state = self.state
     assert pod in state
     location, pod_type = pod
@@ -342,7 +314,9 @@ class State():
 def GenCostDict(start_state, target_state):
   """Use shortest path algorithm to generate a dictionary of lowest cost to get
      to each state, and keep updating this dictionary until all the nodes have
-     been visited. This may or may not be Dijkstras algorithm.
+     been visited. This currently does not stop even after the target state
+     has been visited, but it should be able be stopped after all the neighbors
+     of that state have been visited.
   """
   cost_dict = {start_state: 0,}
   priority_q = [(0, start_state),]
@@ -371,12 +345,33 @@ def GenCostDict(start_state, target_state):
 def Part1(lines):
   """Solve Part 1 and return the answer."""
   start_state = State(lines)
-  target_lines =  '''\
-                  #############
-                  #...........#
-                  ###A#B#C#D###
-                    #A#B#C#D#
-                    #########'''
+  target_lines = '''\
+                 #############
+                 #...........#
+                 ###A#B#C#D###
+                   #A#B#C#D#
+                   #########'''
+  target_state = State(dedent(target_lines).split('\n'))
+  start_state.PrintSelf()
+  target_state.PrintSelf()
+  cost_dict = GenCostDict(start_state, target_state)
+  return cost_dict[target_state]
+
+def Part2(lines):
+  """Solve part 2."""
+  new_lines = lines[:3]
+  new_lines.extend(["  #D#C#B#A#", "  #D#B#A#C#",])
+  new_lines.extend(lines[3:])
+  start_state = State(new_lines)
+
+  target_lines = '''\
+                 #############
+                 #...........#
+                 ###A#B#C#D###
+                   #A#B#C#D#
+                   #A#B#C#D#
+                   #A#B#C#D#
+                   #########'''
   target_state = State(dedent(target_lines).split('\n'))
   start_state.PrintSelf()
   target_state.PrintSelf()
@@ -388,6 +383,7 @@ def main():
   """main"""
   lines = GetData(DATA)
   print(f'Part 1: {Part1(lines)}')
+  print(f'Part 2: {Part2(lines)}')
 
 
 if __name__ == '__main__':
