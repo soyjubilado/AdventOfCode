@@ -7,9 +7,10 @@
 # Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
 
 from heapq import heappush, heappop
+from textwrap import dedent
 
 DATA = 'data202123.txt'
-#DATA = 'testdata202123.txt'
+# DATA = 'testdata202123.txt'
 
 # DEPTH is the number of rows
 DEPTH = 3
@@ -367,17 +368,26 @@ def GenCostDict(start_state, target_state):
   return cost_dict
 
 
+def Part1(lines):
+  """Solve Part 1 and return the answer."""
+  start_state = State(lines)
+  target_lines =  '''\
+                  #############
+                  #...........#
+                  ###A#B#C#D###
+                    #A#B#C#D#
+                    #########'''
+  target_state = State(dedent(target_lines).split('\n'))
+  start_state.PrintSelf()
+  target_state.PrintSelf()
+  cost_dict = GenCostDict(start_state, target_state)
+  return cost_dict[target_state]
+
+
 def main():
   """main"""
   lines = GetData(DATA)
-  s = State(lines)
-  s.PrintSelf()
-  next_states = s.AllNextStates()
-  for n, cost in next_states.items():
-    print(f'\ncost: {cost}')
-    n.PrintSelf()
-
-  print(f'number of next states: {len(next_states)}')
+  print(f'Part 1: {Part1(lines)}')
 
 
 if __name__ == '__main__':
