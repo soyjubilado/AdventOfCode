@@ -345,7 +345,7 @@ def GenCostDict(start_state, target_state, return_path=False):
       else: # previous cost to that state was lower than current cost
         pass
       heappush(priority_q, (new_cost, state))
-  print(f'visited {len(visited)} nodes')
+  # print(f'visited {len(visited)} nodes')
   if return_path:
     return cost_dict, path_dict
   return cost_dict
@@ -387,13 +387,10 @@ def StartState(lines, part):
   return State(new_lines)
 
 
-def Solve(lines, part, verbose=True):
+def Solve(lines, part):
   """Solve Part 1 and return the answer."""
   target_state = TargetState(part)
   start_state = StartState(lines, part)
-  if verbose:
-    start_state.PrintSelf()
-    target_state.PrintSelf()
   cost_dict, path_dict = GenCostDict(start_state, target_state,
                                      return_path=True)
   return cost_dict[target_state], path_dict
@@ -464,7 +461,6 @@ def Animate(path_dict, lines, part):
   all_states.append(start_state)
   all_states.reverse()
   filled_states = FilledStates(all_states)
-  subprocess.call('clear')
   for s in filled_states:
     print(f'\033[1;1f', end='')
     s.PrintSelf()
@@ -479,10 +475,16 @@ def main():
   args = parser.parse_args()
   lines = GetData(DATA)
   part = 'Part 2' if args.part2 else 'Part 1'
-  verbosity = not args.animate
-  cost, path_dict = Solve(lines, part, verbose=verbosity)
+
   if args.animate:
-    print(f'\0330;0[F', end='')
+    subprocess.call('clear')
+    print(f'\033[1;1f', end='')
+
+  start_state = StartState(lines, part)
+  start_state.PrintSelf()
+  cost, path_dict = Solve(lines, part)
+
+  if args.animate:
     Animate(path_dict, lines, part)
 
   print(f'{part}: {cost}')
