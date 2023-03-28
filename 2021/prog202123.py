@@ -406,36 +406,31 @@ def BetweenStates(start_state, end_state):
   pod_type = start_pod[1]
   start_x, start_y = start_pod[0]
   end_x, end_y = end_pod[0]
+  range_step = 1 if start_x < end_x else -1
   if start_y == 0:
-    if start_x < end_x:
-      for x in range(start_x + 1, end_x):
-        tuple_set = state_sans_pod.copy()
-        tuple_set.add(((x, 0), pod_type))
-        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
-    else:
-      for x in range(start_x - 1, end_x, -1):
-        tuple_set = state_sans_pod.copy()
-        tuple_set.add(((x, 0), pod_type))
-        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    # do horizontal first
+    for x in range(start_x, end_x, range_step):
+      tuple_set = state_sans_pod.copy()
+      tuple_set.add(((x, 0), pod_type))
+      states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+
+    # do vertical part second
     for y in range(0, end_y):
       tuple_set = state_sans_pod.copy()
       tuple_set.add(((end_x, y), pod_type))
       states.append(State(tuple_set=tuple_set, depth=start_state.depth))
   else:
+    # do vertical part first
     for y in range(start_y, 0, -1):
       tuple_set = state_sans_pod.copy()
       tuple_set.add(((start_x, y), pod_type))
       states.append(State(tuple_set=tuple_set, depth=start_state.depth))
-    if start_x < end_x:
-      for x in range(start_x, end_x):
-        tuple_set = state_sans_pod.copy()
-        tuple_set.add(((x, 0), pod_type))
-        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
-    else:
-      for x in range(start_x, end_x, -1):
-        tuple_set = state_sans_pod.copy()
-        tuple_set.add(((x, 0), pod_type))
-        states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+    # horizontal part second
+    for x in range(start_x, end_x, range_step):
+      tuple_set = state_sans_pod.copy()
+      tuple_set.add(((x, 0), pod_type))
+      states.append(State(tuple_set=tuple_set, depth=start_state.depth))
+
   return states
 
 
