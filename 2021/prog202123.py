@@ -313,20 +313,21 @@ class State():
 
 def GenCostDict(start_state, target_state):
   """Use shortest path algorithm to generate a dictionary of lowest cost to get
-     to each state, and keep updating this dictionary until all the nodes have
-     been visited. This currently does not stop even after the target state
-     has been visited, but it should be able be stopped after all the neighbors
-     of that state have been visited.
+     to each state, and keep updating this dictionary until all the nodes
+     surrounding the target have been visited.
   """
   cost_dict = {start_state: 0,}
   priority_q = [(0, start_state),]
   visited = set([])
+  unvisited_target_neighbors = set(target_state.AllNextStates().keys())
 
-  while priority_q:
+  while target_state not in visited or unvisited_target_neighbors:
     current_val, this_state = heappop(priority_q)
     if this_state in visited:
       continue
     visited.add(this_state)
+    if this_state in unvisited_target_neighbors:
+      unvisited_target_neighbors.remove(this_state)
     next_states_dict = {k:v for k, v in this_state.AllNextStates().items()
                         if k not in visited}
     for state, cost in next_states_dict.items():
