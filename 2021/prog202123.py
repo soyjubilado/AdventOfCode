@@ -6,6 +6,7 @@
 # Top row is goes from (0,0) to (0,WIDTH-3) aka (0,10)
 # Columns are 2, 4, 6, 8, and go from 0 to DEPTH-1.
 
+import argparse
 from heapq import heappush, heappop
 from textwrap import dedent
 
@@ -311,7 +312,7 @@ class State():
     return False
 
 
-def GenCostDict(start_state, target_state):
+def GenCostDict(start_state, target_state, return_path=False):
   """Use shortest path algorithm to generate a dictionary of lowest cost to get
      to each state, and keep updating this dictionary until all the nodes
      surrounding the target have been visited.
@@ -320,6 +321,7 @@ def GenCostDict(start_state, target_state):
   priority_q = [(0, start_state),]
   visited = set([])
   unvisited_target_neighbors = set(target_state.AllNextStates().keys())
+  path_dict = {}
 
   while target_state not in visited or unvisited_target_neighbors:
     current_val, this_state = heappop(priority_q)
@@ -334,12 +336,16 @@ def GenCostDict(start_state, target_state):
       new_cost = current_val + cost
       if state in cost_dict and new_cost < cost_dict[state]:
         cost_dict[state] = new_cost
+        path_dict[state] = this_state
       elif state not in cost_dict:
         cost_dict[state] = new_cost
+        path_dict[state] = this_state
       else: # previous cost to that state was lower than current cost
         pass
       heappush(priority_q, (new_cost, state))
   print(f'visited {len(visited)} nodes')
+  if return_path:
+    return cost_dict, path_dict
   return cost_dict
 
 
@@ -355,8 +361,10 @@ def Part1(lines):
   target_state = State(dedent(target_lines).split('\n'))
   start_state.PrintSelf()
   target_state.PrintSelf()
-  cost_dict = GenCostDict(start_state, target_state)
-  return cost_dict[target_state]
+  cost_dict, path_dict = GenCostDict(start_state, target_state,
+                                     return_path=True)
+  return cost_dict[target_state], path_dict
+
 
 def Part2(lines):
   """Solve part 2."""
@@ -376,15 +384,23 @@ def Part2(lines):
   target_state = State(dedent(target_lines).split('\n'))
   start_state.PrintSelf()
   target_state.PrintSelf()
-  cost_dict = GenCostDict(start_state, target_state)
-  return cost_dict[target_state]
+  cost_dict, path_dict = GenCostDict(start_state, target_state,
+                                     return_path=True)
+  return cost_dict[target_state], path_dict
 
 
 def main():
   """main"""
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-2', '--part2', help='solve part 2', action='store_true')
+  args = parser.parse_args()
   lines = GetData(DATA)
-  print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  if args.part2:
+    cost, path_dict = Part2(lines)
+    print(f'Part 2: {cost}')
+  else:
+    cost, path_dict = Part1(lines)
+    print(f'Part 1: {cost}')
 
 
 if __name__ == '__main__':
