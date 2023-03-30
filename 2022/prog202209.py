@@ -29,7 +29,7 @@ def MoveHead(start, direction):
 def AreAdjacent(tail, head):
   """True if two coordinates are adjacent."""
   x_tail, y_tail = tail
-  x_head, y_head, = head
+  x_head, y_head = head
   if (abs(x_head - x_tail) > 1 or abs(y_head - y_tail) > 1):
     return False
   return True
