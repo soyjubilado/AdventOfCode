@@ -98,10 +98,13 @@ class State():
   def PrintSelf(self, verbose=False):
     """Verify output."""
     lines = self.SelfToLines()
-    print('\n'.join(lines))
+    margin = '    '
+    print(f'\n\n{margin}', end='')
+    print(f'\n{margin}'.join(lines), end='')
     if verbose:
       print(f'depth: {self.depth}')
       print(f'width: {self.width}')
+    print('\n\n')
 
   def SelfToLines(self):
     """converts set of tuples to printable list of lines."""
