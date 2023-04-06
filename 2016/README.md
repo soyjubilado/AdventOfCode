@@ -12,3 +12,7 @@ replacing opening and closing brackets with spaces. Then I used the
 string split() function to break up the line according to the words
 outside and inside the brackets. Outside were the even indexes, and
 inside were the odd indexes. This was much simpler than "real" parsing.
+
+### Day 9
+
+Hello recursion my old friend.
