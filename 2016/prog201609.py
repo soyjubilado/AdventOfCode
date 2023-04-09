@@ -14,56 +14,32 @@ def GetData(datafile):
   return lines
 
 
-def Length(line):
-  """Recursively calculate the length of the unpacked line."""
-  if '(' not in line:
-    return len(line)
-
-  count = 0
+def ExtractParts(line):
+  """Given a line, extract the parts needed by Length() and Unpack()"""
   open_paren = line.index('(')
   close_paren = line.index(')')
-  count += open_paren
 
   prefix = line[:open_paren]
   items, repeat = [int(i) for i in line[open_paren + 1:close_paren].split('x')]
   substr = line[close_paren + 1: close_paren + 1 + items]
   suffix = line[close_paren + 1 + items:]
+  return prefix, repeat, substr, suffix
 
+
+def Length(line):
+  """Recursively calculate the length of the unpacked line."""
+  if '(' not in line:
+    return len(line)
+  prefix, repeat, substr, suffix = ExtractParts(line)
   return len(prefix) + (repeat * Length(substr)) + Length(suffix)
 
 
 def Unpack(line):
   """Given a single line, unpack it once and return the resulting string."""
-  retval = ''
-  l = iter(line)
-  try:
-    while True:
-      # get preface
-      c = next(l)
-      while c != '(':
-        retval += c
-        c = next(l)
-      c = next(l) # discard '('
-
-      # get and parse instruction
-      instr = ''
-      while c != ')':
-        instr += c
-        c = next(l)
-      items, repeat = [int(i) for i in instr.split('x')]
-
-      # build the item_string, append to answer
-      item_str = ''
-      for _ in range(items):
-        c = next(l)
-        item_str += c
-      item_str *= repeat
-      retval += item_str
-
-  except StopIteration:
-    pass
-
-  return retval
+  if '(' not in line:
+    return line
+  prefix, repeat, substr, suffix = ExtractParts(line)
+  return prefix + (substr * repeat) + Unpack(suffix)
 
 
 def Part1(lines):
