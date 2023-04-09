@@ -42,20 +42,14 @@ def Unpack(line):
   return prefix + (substr * repeat) + Unpack(suffix)
 
 
-def Part1(lines):
-  """Solve Part 1"""
+def Solve(lines, part):
+  """Solve Part 1 or Part 2"""
+  fn1 = lambda x: len(Unpack(x))
+  fn2 = lambda x: Length(x)
+  fn = fn2 if part == 'Part 2' else fn1
   counter = 0
   for line in lines:
-    linelen = len(Unpack(line))
-    counter += linelen
-  return counter
-
-
-def Part2(lines):
-  """Solve Part 2"""
-  counter = 0
-  for line in lines:
-    linelen = Length(line)
+    linelen = fn(line)
     counter += linelen
   return counter
 
@@ -63,8 +57,8 @@ def Part2(lines):
 def main():
   """main"""
   lines = GetData(DATA)
-  print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  for part in ['Part 1', 'Part 2']:
+    print(f'{part}: {Solve(lines, part)}')
 
 
 if __name__ == '__main__':
