@@ -46,7 +46,7 @@ def main():
   """main"""
   lines = GetData(DATA)
   UnpackedLength = lambda x: len(Unpack(x))
-  for part, fn in [('Part 1', UnpackedLength)), ('Part 2', Length)]:
+  for part, fn in [('Part 1', UnpackedLength), ('Part 2', Length)]:
     print(f'{part}: {sum([fn(line) for line in lines])}')
 
 
