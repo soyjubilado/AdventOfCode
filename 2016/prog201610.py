@@ -85,6 +85,7 @@ def FillBotDict(lines):
 
 def main():
   """main"""
+  Part1_Condition = (17, 61)
   lines = GetData(DATA)
   values, bots, outputs = FillBotDict(lines)
   for value, bot in values.items():
@@ -97,7 +98,7 @@ def main():
     for bot in bots.values():
       low, high = bot.PitchValues()
       changes += 1 if low is not None else 0
-      if (low, high) == (17, 61):
+      if (low, high) == Part1_Condition:
         part_1_answer = bot.name
 
   part_2_answer = 1
