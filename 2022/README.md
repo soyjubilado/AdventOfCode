@@ -212,7 +212,7 @@ a single unit test would have exposed it easily.
 
 ### Day 19
 
-(skipped)
+Work in progress. This one is hard.
 
 ### Day 20
 
