@@ -266,7 +266,7 @@ compare my output against the sample, and I figured it out. The bug was that
 if the next spot went around a corner but was blocked by a '#', I retained
 the orientation of the next spot, which I shouldn't have.
 
-Solving the general case was another example of "I have know idea how to
+Solving the general case was another example of "I have no idea how to
 tackle this." But I just went ahead and did what I could, starting with one
 step that I knew I needed, being able to identify the edges of the shape.
 Writing the solution for the general case was pretty challenging.
