@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # $Id$
 """Create a skeleton file that includes the code for reading the data file."""
 
@@ -8,7 +8,7 @@ import sys
 from textwrap import dedent
 import time
 
-YEAR = '2022'
+YEAR = '2023'
 
 def WriteFile(daynum, year):
   filename = f'prog{year}{daynum:>02}.py'
