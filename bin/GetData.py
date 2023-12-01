@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# $Id$
+# $Id: GetData.py,v 1.10 2022/12/10 17:58:26 hjew Exp hjew $
 """
 Grab the data for a given day and put it in file dataDDYYYY.txt
 
@@ -24,7 +24,7 @@ GITHUB = ('https://github.com/soyjubilado/AdventOfCode/blob'
           '/main/bin/GetData.py')
 CURL = '/usr/bin/curl'
 DAY = 1
-YEAR = 2022
+YEAR = 2023
 
 
 def GetUrl(day=0, year=0):
