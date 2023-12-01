@@ -17,14 +17,13 @@ Usage: GetData.py <day> <year>
 import os
 import subprocess
 import sys
-from GetDataConfig import SESSION_COOKIE, CONTACT, TEST_URL
+from GetDataConfig import SESSION_COOKIE, CONTACT, TEST_URL, YEAR
 
 
 GITHUB = ('https://github.com/soyjubilado/AdventOfCode/blob'
           '/main/bin/GetData.py')
 CURL = '/usr/bin/curl'
 DAY = 1
-YEAR = 2023
 
 
 def GetUrl(day=0, year=0):
