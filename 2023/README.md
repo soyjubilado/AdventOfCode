@@ -6,4 +6,4 @@
 
 ### Day 1
 
-  - TODO
+  - Couldn't figure out part 2 without hint.
