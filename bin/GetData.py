@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# $Id: GetData.py,v 1.10 2022/12/10 17:58:26 hjew Exp hjew $
+# $Id: GetData.py,v 1.11 2023/12/01 03:32:38 hjew Exp $
 """
 Grab the data for a given day and put it in file dataDDYYYY.txt
 
