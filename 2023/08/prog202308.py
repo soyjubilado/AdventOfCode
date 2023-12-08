@@ -60,19 +60,19 @@ def CyclesToZ(start, end_str, element_dict, direction_data):
   return counter, element
 
 
-def LeastCommonFactor(a, b):
-  """Least common factor of a and b."""
+def GreatestCommonFactor(a, b):
+  """Greatest common factor of a and b."""
   if a < b:
     a, b = b, a
   if not a % b:
     return b
-  return LeastCommonFactor(b, a % b)
+  return GreatestCommonFactor(b, a % b)
 
 
 def LeastCommonMultiple(a, b):
   """Least common multiple of a and b."""
-  lcf = LeastCommonFactor(a, b)
-  return (a * b)//lcf
+  gcf = GreatestCommonFactor(a, b)
+  return (a * b)//gcf
 
 
 def Part1(lines):
