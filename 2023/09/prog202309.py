@@ -23,19 +23,11 @@ def NextItem(series):
   return series[-1] + NextItem(subseries)
 
 
-def PrevItem(series):
-  """Return the previous item in the series."""
-  if len(set(series)) == 1:
-    return series[0]
-  subseries = [series[i] - series[i-1] for i in range(1, len(series))]
-  return series[0] - PrevItem(subseries)
-
-
 def main():
   """main"""
   lines = GetData(DATA)
   print(f'Part 1: {sum(NextItem(i) for i in lines)}')
-  print(f'Part 2: {sum(PrevItem(i) for i in lines)}')
+  print(f'Part 2: {sum(NextItem(i[::-1]) for i in lines)}')
 
 
 if __name__ == '__main__':
