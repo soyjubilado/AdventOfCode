@@ -51,3 +51,13 @@
 
   - Super fun and short if you use recursion. Probably still simple
     with an iterative solution, but maybe not as fun.
+
+
+### Day 10
+
+  - Still working on part 2
+
+### Day 11
+
+  - Shortest time between Part 1 and Part 2 for me, due to spoilers in
+    the memes.
