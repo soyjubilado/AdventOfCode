@@ -1,6 +1,7 @@
 ## Things I learned during AoC 2023
 
   - [i for i in my_str] will get flagged by pylint (day 7)
+  - sys.setrecursionlimit(n) will change from the default 1000 (day 5)
 
 ## Notes On Individual Days
 
@@ -24,8 +25,17 @@
 
 ### Day 5
 
-  - Incomplete! I have an idea how to do part 2, but I get tired every time
-    I think of the implementation.
+  - This was the worst. It took me over a week to do part 2. The lesson
+    must be that if your solution is really long, there's a shorter way.
+    I'm not sure I ever found the shorter way, but I did have two recursive
+    functions just because they were shorter than the iterative route.
+
+    I also went down a few wrong paths. I had a hard time wrapping my head
+    around how I was going to split the ranges so that they didn't cross
+    borders, but I was overcomplicating it. At one point I decided I needed
+    three lists, one for start and end points per range, another for just
+    the start points, and another for just the ends. Thankfully my final
+    implementation did not include this.
 
 ### Day 7
 
