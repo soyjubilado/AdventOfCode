@@ -65,7 +65,19 @@
 
 ### Day 10
 
-  - Still working on part 2
+  - I wrote lots of little functions to make the program cleaner at
+    the top level. Part 2 was somewhat challenging both in designing
+    an algorithm and implementing it. A simple flood fill would
+    obviously not work.
+
+    My approach was to traverse the path, and at each step there is
+    a side on the left of the traversal, and a side on the right. At
+    each step, I'd move leftward and rightward from the path until I
+    hit the end of the world, or another cell in the path. I'd collect
+    all the points along the way. At the end, I would have a collection
+    of points on the 'left' side of the path, and another for the
+    'right' side of the path. One of those would be all the sought
+    points of the interior.
 
 ### Day 11
 
