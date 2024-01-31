@@ -86,4 +86,4 @@
 
 ### Day 12
 
-  - pending
+  - part 1 done
