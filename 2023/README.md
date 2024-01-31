@@ -83,3 +83,7 @@
 
   - Shortest time between Part 1 and Part 2 for me, due to spoilers in
     the memes.
+
+### Day 12
+
+  - pending
