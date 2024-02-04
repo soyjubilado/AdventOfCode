@@ -123,39 +123,11 @@ def less_brutish(spring_rec):
   return count_viable(sub_springs, tuple(record))
 
 
-def variants(spring):
-  """Given a spring, return all the possible variants."""
-  retval = []
-  q_indices = [idx for idx, val in enumerate(spring) if val == '?']
-  spring_template = list(spring)
-  for q in q_indices:
-    spring_template[q] = '.'
-  q_combos = all_combos(q_indices)
-  for q in q_combos:
-    this_str = spring_template[:]
-    for i in q:
-      this_str[i] = '#'
-    retval.append(''.join(this_str))
-  return retval
-
-
-def brute_force(spring_rec):
-  """brute force for part 1"""
-  matches = 0
-  spring, record = spring_rec
-  spring_variants = variants(spring)
-  for v in spring_variants:
-    if spring_conditions(v) == record:
-      matches += 1
-  return matches
-
-
 def part_1(spring_records):
   """Part 1"""
   matches_sum = 0
   for spring_rec in spring_records:
-    matches = brute_force(spring_rec)
-    # matches = less_brutish(spring_rec)
+    matches = less_brutish(spring_rec)
     matches_sum += matches
   return matches_sum
 
