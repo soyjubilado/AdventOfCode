@@ -42,8 +42,8 @@ def spring_conditions(spring_str):
   return retval
 
 
-def candidates(subspring, records):
-  """Given a subspring and a single record, return all the possible
+def candidates(subspring, record):
+  """Given a subspring and a record, return all the possible
      subsprings, and the remainder.
      example: ('????#?', 3) ->
 
@@ -53,7 +53,7 @@ def candidates(subspring, records):
               ('???XXX', '')   ok
   """
   candidates_remainders = []
-  width = records[0]
+  width = record
   for i in range(len(subspring) - width + 1):
     spring_copy = list(subspring)
     for j in range(i, i + width):
@@ -67,7 +67,7 @@ def candidates(subspring, records):
 
 
 def candidate_is_valid(candidate_remainder):
-  """given a single candidate and remainder, return whether the combo
+  """Given a single candidate and remainder, return whether the combo
      is valid"""
   candidate, remainder = candidate_remainder
   return candidate.count('#') == remainder.count('#')
@@ -96,7 +96,8 @@ def count_viable(sub_springs, record, depth=0):
       return 0
   all_count = 0
   subspring = sub_springs[0]
-  variants = [c for c in candidates(subspring, record) if candidate_is_valid(c)]
+  variants = [c for c in candidates(subspring, record[0])
+              if candidate_is_valid(c)]
 
   for _, remainder in variants:
     sub_count = 1
@@ -116,8 +117,9 @@ def count_viable(sub_springs, record, depth=0):
   return all_count
 
 
-def less_brutish(spring_rec):
-  """less brute force method, still inefficient"""
+def count_matches(spring_rec):
+  """A less than brute force method. This function is the entry point
+     for the recursive count_viable() function."""
   spring, record = spring_rec
   sub_springs = tuple(split_spring(spring))
   return count_viable(sub_springs, tuple(record))
@@ -127,7 +129,7 @@ def part_1(spring_records):
   """Part 1"""
   matches_sum = 0
   for spring_rec in spring_records:
-    matches = less_brutish(spring_rec)
+    matches = count_matches(spring_rec)
     matches_sum += matches
   return matches_sum
 
@@ -147,8 +149,7 @@ def part_2(spring_records):
   fat_spring_records = make_fat(spring_records)
   matches_sum = 0
   for spring_rec in fat_spring_records:
-    # print(spring_rec)
-    matches = less_brutish(spring_rec)
+    matches = count_matches(spring_rec)
     matches_sum += matches
   return matches_sum
 
@@ -157,7 +158,7 @@ def main():
   """main"""
   spring_records = get_data(DATA)
   print(f'Part 1: {part_1(spring_records)}')
-  # print(f'Part 2: {part_2(spring_records)}')
+  print(f'Part 2: {part_2(spring_records)}')
 
 
 if __name__ == '__main__':
