@@ -1,24 +1,10 @@
 #!/usr/bin/env python3
 """unit tests for prog202312.py"""
 
-from prog202312 import spring_conditions, split_spring, less_brutish
-
-
-def h_test(testcases, func, unpack=False):
-  """Lame ass testing framework because I like verbose test output."""
-  print(f'\n--- testing {func.__name__} ---')
-  failures = 0
-  for c, expected in testcases:
-    actual = func(c) if not unpack else func(*c)
-    if actual == expected:
-      passing = 'pass'
-    else:
-      passing = 'fail'
-      failures += 1
-    suffix = f'expected {expected}' if passing != 'pass' else ''
-    print(f'{passing}: {c} -> {actual} {suffix}')
-  print(f'{failures}/{len(testcases)} failures for {func.__name__}')
-  return failures
+import sys
+sys.path.insert(0, '../lib/')
+from h_test import h_test
+from prog202312 import spring_conditions, split_spring, count_matches
 
 
 def test_spring_conditions():
@@ -59,7 +45,7 @@ def test_count_viable():
                (('.???????.#', [2, 1, 1]), 10),
                (('?#??#??.#?', [1, 1, 1]), 1),
               ]
-  return h_test(testcases, less_brutish)
+  return h_test(testcases, count_matches)
 
 
 def main():
