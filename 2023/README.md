@@ -86,4 +86,20 @@
 
 ### Day 12
 
-  - part 1 done
+  - I found this problem to be especially enjoyable. Part 1 went quickly
+    using a brute force algorithm that I suspected would not be useful
+    for part 2. Indeed, I was right.
+
+    I spent about a week on part 2, trying out different approaches. The
+    initial approach was to leverage methodology from part 1 but by
+    reducing the search space. I split the spring into subsprings, each
+    subspring separated by one or more '.' and then tried the original
+    brute force method. The first few lines were solved fairly quickly,
+    but then it slowed down from there. I thought I'd let it run overnight,
+    but after less than an hour my computer froze and had to be rebooted.
+
+    I've never knowingly used dynamic programming on any AOC problem,
+    but I use recursion a lot. By the end I had a good solution that was
+    still too slow. As soon as I memoized the recursive function, the
+    program was able to complete.
+  
