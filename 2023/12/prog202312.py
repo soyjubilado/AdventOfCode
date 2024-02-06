@@ -100,15 +100,14 @@ def count_viable(sub_springs, record, depth=0):
               if candidate_is_valid(c)]
 
   for _, remainder in variants:
-    sub_count = 1
     if remainder != '':
       next_subspring = [remainder]
       next_subspring.extend(sub_springs[1:])
     else:
       next_subspring = sub_springs[1:]
     next_record = record[1:]
-    sub_count *= count_viable(tuple(next_subspring), tuple(next_record),
-                              depth=depth+1)
+    sub_count = count_viable(tuple(next_subspring), tuple(next_record),
+                             depth=depth+1)
     all_count += sub_count
   if not '#' in subspring:
     # '????' can be replaced by '....' legitimately
