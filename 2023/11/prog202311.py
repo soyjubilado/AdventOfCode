@@ -3,8 +3,6 @@
 """https://adventofcode.com/2023/day/11"""
 
 from itertools import combinations
-import sys
-sys.path.insert(0, '../lib/')
 from grid import Grid, PrintGrid
 
 
