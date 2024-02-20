@@ -2,8 +2,6 @@
 # file created 2023-Dec-10 08:48
 """https://adventofcode.com/2023/day/10"""
 
-import sys
-sys.path.insert(0, '../lib/')
 from grid import Grid, PrintGrid
 
 DATA = 'data202310.txt'
