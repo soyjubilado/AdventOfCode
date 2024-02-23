@@ -46,8 +46,8 @@ class GridWrap():
   def __repr__(self):
     return self.name
 
-  def PrintGrid(self):
-    """Print the picture."""
+  def as_str(self):
+    """String representation of the grid."""
     retval_list = []
     min_x, max_x, min_y, max_y = MinMaxXY(self.grid)
     for y in range(min_y, max_y + 1):
