@@ -103,3 +103,25 @@
     still too slow. As soon as I memoized the recursive function, the
     program was able to complete.
   
+### Day 13
+
+  - I spent a lot of time writing tests for this problem.
+  
+    When stuck, it's good to look at the output for the individual
+    cases -- there were some grids where no reflection was found, and my
+    function just returned 0 and kept going.
+    
+    Reading the forum sent me on a wild goose chase. The only reflections
+    were like those in the examples; ie reflections only existed between
+    rows and columns, so two consecutive identical rows or columns were a
+    good candidate for a line of reflection.
+    
+    I was thwarted in part 2 because my function from part 1 assumed that
+    there would be only one valid reflection, and it cut out as soon as it
+    found that one. For part 2, it was possible that there would be two
+    valid reflections, and one had to identify the *new* one.
+    
+    I wrote a class GridWrap as a wrapper around the grid dictionary because
+    I wanted some way to abbreviate the output for my unit tests.
+    
+    This problem took me about 3 days to solve both parts.
