@@ -39,6 +39,10 @@ class GridWrap():
     """Allow access by key, just like a dict."""
     return self.grid[key]
 
+  def __setitem__(self, key, newvalue):
+    """Allow setting value by key, just like a dict."""
+    self.grid[key] = newvalue
+
   def __iter__(self):
     """Return dict keys as an interable."""
     return iter(self.grid.keys())
