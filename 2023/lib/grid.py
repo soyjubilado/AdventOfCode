@@ -31,6 +31,7 @@ class GridWrap():
 
   def __init__(self, lines, name=None, default_char='.'):
     """If you give it a name, print that instead of the dict."""
+    self.lines = lines.copy()
     self.grid = Grid(lines)
     self.name = name if name else lines[0]
     self.default_char = default_char
@@ -47,6 +48,13 @@ class GridWrap():
     """Return dict keys as an interable."""
     return iter(self.grid.keys())
 
+  def __copy__(self):
+    """Return a deep copy of self."""
+    return GridWrap(self.lines)
+
+  def __eq__(self, other):
+    return self.grid == other.grid
+
   def __repr__(self):
     return self.name
 
@@ -60,6 +68,12 @@ class GridWrap():
         row_str += f'{str(self.grid.get((x, y), self.default_char))}'
       retval_list.append(row_str)
     return '\n'.join(retval_list)
+
+  def get(self, key, default=None):
+    """implement dictionary get."""
+    if key in self.grid:
+      return self.grid[key]
+    return default
 
   def items(self):
     """Return dictionary items."""
