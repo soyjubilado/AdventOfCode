@@ -138,13 +138,18 @@
     then I repeated. Part 1 took about 5 seconds in this implementation. After
     I rewrote the function for Part 2, Part 1 ran in 0.03 seconds.
     
-    For Part 2 I knew I needed to be a little more efficient, so I rewrote
-    the function to do one column at a time, and slid all the rocks that could
-    be moved. That algorithm was *O*(width of grid).
+    The rewrite for Part 2 logically approached one column at a time, iterating
+    the column from top to bottm and sliding every free rock as far north as
+    it could go. That algorithm was *O*(width of grid).
 
-    Additionally for Part 2, I was happy with my DRY implementation of
-    the TiltRocks() function which was called by TiltNorth(), TiltWest(),
-    etc.
+    I was especially happy with my DRY implementation of the TiltRocks()
+    function called by TiltNorth(), TiltWest(), etc.
 
     It was tempting to just solve Part 2 by figuring out the cycle manually,
-    but coding a generic solution didn't take too long.
+    but coding a generic solution didn't take too long. There are some magic
+    numbers in the code because there's no way to guess where the cycle would
+    start without a little trial and error.
+
+### Day 15
+
+  - Nothing especially difficult here except reading instructions.
