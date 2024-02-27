@@ -135,7 +135,8 @@
     My first implementation of TiltNorth() was very slow because I iterated
     through the whole map, and if I found a round rock I tried to move it one
     space. If there was any movement after iterating through all the spots,
-    then I repeated. Part 1 took about 5 seconds in this implementation.
+    then I repeated. Part 1 took about 5 seconds in this implementation. After
+    I rewrote the function for Part 2, Part 1 ran in 0.03 seconds.
     
     For Part 2 I knew I needed to be a little more efficient, so I rewrote
     the function to do one column at a time, and slid all the rocks that could
