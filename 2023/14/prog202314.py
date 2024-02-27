@@ -108,7 +108,7 @@ def FindCycle(grid, tilt_cycles=300):
   """Return an offset and a cycle."""
   loads = [0,]
 
-  # generate a list of loads, indexed on how many tilt cycles were run.
+  # generate a list of 300 loads, indexed on how many tilt cycles were run.
   # loads[1] is the load after one tilt cycle, loads[2] after 2, etc.
   for i in range(tilt_cycles):
     print(i, end=' ', flush=True)
@@ -121,6 +121,8 @@ def FindCycle(grid, tilt_cycles=300):
   some_value = loads[-1]
   prev_idx = loads.index(some_value)
   print(f'first index of {some_value} is {prev_idx}')
+
+  # find where the values start to repeat every cycle_length times
   for idx, val in enumerate(loads):
     if val == some_value:
       if idx - prev_idx == cycle_length:
@@ -133,7 +135,7 @@ def FindCycle(grid, tilt_cycles=300):
 
 
 def Part2(grid):
-  """Cycle of length 18 starts around 150, with 79734 being a unique value."""
+  """Part 2"""
   offset, cycle = FindCycle(grid)
   print(f'{offset=}, {cycle=}')
   idx = (1000000000 - offset) % len(cycle)
