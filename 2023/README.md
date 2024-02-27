@@ -129,8 +129,7 @@
 
 ### Day 14
 
-  - This problem was relatively straightforward, since I re-used the grid
-    representation from previous problems.
+  - I re-used the grid representation from previous problems.
     
     My first implementation of TiltNorth() was very slow because I iterated
     through the whole map, and if I found a round rock I tried to move it one
