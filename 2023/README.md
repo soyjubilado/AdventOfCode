@@ -125,3 +125,25 @@
     I wanted some way to abbreviate the output for my unit tests.
     
     This problem took me about 3 days to solve both parts.
+
+
+### Day 14
+
+  - This problem was relatively straightforward, since I re-used the grid
+    representation from previous problems.
+    
+    My first implementation of TiltNorth() was very slow because I iterated
+    through the whole map, and if I found a round rock I tried to move it one
+    space. If there was any movement after iterating through all the spots,
+    then I repeated. Part 1 took about 5 seconds in this implementation.
+    
+    For Part 2 I knew I needed to be a little more efficient, so I rewrote
+    the function to do one column at a time, and slid all the rocks that could
+    be moved. That algorithm was *O*(width of grid).
+
+    Additionally for Part 2, I was happy with my DRY implementation of
+    the TiltRocks() function which was called by TiltNorth(), TiltWest(),
+    etc.
+
+    It was tempting to just solve Part 2 by figuring out the cycle manually,
+    but coding a generic solution didn't take too long.
