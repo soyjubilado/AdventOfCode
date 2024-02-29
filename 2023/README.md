@@ -152,3 +152,8 @@
 ### Day 15
 
   - Nothing especially difficult here except reading instructions.
+
+### Day 16
+
+  - Part 2 takes over 8 minutes to run, but gets the right answer.
+    Will probably try to fix it later.
