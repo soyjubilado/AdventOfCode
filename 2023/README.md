@@ -156,4 +156,6 @@
 ### Day 16
 
   - Part 2 takes over 8 minutes to run, but gets the right answer.
-    Will probably try to fix it later.
+    This is a rare case where it's slow enough that I obviously have
+    the wrong approach, yet fast enough that waiting for it to finish
+    will take less time than figuring out the proper solution.
