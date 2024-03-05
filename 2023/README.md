@@ -2,6 +2,8 @@
 
   - [i for i in my_str] will get flagged by pylint (day 7)
   - sys.setrecursionlimit(n) will change from the default 1000 (day 5)
+  - It finally dawned on my why methods inside classes can't be decorated
+    with @lru_cache (day 16)
 
 ## Notes On Individual Days
 
