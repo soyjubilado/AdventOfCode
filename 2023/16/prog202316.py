@@ -74,7 +74,7 @@ class Beam():
     self.visited.add((next_cell, self.direction))
     self.current = next_cell
     cell_char = self.grid[next_cell]
-    self.direction, sub_beam = self.new_dir_y_subbeam(cell_char)
+    self.direction, sub_beam = self.new_dir_and_subbeam(cell_char)
     if sub_beam:
       self.sub_beams.append(sub_beam)
 
@@ -85,7 +85,7 @@ class Beam():
     for b in self.sub_beams:
       b.move_all(depth=depth + 1)
 
-  def new_dir_y_subbeam(self, cell_char):
+  def new_dir_and_subbeam(self, cell_char):
     """Return new direction and subbeam if any."""
     dir_map = {'/': {NORTH: EAST, SOUTH: WEST, EAST: NORTH, WEST: SOUTH},
                '\\': {NORTH: WEST, SOUTH: EAST, EAST: SOUTH, WEST: NORTH},
@@ -109,8 +109,8 @@ class Beam():
     return new_direction, sub_beam
 
 
-def Part2(grid):
-  """Part 2"""
+def get_all_starting_cells(grid):
+  """Get a list of all the starting cells outside the perimeter of the grid."""
   _, max_x, _, max_y = MinMaxXY(grid)
   top = [((x, -1), SOUTH) for x in range(max_x + 1)]
   left = [((-1, y), EAST) for y in range(max_y + 1)]
@@ -121,6 +121,12 @@ def Part2(grid):
   all_starts.extend(left)
   all_starts.extend(bottom)
   all_starts.extend(right)
+  return all_starts
+
+
+def Part2(grid):
+  """Part 2"""
+  all_starts = get_all_starting_cells(grid)
   max_energized = 0
   num_starts = len(all_starts)
   counter = 0
@@ -128,7 +134,7 @@ def Part2(grid):
     num_energized = Part1(grid, start, direction)
     max_energized = max(num_energized, max_energized)
     counter += 1
-    print(f'{counter} of {num_starts}')
+    print(f'{counter} of {num_starts}: ({start},{direction}) > {num_energized}')
   return max_energized
 
 
@@ -144,8 +150,8 @@ def main():
   """main"""
   lines = GetData(DATA)
   grid = GridWrap(lines)
+  print(f'Part 2: {Part2(grid)}')
   print(f'Part 1: {Part1(grid, (-1, 0), EAST)}')
-  # print(f'Part 2: {Part2(grid)}')
 
 
 if __name__ == '__main__':
