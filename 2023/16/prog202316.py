@@ -102,6 +102,7 @@ class Beam():
     new_direction = dir_map[cell_char][self.direction]
     subbeam_direction = sb_dir[cell_char][self.direction]
     if subbeam_direction:
+      # visited is actual reference to self.visited, not a copy
       sub_beam = Beam(self.grid, self.current, subbeam_direction,
                       visited=self.visited)
     else:
