@@ -1,26 +1,10 @@
 #!/usr/bin/python3
 """unit tests for prog201505"""
 
+from h_test import h_test
 from prog201505 import ThreeVowels, DoubleLetter, BadWords, IsNicePt1
 from prog201505 import MoreThan2Nonconsecutive, TwoLettersTwice, PairSepSingle
 from prog201505 import IsNicePt2
-
-
-def h_test(testcases, func, unpack=False):
-  """Lame ass testing framework because I like verbose test output."""
-  print(f'\n--- testing {func.__name__} ---')
-  failures = 0
-  for c, expected in testcases:
-    actual = func(c) if not unpack else func(*c)
-    if actual == expected:
-      passing = 'pass'
-    else:
-      passing = 'fail'
-      failures += 1
-    suffix = f'expected {expected}' if passing != 'pass' else ''
-    print(f'{passing}: {c} -> {actual} {suffix}')
-  print(f'{failures}/{len(testcases)} failures for {func.__name__}')
-  return failures
 
 
 def testThreeVowels():
