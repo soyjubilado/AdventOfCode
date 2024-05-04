@@ -36,8 +36,6 @@ def GetRangeIterable(instruction_line):
       yield (x, y)
 
 
-
-
 def Part1(lines):
   """Part 1"""
   def TurnOn(cell, on_cells):
