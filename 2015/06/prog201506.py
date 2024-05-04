@@ -2,7 +2,6 @@
 # file created 2024-Apr-22 20:32
 """https://adventofcode.com/2015/day/06"""
 
-from itertools import product
 
 DATA = 'data201506.txt'
 
@@ -28,26 +27,32 @@ def ParseLines(lines):
   return instructions
 
 
-def GetRanges(instruction_line):
-  """Given ParseLines() output, return a range values for x and y"""
+def GetRangeIterable(instruction_line):
+  """Given ParseLines() output, return an iterable of (x, y) cells"""
   x1, y1 = [int(i) for i in instruction_line[1].split(',')]
   x2, y2 = [int(i) for i in instruction_line[2].split(',')]
-  return (x1, x2 + 1), (y1, y2 + 1)
+  for x in range(x1, x2 + 1):
+    for y in range(y1, y2 + 1):
+      yield (x, y)
 
 
 def Part1(lines):
   """Part 1"""
-  operate = {'on': set.union,
-             'off': set.difference,
-             'toggle': set.symmetric_difference,
-            }
   on_cells = set([])
   for i in ParseLines(lines):
     op = i[0]
-    x_range, y_range = GetRanges(i)
-    # print(f'{op} range({x_range}) range({y_range})')
-    cells = set(product(range(*x_range), range(*y_range)))
-    on_cells = operate[op](on_cells, cells)
+    range_iter = GetRangeIterable(i)
+    for cell in range_iter:
+      if op == 'on' and cell not in on_cells:
+        on_cells.add(cell)
+      elif op == 'off' and cell in on_cells:
+        on_cells.remove(cell)
+      elif op == 'toggle' and cell in on_cells:
+        on_cells.remove(cell)
+      elif op == 'toggle' and cell not in on_cells:
+        on_cells.add(cell)
+      else:
+        pass
 
   return len(on_cells)
 
@@ -57,15 +62,13 @@ def Part2(lines):
   on_cells = {}
   for i in ParseLines(lines):
     op = i[0]
-    x_range, y_range = GetRanges(i)
-    # print(f'{op} range({x_range}) range({y_range})')
-    cells = set(product(range(*x_range), range(*y_range)))
-    if op in ['on', 'toggle']:
-      increment = 1 if op == 'on' else 2
-      for cell in cells:
+    range_iter = GetRangeIterable(i)
+
+    for cell in range_iter:
+      if op in ['on', 'toggle']:
+        increment = 1 if op == 'on' else 2
         on_cells[cell] = on_cells.get(cell, 0) + increment
-    else:
-      for cell in cells:
+      else:
         if cell in on_cells:
           brightness = on_cells[cell] - 1
           if brightness < 1:
