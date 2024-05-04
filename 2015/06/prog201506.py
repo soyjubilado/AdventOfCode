@@ -36,23 +36,37 @@ def GetRangeIterable(instruction_line):
       yield (x, y)
 
 
+
+
 def Part1(lines):
   """Part 1"""
+  def TurnOn(cell, on_cells):
+    """Turn a cell on."""
+    if cell not in on_cells:
+      on_cells.add(cell)
+
+  def TurnOff(cell, on_cells):
+    """Turn a cell off."""
+    if cell in on_cells:
+      on_cells.remove(cell)
+
+  def Toggle(cell, on_cells):
+    """Toggle a cell on or off."""
+    if cell in on_cells:
+      on_cells.remove(cell)
+    else:
+      on_cells.add(cell)
+
   on_cells = set([])
+  Operate = {'on': TurnOn,
+             'off': TurnOff,
+             'toggle': Toggle
+            }
   for i in ParseLines(lines):
     op = i[0]
     range_iter = GetRangeIterable(i)
     for cell in range_iter:
-      if op == 'on' and cell not in on_cells:
-        on_cells.add(cell)
-      elif op == 'off' and cell in on_cells:
-        on_cells.remove(cell)
-      elif op == 'toggle' and cell in on_cells:
-        on_cells.remove(cell)
-      elif op == 'toggle' and cell not in on_cells:
-        on_cells.add(cell)
-      else:
-        pass
+      Operate[op](cell, on_cells)
 
   return len(on_cells)
 
