@@ -8,12 +8,12 @@ DATA = 'data201507.txt'
 # DATA = 'testdata201507.txt'
 
 
-OPCODES = {'AND': lambda x, y: x & y,
-           'OR': lambda x, y: x | y,
-           'LSHIFT': lambda x, y: x << y,
-           'RSHIFT': lambda x, y: x >> y,
-           'NOT': lambda x: 65535 - x,
-          }
+OPERATIONS = {'AND': lambda x, y: x & y,
+              'OR': lambda x, y: x | y,
+              'LSHIFT': lambda x, y: x << y,
+              'RSHIFT': lambda x, y: x >> y,
+              'NOT': lambda x: 65535 - x,
+             }
 
 # use a global dict so that EvalX can be memoized.
 WIRE_DICT = {}
@@ -37,7 +37,7 @@ def Op(*args):
       return args[0]
   op = args[0]
   arg = args[1:]
-  return OPCODES[op](*arg)
+  return OPERATIONS[op](*arg)
 
 
 def ParseLine(line):
@@ -47,9 +47,9 @@ def ParseLine(line):
   elems = line.split()
   wire = elems[-1:]   # start with just the wire name
   opargs = elems[:-2]  # everything but the last two tokens
-  ops = [i for i in opargs if i in OPCODES]
+  ops = [i for i in opargs if i in OPERATIONS]
   assert len(ops) <= 1
-  args = [i for i in opargs if i not in OPCODES]
+  args = [i for i in opargs if i not in OPERATIONS]
   wire.extend(ops)
   wire.extend(args)
   return tuple(wire)
@@ -58,13 +58,17 @@ def ParseLine(line):
 @lru_cache(maxsize=None)
 def EvalX(x):
   """Recursively evaluate wire x."""
+  # if x is a number
   if x not in WIRE_DICT:
     return int(x)
 
   op_args = WIRE_DICT[x]
   expanded_args = [op_args[0]]
-  if expanded_args[0] not in OPCODES:
+
+  # if x is another wire
+  if expanded_args[0] not in OPERATIONS:
     return EvalX(expanded_args[0])
+
   expanded_args.extend([EvalX(i) for i in op_args[1:]])
   return Op(*expanded_args)
 
