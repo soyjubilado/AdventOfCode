@@ -114,9 +114,9 @@ def CostGrid(grid, lower_right):
     for n in neighbors:
       cost_grid[n] = current_val + grid[n]
       heappush(priority_q, (cost_grid[n], n))
-    UpdateNeighbors(n, cost_grid, grid)
-    # if any neighbors now have a higher cost than this cell plus its own
-    # cost, update it to the cost of this cell plus the cost of itself.
+      # UpdateNeighbors(n, cost_grid, grid)
+      # if any neighbors now have a higher cost than this cell plus its own
+      # cost, update it to the cost of this cell plus the cost of itself.
   return cost_grid
 
 
