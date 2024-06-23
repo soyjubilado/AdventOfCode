@@ -16,13 +16,16 @@ def MinMaxXY(grid):
   return min(x_all), max(x_all), min(y_all), max(y_all)
 
 
-def PrintGrid(grid, default_char='.'):
+def PrintGrid(grid, default_char='.', overlay=None):
   """Swiped from previous year."""
   min_x, max_x, min_y, max_y = MinMaxXY(grid)
   for y in range(min_y, max_y + 1):
     row_str = ''
     for x in range(min_x, max_x + 1):
-      row_str += f'{str(grid.get((x, y), default_char))}'
+      if overlay and (x, y) in overlay:
+        row_str += overlay[(x, y)]
+      else:
+        row_str += f'{str(grid.get((x, y), default_char))}'
     print(row_str)
 
 
