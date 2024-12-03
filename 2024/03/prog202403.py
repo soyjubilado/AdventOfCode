@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# $Id: prog202403.py,v 1.2 2024/12/03 16:33:08 hjew Exp hjew $
 # file created 2024-Dec-02 20:59
 """https://adventofcode.com/2024/day/03"""
 
