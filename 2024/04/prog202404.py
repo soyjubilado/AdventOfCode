@@ -24,8 +24,8 @@ def Grid(lines):
 
 
 def xmas_exists(x, y, x_add, y_add, grid):
-  """Check whether xmas exists in a given direction, the direction is given
-     by (x_add, y_add) which is repeatedly added to (x, y)."""
+  """For part 1, check whether xmas exists in a given direction, the direction
+     is given by (x_add, y_add) which is repeatedly added to (x, y)."""
   if grid[(x, y)] != 'X':
     return False
   for target in ['M', 'A', 'S']:
@@ -34,6 +34,22 @@ def xmas_exists(x, y, x_add, y_add, grid):
     if (x, y) not in grid or grid[(x, y)] != target:
       return False
   return True
+
+
+def num_xmases(x, y, grid):
+  """For part 1, given a particular coordinate, count how many xmas radiate
+     out from that point."""
+  total = 0
+  directions = [(-1, -1), (0, -1), (1, -1),
+                (-1, 0), (1, 0),
+                (-1, 1), (0, 1), (1, 1)]
+  if grid[(x, y)] != 'X':
+    return 0
+
+  for x_add, y_add in directions:
+    if xmas_exists(x, y, x_add, y_add, grid):
+      total += 1
+  return total
 
 
 def makes_x(x, y, grid):
@@ -50,22 +66,6 @@ def makes_x(x, y, grid):
       sorted([grid[b1], grid[b2]]) != ['M', 'S']):
     return False
   return True
-
-
-def num_xmases(x, y, grid):
-  """Given a particular coordinate, count how many xmas radiate out
-     from that point."""
-  total = 0
-  directions = [(-1, -1), (0, -1), (1, -1),
-                (-1, 0), (1, 0),
-                (-1, 1), (0, 1), (1, 1)]
-  if grid[(x, y)] != 'X':
-    return 0
-
-  for x_add, y_add in directions:
-    if xmas_exists(x, y, x_add, y_add, grid):
-      total += 1
-  return total
 
 
 def Part1(lines):
