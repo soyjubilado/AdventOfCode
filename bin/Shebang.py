@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# $Id$
 """Create a skeleton file that includes the code for reading the data file."""
 
 import os
@@ -8,7 +7,7 @@ import sys
 from textwrap import dedent
 import time
 
-YEAR = '2023'
+YEAR = '2024'
 
 def WriteFile(daynum, year):
   filename = f'prog{year}{daynum:>02}.py'
@@ -30,10 +29,21 @@ def WriteFile(daynum, year):
                       return lines
 
 
+                    def Part1(lines):
+                      """Part 1."""
+                      return None
+
+
+                    def Part2(lines):
+                      """Part 2."""
+                      return None
+
+
                     def main():
                       """main"""
                       lines = GetData(DATA)
-                      print(lines)
+                      print(f'Part 1: {Part1(lines)}')
+                      print(f'Part 2: {Part2(lines)}')
 
 
                     if __name__ == '__main__':
