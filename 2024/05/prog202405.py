@@ -40,21 +40,12 @@ def BreaksRule(rule, update):
 
 
 def BrokenRules(rules, update):
-  """Return list of rules this update breaks, or empty set."""
+  """Return list of rules this update breaks."""
   broken_rules = []
   for rule in rules:
     if BreaksRule(rule, update):
       broken_rules.append(rule)
   return broken_rules
-
-
-def BrokenUpdates(rules, updates):
-  """Return a list of the broken updates."""
-  broken_updates = []
-  for update in updates:
-    if BrokenRules(rules, update):
-      broken_updates.append(update)
-  return broken_updates
 
 
 def GenKeyCmp(rules):
@@ -83,7 +74,7 @@ def Part1(lines):
 def Part2(lines):
   """Part 2."""
   rules, updates = GetRulesAndUpdates(lines)
-  broken_updates = BrokenUpdates(rules, updates)
+  broken_updates = [u for u in updates if BrokenRules(rules, u)]
   sorting_key = cmp_to_key(GenKeyCmp(rules))
   total = 0
   for update in broken_updates:
