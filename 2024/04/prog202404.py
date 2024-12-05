@@ -38,13 +38,14 @@ def xmas_exists(x, y, x_add, y_add, grid):
 
 def num_xmases(x, y, grid):
   """For part 1, given a particular coordinate, count how many xmas radiate
-     out from that point."""
+     out from that point. There are 8 directions to check."""
+  if grid[(x, y)] != 'X':
+    return 0
+
   total = 0
   directions = [(-1, -1), (0, -1), (1, -1),
                 (-1, 0), (1, 0),
                 (-1, 1), (0, 1), (1, 1)]
-  if grid[(x, y)] != 'X':
-    return 0
 
   for x_add, y_add in directions:
     if xmas_exists(x, y, x_add, y_add, grid):
@@ -68,32 +69,22 @@ def makes_x(x, y, grid):
   return True
 
 
-def Part1(lines):
+def Part1(grid):
   """Part 1."""
-  grid = Grid(lines)
-  total = 0
-  for x, y in grid:
-    num_seen = num_xmases(x, y, grid)
-    total += num_seen
-
-  return total
+  return sum([num_xmases(x, y, grid) for x, y in grid])
 
 
-def Part2(lines):
+def Part2(grid):
   """Part 2."""
-  grid = Grid(lines)
-  total = 0
-  for x, y in grid:
-    if makes_x(x, y, grid):
-      total += 1
-  return total
+  return sum([1 for x, y in grid if makes_x(x, y, grid)])
 
 
 def main():
   """main"""
   lines = GetData(DATA)
-  print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  grid = Grid(lines)
+  print(f'Part 1: {Part1(grid)}')
+  print(f'Part 2: {Part2(grid)}')
 
 
 if __name__ == '__main__':
