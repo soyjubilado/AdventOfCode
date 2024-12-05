@@ -30,7 +30,8 @@
     an immediate way to get the update into the proper order, so when I went
     with every time a rule was broken, swap the two items that caused the
     rule to be broken. In my mind, repeatedly doing this would eventually
-    result in a fixed update. I was wrong.
+    result in a fixed update. I was wrong: while it worked for the example,
+    it created an infinite loop on my input.
 
     I used the rules to create a comparison function that I fed to sorted().
     This immediately solved the problem. It does depend heavily on a python
@@ -39,5 +40,5 @@
     Implementing sort() isn't the worst thing in the world, but it's not the
     best either.
 
-    The comparison function was created via a higher order function. Some
-    part of this process is called a closure, but I'm not sure which.
+    The comparison function was created via a closure. This was wholly
+    unnecessary; I did it only to avoid a global variable.
