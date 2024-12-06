@@ -41,11 +41,7 @@ def BreaksRule(rule, update):
 
 def BrokenRules(rules, update):
   """Return list of rules this update breaks."""
-  broken_rules = []
-  for rule in rules:
-    if BreaksRule(rule, update):
-      broken_rules.append(rule)
-  return broken_rules
+  return [r for r in rules if BreaksRule(r, update)]
 
 
 def GenKeyCmp(rules):
