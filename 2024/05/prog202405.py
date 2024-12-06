@@ -75,10 +75,9 @@ def Part2(lines):
   """Part 2."""
   rules, updates = GetRulesAndUpdates(lines)
   broken_updates = [u for u in updates if BrokenRules(rules, u)]
-  sorting_key = cmp_to_key(GenKeyCmp(rules))
   total = 0
   for update in broken_updates:
-    fixed = sorted(update, key=sorting_key)
+    fixed = sorted(update, key=cmp_to_key(GenKeyCmp(rules)))
     total += fixed[len(fixed)//2]
   return total
 
