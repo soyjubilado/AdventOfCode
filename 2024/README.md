@@ -58,3 +58,9 @@
 
     Loop detection was implemented using an exception, but there are lots
     of alternate ways to do it.
+
+### Day 7
+
+  - If you use a recursive solution, be sure to pop numbers from the right,
+    due to the fact that the operators in the problem are always evaluated
+    left to right.
