@@ -8,17 +8,10 @@ DATA = 'data202402.txt'
 
 def GetData(datafile):
   """Read input into a list of lines."""
-  lines = []
-  with open(datafile, 'r') as fh:
-    lines = [i.strip() for i in fh]
-  return lines
-
-
-def LinesToNums(lines):
-  """Convert list of strings to list of list(int)."""
   nums = []
-  for line in lines:
-    nums.append([int(i) for i in line.split()])
+  with open(datafile, 'r') as fh:
+    for line in fh:
+      nums.append([int(i) for i in line.strip().split()])
   return nums
 
 
@@ -56,8 +49,7 @@ def Part2(nums):
 
 def main():
   """main"""
-  lines = GetData(DATA)
-  nums = LinesToNums(lines)
+  nums = GetData(DATA)
   print(f'Part 1: {Part1(nums)}')
   print(f'Part 2: {Part2(nums)}')
 
