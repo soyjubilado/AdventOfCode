@@ -42,3 +42,19 @@
 
     The comparison function was created via a closure. This was wholly
     unnecessary; I did it only to avoid a global variable.
+
+### Day 6
+
+  - More 2-dimesional grid work. In part 1, I included a fun method to
+    visualize the traveler moving around the grid.
+
+    For part 2, my initial thought was to look at all the spots on the
+    path found in part 1, and at every spot drop an obstacle in front of
+    it and start from there. However, the obstacle might have been
+    encountered coming from a different direction first, so this yielded
+    the wrong answer. Instead, I dropped an obstacle on every cell in the
+    previous path, and started the traveler in the original location. This
+    brute force method takes about 23 seconds.
+
+    Loop detection was implemented using an exception, but there are lots
+    of alternate ways to do it.
