@@ -64,3 +64,7 @@
   - If you use a recursive solution, be sure to pop numbers from the right,
     due to the fact that the operators in the problem are always evaluated
     left to right.
+
+    I got lucky and stumbled upon this very efficient solution just by
+    chance.
+
