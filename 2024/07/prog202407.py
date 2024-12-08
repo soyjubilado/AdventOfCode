@@ -42,7 +42,7 @@ def Uncombine(num1, num2):
 
 def Ways2Reach(target, numbers, pt2=False):
   """Count the number of ways for these numbers to reach the target.
-     For part 2, set pt2=True to include the '||' operator."""
+     For part 2, set pt2=True to include the "Combine()" operation."""
   nums = numbers[:]
   x = nums.pop()
   count = 0
@@ -77,7 +77,7 @@ def Part2(data):
 def main():
   """main"""
   data = GetData(DATA)
-  print(f'Part 1: {Part1(data)}')
+  # print(f'Part 1: {Part1(data)}')
   print(f'Part 2: {Part2(data)}')
 
 
