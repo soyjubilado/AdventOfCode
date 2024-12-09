@@ -1,3 +1,0 @@
-#!/bin/bash
-
-python3 -m markdown README.md > readme.html
