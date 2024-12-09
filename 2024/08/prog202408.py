@@ -4,6 +4,7 @@
 
 from collections import defaultdict
 from itertools import combinations
+from math import gcd
 
 
 DATA = 'data202408.txt'
@@ -62,8 +63,12 @@ def Antinodes(coord1, coord2, _=None):
 
 
 def AllAntinodes(coord1, coord2, grid):
-  """Return all antinodes for given coordinate part in part 2."""
+  """Return all antinodes for given coordinate part in part 2.
+  The assert statement ensures that the x difference and y difference
+  are co-prime, otherwise we would need to reduce the by the gcd.
+  """
   delta2to1 = Subtract_XY(coord1, coord2)
+  assert gcd(abs(delta2to1[0]), abs(delta2to1[1])) == 1
   all_antinodes = {coord1, coord2}
 
   current = coord1
