@@ -1,6 +1,8 @@
 ## Things I learned during AoC 2024
 
   - Day 5: functools.cmp_to_key(), and using this with a closure.
+  - Day 9: heapify doesn't create a heap object -- the result is still
+           a list, but one that works with heappush and heappop.
 
 
 ## Notes On Individual Days
@@ -45,7 +47,7 @@
 
 ### Day 6
 
-  - More 2-dimesional grid work. In part 1, I included a fun method to
+  - More 2-dimensional grid work. In part 1, I included a fun method to
     visualize the traveler moving around the grid.
 
     For part 2, my initial thought was to look at all the spots on the
@@ -68,3 +70,7 @@
     I got lucky and stumbled upon this very efficient solution just by
     chance.
 
+### Day 9
+
+  - Part 1 went by fast, but Part 2 stumped me with the implementation.
+    The algorithm is spelled out in the problem statement.
