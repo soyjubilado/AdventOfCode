@@ -74,3 +74,21 @@
 
   - Part 1 went by fast, but Part 2 stumped me with the implementation.
     The algorithm is spelled out in the problem statement.
+
+    I probably optimized this solution more than necessary. It keeps an
+    updated index of the leftmost space of size N, whereas it propbably
+    would have been fine to just look for a big enough space every time
+    I wanted to move a file.
+
+### Day 11
+
+  - The simplicity of the solution belies the effort put into it.
+
+    Part 1 was super straightforward. I did it before bed last night.
+    Part 2 was just 75 interations instead of 25. This wasn't going to
+    work. I didn't calculate how big that array was going to be, but things
+    got quite slow around 35 to 40 iterations.
+
+    I did realize upon waking up that the trick was going to involve
+    not writing out the whole solution, but just counting how large it
+    was going to be.
