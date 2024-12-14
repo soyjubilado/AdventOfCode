@@ -92,3 +92,24 @@
     I did realize upon waking up that the trick was going to involve
     not writing out the whole solution, but just counting how large it
     was going to be.
+
+### Day 12
+
+  - Many people solved this by counting corners. I counted actual edge
+    pieces, and grouped together contiguous tiles.
+
+### Day 13 Linear Algebra
+
+  - I was not willing to re-learn matrix operations to solve a series of
+    equations. I visualized a line going through the origin, and a line
+    going through the prize. They interesected at a point; if that point
+    could be reached by integer operations of pushing the button, then that
+    claw machine could be solved.
+
+### Day 14 (Spoilers)
+
+  - The patten repeats after 10430 moves. The tree is symmetric, but not
+    centered in any way. The tree does not comprise all the robots, just
+    a bunch of them. It's pretty obvious when you look at it, but running
+    it with a 0.2 second pause between images, you could miss it if you
+    blink.
