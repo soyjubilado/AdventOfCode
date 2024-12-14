@@ -97,8 +97,8 @@ def FindXY(claw):
   y = (by * x / bx)
 
   # Check here to see if it's an integer point. However, this check fails
-  # for very large numbers, so I re-do it in the calling function using
-  # modular division.
+  # for very large numbers, so I re-do it in the calling function TryMath()
+  # using modular division.
   if not math.isclose(y, round(y)) or not math.isclose(x, round(x)):
     return None
 
@@ -109,7 +109,6 @@ def TryMath(c):
   """Find the number of pushes for A and B using math."""
   point = FindXY(c)
   if point is None:
-    # print(f'no solution for {c}')
     return None
   x, y = point
 
