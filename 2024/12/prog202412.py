@@ -47,7 +47,7 @@ def Neighbors(xy, grid=None):
   return neighbors
 
 
-def UpdateGroup(coord, grid, plant_groups, coord_to_groups):
+def FloodFillGroup(coord, grid, plant_groups, coord_to_groups):
   """Given a single coordinate, find all the other coordinates in that
      region with the same plant, and add them to a plant group, and add
      them to the coord_to_groups map.
@@ -84,12 +84,14 @@ def MapRegions(grid):
   coord_to_group = dict()
   plant_groups = dict()
   for coord in grid:
-    UpdateGroup(coord, grid, plant_groups, coord_to_group)
+    FloodFillGroup(coord, grid, plant_groups, coord_to_group)
   return plant_groups
 
 
 def PerimeterLength(plant, group, grid):
-  """For part one, return the length of the perimeter of this group."""
+  """For part one, return the length of the perimeter of this group by looking
+     at all the pieces in the group, and counting the number of neighbors
+     that are not in the group."""
   p = 0
   for c in group:
     p += len([n for n in Neighbors(c) if n not in grid or grid[n] != plant])
@@ -177,7 +179,7 @@ def Part2(grid):
   Plan for part 2:
     - get four groups of edge candidates: left, right, upper, and lower edges.
     - for each group, separate into rows or columns depending on type.
-    - for each subgroup, groupify by putting contiguous tiles together.
+    - for each row/column, put contiguous tiles into subgroups.
     - the number of subgroups is the number of edges.
   """
   answer = 0
