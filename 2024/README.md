@@ -125,3 +125,6 @@
     This is the final version I've checked in, rather than the code that
     displays page after page hoping to see the tree.
  
+### Day 15
+
+  - I had fun doing the visualization for part 1. Part 2 is pending.
