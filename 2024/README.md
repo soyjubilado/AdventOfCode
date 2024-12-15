@@ -113,3 +113,15 @@
     a bunch of them. It's pretty obvious when you look at it, but running
     it with a 0.2 second pause between images, you could miss it if you
     blink.
+
+    After reading a little more about the problem, and other peoples'
+    approaches, I liked the idea of calculating a score for the number of
+    robots with N or more neighbors (I set N=2). Then iterate through all
+    the pages until there is an outlier. For my dataset, if I keep going
+    until there are at least 100 robots with 2 or more neighbors, that is
+    the one with the tree. It takes about 90 seconds to iterate through
+    some 7500 pages.
+
+    This is the final version I've checked in, rather than the code that
+    displays page after page hoping to see the tree.
+ 
