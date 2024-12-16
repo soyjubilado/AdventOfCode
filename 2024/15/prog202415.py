@@ -5,10 +5,11 @@ from time import sleep
 from grid import Coord, Add, Grid, PrintGrid, ClearScreen, Reset
 
 DATA = 'data202415.txt'
-# DATA = 'testdata202415.txt'
+DATA = 'testdata202415.txt'
+VISUAL = True
+DELAY = .1
 
-
-def Nop(*_, **_):
+def Nop(*_, **__):
   """A null function."""
 
 
@@ -62,7 +63,7 @@ def Move(grid, c, direction):
   raise Exception
 
 
-def Display(grid, delay=.001):
+def Display(grid, delay=DELAY):
   """Display the grid for visualization."""
   Reset()
   PrintGrid(grid)
@@ -89,7 +90,7 @@ def MoveAll(grid, moves, visual=False):
 def Part1(field, moves):
   """Part 1."""
   grid = Grid(field)
-  grid = MoveAll(grid, moves)
+  grid = MoveAll(grid, moves, visual=VISUAL)
   return sum([(100 * c.y) + c.x for c in grid if grid[c] == 'O'])
 
 
