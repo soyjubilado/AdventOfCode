@@ -32,7 +32,7 @@ class Computer():
     self.a = a
     self.b = b
     self.c = c
-    self.instr = 0
+    self.instr = instr_pointer
     self.output = []
 
   def __repr__(self):
@@ -49,40 +49,40 @@ class Computer():
             5: self.b,
             6: self.c}[operand]
 
-  def ADV(self, x):
-    self.a = int(self.a / (2**self.Combo(x)))
-
-  def BXL(self, x):
-    self.b = self.b ^ x
-
-  def BST(self, x):
-    self.b = self.Combo(x) % 8
-
-  def JNZ(self, x):
-    self.instr = self.instr + 2 if not self.a else x
-
-  def BXC(self, _):
-    self.b = self.b ^ self.c
-
-  def OUT(self, x):
-    self.output.append(self.Combo(x) % 8)
-
-  def BDV(self, x):
-    self.b = int(self.a / (2**self.Combo(x)))
-
-  def CDV(self, x):
-    self.c = int(self.a / (2**self.Combo(x)))
-
   def Run(self, opcode, operand):
     """Run one opcode."""
-    op = {0: self.ADV,
-          1: self.BXL,
-          2: self.BST,
-          3: self.JNZ,
-          4: self.BXC,
-          5: self.OUT,
-          6: self.BDV,
-          7: self.CDV
+    def ADV(x):
+      self.a = int(self.a / (2**self.Combo(x)))
+
+    def BXL(x):
+      self.b = self.b ^ x
+
+    def BST(x):
+      self.b = self.Combo(x) % 8
+
+    def JNZ(x):
+      self.instr = self.instr + 2 if not self.a else x
+
+    def BXC(_):
+      self.b = self.b ^ self.c
+
+    def OUT(x):
+      self.output.append(self.Combo(x) % 8)
+
+    def BDV(x):
+      self.b = int(self.a / (2**self.Combo(x)))
+
+    def CDV(x):
+      self.c = int(self.a / (2**self.Combo(x)))
+
+    op = {0: ADV,
+          1: BXL,
+          2: BST,
+          3: JNZ,
+          4: BXC,
+          5: OUT,
+          6: BDV,
+          7: CDV
          }
 
     op[opcode](operand)
@@ -93,19 +93,22 @@ class Computer():
     return self.instr
 
   def RunProg(self, prog):
+    """Run the entire program."""
     while self.instr < len(prog):
       op, operand = prog[self.instr:self.instr + 2]
       self.Run(op, operand)
-          
+
+    return self.output
+
 
 def Part1(lines):
   """Part 1."""
   c, prog = GetComputer(lines)
-  c.RunProg(prog)
-  return ','.join([str(i) for i in c.output])
+  output = c.RunProg(prog)
+  return ','.join([str(i) for i in output])
 
 
-def Part2(lines):
+def Part2(_):
   """Part 2."""
   return None
 
