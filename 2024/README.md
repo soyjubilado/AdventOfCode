@@ -128,3 +128,22 @@
 ### Day 15
 
   - I had fun doing the visualization for part 1. Part 2 is pending.
+
+### Day 17
+
+  - Pretty fun little assembly language puzzle. I knew part 1 would be
+    enjoyable to implement, and I didn't really plan to do part 2 this late
+    in the game; but I did play around with it just to see what was the
+    magnitude of the answer. In doing so, I managed to solve the puzzle
+    without writing much code.
+
+    TODO: write an automated solution for part 2.
+
+### Day 19
+
+  - I read it and thought, isn't there a regex solution to this? So I tried,
+    but the program would hang trying to evaluate it, so I gave up on that
+    approach. Instead, I just used memoized recursion to look at all the
+    different possibilities. Part 2 was so similar to part 1, I ended up
+    deleting the code that was specific to part 1, and just using the one
+    function for both parts.
