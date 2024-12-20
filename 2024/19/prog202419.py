@@ -5,7 +5,6 @@ from functools import lru_cache
 
 DATA = 'data202419.txt'
 # DATA = 'testdata202419.txt'
-TOWELS = None
 
 
 def GetData(datafile):
@@ -18,38 +17,37 @@ def GetData(datafile):
 
 def ListToTowels(line):
   """Parse the first line of input into a list of towel patterns."""
-  return [w.strip() for w in line.split(',')]
+  return frozenset([w.strip() for w in line.split(',')])
 
 
 @lru_cache(maxsize=None)
-def Comprises(whole):
+def Comprises(whole, towels):
   """Recursively figure out how many ways this whole design can be made."""
-  candidates = {p for p in TOWELS if whole.startswith(p)}
+  candidates = {p for p in towels if whole.startswith(p)}
   if not whole:
     return 1
   if not candidates:
     return 0
-  return sum([Comprises(whole[len(n):]) for n in candidates])
+  return sum([Comprises(whole[len(n):], towels) for n in candidates])
 
 
-def Part1(designs):
+def Part1(designs, towels):
   """Part 1."""
-  return sum([1 for d in designs if Comprises(d)])
+  return sum([1 for d in designs if Comprises(d, towels)])
 
 
-def Part2(designs):
+def Part2(designs, towels):
   """Part 2."""
-  return sum([Comprises(d) for d in designs])
+  return sum([Comprises(d, towels) for d in designs])
 
 
 def main():
   """main"""
   lines = GetData(DATA)
-  global TOWELS
-  TOWELS = ListToTowels(lines[0])
+  towels = ListToTowels(lines[0])
   designs = lines[2:]
-  print(f'Part 1: {Part1(designs)}')
-  print(f'Part 2: {Part2(designs)}')
+  print(f'Part 1: {Part1(designs, towels)}')
+  print(f'Part 2: {Part2(designs, towels)}')
 
 
 if __name__ == '__main__':
