@@ -4,7 +4,7 @@
 from functools import lru_cache
 
 DATA = 'data202419.txt'
-# DATA = 'testdata202419.txt'
+DATA = 'testdata202419.txt'
 
 
 def GetData(datafile):
@@ -13,11 +13,6 @@ def GetData(datafile):
   with open(datafile, 'r') as fh:
     lines = [i.strip() for i in fh]
   return lines
-
-
-def ListToTowels(line):
-  """Parse the first line of input into a list of towel patterns."""
-  return frozenset([w.strip() for w in line.split(',')])
 
 
 @lru_cache(maxsize=None)
@@ -44,7 +39,7 @@ def Part2(designs, towels):
 def main():
   """main"""
   lines = GetData(DATA)
-  towels = ListToTowels(lines[0])
+  towels = frozenset([w.strip() for w in lines[0].split(',')])
   designs = lines[2:]
   print(f'Part 1: {Part1(designs, towels)}')
   print(f'Part 2: {Part2(designs, towels)}')
