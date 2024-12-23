@@ -68,7 +68,7 @@ def MaxClique(my_frozen_set):
     this_cand = {i}
     this_cand = this_cand.union(MaxClique(frozenset(sub_subset)))
     candidates.append(this_cand)
-  candidates.sort(key=lambda x: len(x))
+  candidates.sort(key=len)
   return candidates[-1]
 
 
@@ -85,15 +85,15 @@ def Part2(lines):
   connected = GetConnected(lines)
   CONNECT = {k: frozenset(v) for k, v in connected.items()}
   cliques = []
-  for k, v in CONNECT.items():
+  for k in CONNECT:
     this_set = set([k])
     this_set = this_set.union(MaxClique(CONNECT[k]))
     cliques.append(this_set)
-  
+
   cliques = list(set(frozenset(c) for c in cliques))
-  cliques.sort(key=lambda x: len(x))
+  cliques.sort(key=len)
   answer = sorted(list(cliques[-1]))
-   
+
   return ','.join(answer)
 
 
