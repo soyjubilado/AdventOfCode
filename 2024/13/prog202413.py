@@ -93,7 +93,7 @@ def FindXY(claw):
   tx = claw.prize.x
   ty = claw.prize.y
 
-  x = (((ay * tx)/ax) - ty) * ax * bx / ((ax * by) - bx * ay)
+  x = ((ay * tx) - (ty * ax)) * bx / ((ax * by) - bx * ay)
   y = (by * x / bx)
 
   # Check here to see if it's an integer point. However, this check fails
