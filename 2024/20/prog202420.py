@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 # file created 2024-Dec-20 13:44
 """https://adventofcode.com/2024/day/20"""
-from grid import Grid, Neighbors
+from collections import namedtuple
+Coord = namedtuple('XY', 'x y')
 
 
 DATA = 'data202420.txt'
@@ -14,6 +15,32 @@ def GetData(datafile):
   with open(datafile, 'r') as fh:
     lines = [i.strip() for i in fh]
   return lines
+
+
+def Grid(lines):
+  """Return a dictionary of coordinates."""
+  grid = {}
+  for y, line in enumerate(lines):
+    for x, char in enumerate(line):
+      grid[Coord(x, y)] = char
+  return grid
+
+
+def Add(a, b):
+  """Add two coordinates."""
+  return Coord(a.x + b.x, a.y + b.y)
+
+
+def Neighbors(xy, grid=None):
+  """Returns neighbors of this cell. If grid is given, only return neighbors
+     which are in the grid."""
+  addends = [Coord(-1, 0),
+             Coord(1, 0),
+             Coord(0, 1),
+             Coord(0, -1)]
+  if not grid:
+    return [Add(xy, a) for a in addends]
+  return [Add(xy, a) for a in addends if Add(xy, a) in grid]
 
 
 def WalkPath(grid):
