@@ -5,7 +5,7 @@ from functools import lru_cache
 from itertools import combinations
 
 
-CONNECT = None
+CONNECT = {}
 DATA = 'data202423.txt'
 # DATA = 'testdata202423.txt'
 
@@ -20,13 +20,15 @@ def GetData(datafile):
 
 def GetConnected(lines):
   """Return a dictionary of every node and its connectivity to others."""
-  connect = {}
+  connect = CONNECT
   for l in lines:
     c1, c2 = l.split('-')
     connect[c1] = connect.get(c1, set())
     connect[c1].add(c2)
     connect[c2] = connect.get(c2, set())
     connect[c2].add(c1)
+  for k in connect:
+    connect[k] = frozenset(connect[k])
   return connect
 
 
@@ -79,11 +81,8 @@ def Part1(lines):
   return len(triples)
 
 
-def Part2(lines):
+def Part2():
   """Part 2."""
-  global CONNECT
-  connected = GetConnected(lines)
-  CONNECT = {k: frozenset(v) for k, v in connected.items()}
   cliques = []
   for k in CONNECT:
     this_set = set([k])
@@ -101,7 +100,7 @@ def main():
   """main"""
   lines = GetData(DATA)
   print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  print(f'Part 2: {Part2()}')
 
 
 if __name__ == '__main__':
