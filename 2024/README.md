@@ -3,6 +3,7 @@
   - Day 5: functools.cmp_to_key(), and using this with a closure.
   - Day 9: heapify doesn't create a heap object -- the result is still
            a list, but one that works with heappush and heappop.
+  - Day 23: set.union() *returns* a union of the two sets.
 
 
 ## Notes On Individual Days
@@ -28,12 +29,11 @@
 ### Day 5
 
   - Part 1 was straighforward, but part 2 was exciting to figure out.
-    I did not see
-    an immediate way to get the update into the proper order, so when I went
-    with every time a rule was broken, swap the two items that caused the
-    rule to be broken. In my mind, repeatedly doing this would eventually
-    result in a fixed update. I was wrong: while it worked for the example,
-    it created an infinite loop on my input.
+    I did not see an immediate way to get the update into the proper order,
+    so when I went with every time a rule was broken, swap the two items that
+    caused the rule to be broken. In my mind, repeatedly doing this would
+    eventually result in a fixed update. I was wrong: while it worked for the
+    example, it created an infinite loop on my input.
 
     I used the rules to create a comparison function that I fed to sorted().
     This immediately solved the problem. It does depend heavily on a python
@@ -147,3 +147,35 @@
     different possibilities. Part 2 was so similar to part 1, I ended up
     deleting the code that was specific to part 1, and just using the one
     function for both parts.
+
+### Day 20
+
+  - I thought Part 1 would be easy, and it was after I finally understood the
+    instructions. Part 2 is on hold.
+
+
+### Day 23
+
+  - Part 1 was straightforward. Part 2 was solved with fairly elegantly
+    with memoized recursion. I did recognize the problem as Maximum Clique,
+    which is NP-hard, and so I just went for basically a brute-force method,
+    but memoized.
+
+### Day 24
+
+  - Part 1 again is straightforward. There is some recursive evaluation.
+
+    Part 2, I was not clever enough to understand. However, it is possible to
+    brute-force a solution if you have a way of testing whether you are getting
+    closer. I did this by writing a test for whether the adder worked for 1
+    digit, then 2 digits, then 3, etc. until I found a number of digits where
+    it failed. Then I tried every combination of swaps until I found one that
+    would move me forward.
+
+    This approach was flawed, because if a wire got swapped twice it probably
+    shouldn't have been swapped in the first place. And then I get into a
+    situation where no swaps will fix the circuit.
+
+    So I ran it once, and if any wired showed up in more than one swap (2 did),
+    I banned them from being swapped and re-ran the program. It takes about
+    50 minutes for a full run.
