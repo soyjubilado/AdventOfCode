@@ -16,10 +16,7 @@ def GetData(datafile):
 
 def Part1(lines):
   """Part 1."""
-  acc = 0
-  for l in lines:
-    acc += int(l.strip())
-  return acc
+  return sum(int(l.strip()) for l in lines)
 
 
 def Part2(lines):
