@@ -23,7 +23,6 @@ def WriteFile(daynum, year):
     fh.write(dedent('''
                     def GetData(datafile):
                       """Read input into a list of lines."""
-                      lines = []
                       with open(datafile, 'r') as fh:
                         lines = [i.strip() for i in fh]
                       return lines
