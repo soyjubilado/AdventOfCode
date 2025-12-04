@@ -28,11 +28,7 @@ def MaxJoltageN(line, n):
 
 def Solver(lines, num_batteries):
   """Same solver for parts 1 and 2; activate different number of batteries."""
-  total = 0
-  for line in lines:
-    j = MaxJoltageN(line, num_batteries - 1)
-    total += int(j)
-  return total
+  return sum(int(MaxJoltageN(line, num_batteries-1)) for line in lines)
 
 
 def main():
