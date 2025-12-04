@@ -35,21 +35,11 @@ def Solver(lines, num_batteries):
   return total
 
 
-def Part1(lines):
-  """Part 1."""
-  return Solver(lines, 2)
-
-
-def Part2(lines):
-  """Part 2."""
-  return Solver(lines, 12)
-
-
 def main():
   """main"""
   lines = GetData(DATA)
-  print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  print(f'Part 1: {Solver(lines, 2)}')
+  print(f'Part 2: {Solver(lines, 12)}')
 
 
 if __name__ == '__main__':
