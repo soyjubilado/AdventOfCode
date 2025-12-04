@@ -14,7 +14,8 @@ def GetData(datafile):
 
 
 def MaxJoltageN(line, n):
-  """n is the number of batteries to activate minus 1"""
+  """Recursively solve the max joltage problem.
+     n is the number of batteries to activate minus 1"""
   nums = list(map(int, line))
   max_left = max(nums[:-n])
   index_left = nums[:-1].index(max_left)
