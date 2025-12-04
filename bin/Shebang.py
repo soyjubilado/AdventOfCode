@@ -7,7 +7,7 @@ import sys
 from textwrap import dedent
 import time
 
-YEAR = '2024'
+YEAR = '2025'
 
 def WriteFile(daynum, year):
   filename = f'prog{year}{daynum:>02}.py'
