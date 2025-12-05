@@ -7,37 +7,37 @@ DATA = 'data202505.txt'
 
 
 class Interval():
-  """A range class. Don't call it 'range' though."""
+  """A range class. Don't call it 'range' though!"""
 
   def __init__(self, interval_str):
-    """initialize"""
+    """Initialize"""
     self.low, self.high = map(int, interval_str.split('-'))
     assert self.low <= self.high
 
   def __eq__(self, other):
-    """test for equality"""
+    """Test for equality"""
     return self.low == other.low and self.high == other.high
 
   def __str__(self):
-    """string representation"""
+    """String representation"""
     return f'({self.low}, {self.high})'
 
   def contains(self, n):
-    """this range contains n"""
+    """This range contains n"""
     return self.low <= n <= self.high
 
   def overlaps(self, other):
-    """range 'other' overlaps this one in some way"""
+    """Range 'other' overlaps this one in some way"""
     return other.high >= self.low and other.low <= self.high
 
   def subsume(self, other):
-    """subsume other range into this one."""
+    """Subsume other range into this one."""
     assert self.overlaps(other)
     self.low = min(self.low, other.low)
     self.high = max(self.high, other.high)
 
   def size(self):
-    """items in this range."""
+    """Number of items in this range."""
     return self.high - self.low + 1
 
 
@@ -62,7 +62,11 @@ def Part1(lines):
 
 
 def Mash(intervals):
-  """mash up these intervals"""
+  """Mash up these intervals: Given a list of intervals, one by one add them
+     to a new list. Prior to each addition, check whether the interval you're
+     about to add overlaps any of the existing ones. If it does, subsume it
+     into the first interval that it overlaps."""
+
   mashup = []
   for i in intervals[:]:
     for m in mashup:
