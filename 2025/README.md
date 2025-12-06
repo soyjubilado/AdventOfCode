@@ -1,6 +1,6 @@
 ## Things I learned during AoC 2025
 
-  - Day 3: Recursion is always more succint.
+  - Day 3: Recursion isn't always more succint.
   - Day 4: Easy isn't always clean.
 
 ## Notes On Individual Days
