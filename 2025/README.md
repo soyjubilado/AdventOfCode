@@ -2,6 +2,8 @@
 
   - Day 3: Recursion isn't always more succint.
   - Day 4: Easy isn't always clean.
+  - Day 7: Using closures to avoid global variables. Also, some
+    weird idiosyncracies with adding tuples to sets.
 
 ## Notes On Individual Days
 
@@ -16,7 +18,7 @@
 
 ### Day 4
 
-  - Use a grid library I wrote for previous years.
+  - Used a grid library I wrote for previous years.
 
 
 ### Day 5
@@ -25,4 +27,23 @@
 
 ### Day 6
 
-  - Messy.
+  - Messy. It's all about parsing the input.
+
+### Day 7
+
+  - I thought I had a nice recursive solution for part 1, but it wasn't so
+    nice after all. I needed to pass the whole grid in as an argument, but
+    because it was a dictionary, and thus not hashable, I couldn't memoize
+    the function using @lru_cache (still on python 3.8).
+
+    The messy solution would have been to use grid as a global variable, which
+    would have been appropriate for a program of this size. But I could avoid
+    the global by using a closure; which I'm not sure is better than a
+    global.
+
+    For Part 2 I used the list of splitters from part 1, and I started with
+    the bottom row. For each cell in the bottom row, how many paths could lead
+    there? I'd move up one cell at a time, and stop when I ran out of space.
+    Every time I passed a known splitter, I recursed to the spot above that
+    splitter. Again, I used a closure to avoid global variables, and to be
+    able to use @lru_cache.
