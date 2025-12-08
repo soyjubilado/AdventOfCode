@@ -35,8 +35,7 @@ def SplitterClosure(og_grid):
     splitter_coord = (x, next_y)
     left = (x - 1, next_y)
     right = (x + 1, next_y)
-    answer = set()
-    answer.add(splitter_coord)
+    answer = {splitter_coord}
     answer = answer.union(HitSplitterFunc(left))
     answer = answer.union(HitSplitterFunc(right))
     return answer
