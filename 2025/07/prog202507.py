@@ -17,8 +17,9 @@ def GetData(datafile):
   return lines
 
 
-def SplitterClosure(my_grid):
+def SplitterClosure(og_grid):
   """Use a closure to avoid a global my_grid."""
+  my_grid = og_grid.copy()
 
   @lru_cache(maxsize=None)
   def HitSplitterFunc(coord):
@@ -43,8 +44,10 @@ def SplitterClosure(my_grid):
   return HitSplitterFunc
 
 
-def PathsToHereClosure(grid, splitters):
+def PathsToHereClosure(og_grid, og_splitters):
   """Using a closure to avoid global grid and splitters list."""
+  grid = og_grid.copy()
+  splitters = og_splitters.copy()
 
   @lru_cache(maxsize=None)
   def PathsToHere(coord):
