@@ -12,6 +12,11 @@
   - Nice warmup, but part 2 had a gotcha: if you move the dial more than
     the size of the dial, you'll automatically pass 0.
 
+### Day 2
+
+  - Skipped day 2 due to a hangover. This probably shouldn't have happened,
+    given that it was a Tuesday.
+
 ### Day 3
 
   - Fun recursion for part 2; I modified part 1 to use the same solution.
@@ -47,3 +52,20 @@
     Every time I passed a known splitter, I recursed to the spot above that
     splitter. Again, I used a closure to avoid global variables, and to be
     able to use @lru_cache.
+
+### Day 8
+
+  - This was, surprisingly, straighforward. I did check to see how many
+    pairs of junction boxes I'd be dealing with. Given 1000 coordinates,
+    there are roughly 500000 combinations of pairs. Iterating through all
+    the pairs and calculating a distance took less than a second.
+
+    Then I needed a way to keep track of the combined circuits. I used a
+    dictionary keyed on the coordinates of all the boxes. So a dictionary of
+    1000 coordinates, each one pointing to a set that included just itself.
+
+    Then, every time two boxes were connected, the two sets were merged, and
+    every key in the new merged set was updated.
+
+    For part 2, I kept iterating until the resulting merged set had a size
+    of 1000 (all the junction boxes).
