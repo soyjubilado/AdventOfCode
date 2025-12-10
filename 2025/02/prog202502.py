@@ -4,9 +4,7 @@
 
 import re
 DATA = 'data202502.txt'
-# DATA = 'testdata202502.txt'
-INVALID_RE = re.compile(r'^([0-9]+)\1{1,}$')
-
+DATA = 'testdata202502.txt'
 
 def GetData(datafile):
   """Read input into a list of lines."""
@@ -25,32 +23,13 @@ def IDsToRanges(lines):
   return [tuple(map(int, s)) for s in answer]
 
 
-def IsInvalid(num):
-  """Use regex for repeated characters for part 2."""
-  return INVALID_RE.match(str(num)) is not None
-
-
-def Part1(lines):
-  """Part 1."""
+def Solver(lines, bad_regex):
+  """Solver for both parts; pass in the lines and the regex to use."""
   id_ranges = IDsToRanges(lines)
   total = 0
   for start, end in id_ranges:
     for i in range(start, end+1):
-      if len(str(i)) % 2:
-        continue
-      half = len(str(i))//2
-      if str(i)[:half] == str(i)[half:]:
-        total += i
-  return total
-
-
-def Part2(lines):
-  """Part 2."""
-  id_ranges = IDsToRanges(lines)
-  total = 0
-  for start, end in id_ranges:
-    for i in range(start, end+1):
-      if IsInvalid(i):
+      if bad_regex.match(str(i)):
         total += i
   return total
 
@@ -58,8 +37,11 @@ def Part2(lines):
 def main():
   """main"""
   lines = GetData(DATA)
-  print(f'Part 1: {Part1(lines)}')
-  print(f'Part 2: {Part2(lines)}')
+  PART1_RE = re.compile(r'^([0-9]+)\1$')
+  PART2_RE = re.compile(r'^([0-9]+)\1{1,}$')
+
+  print(f'Part 1: {Solver(lines, PART1_RE)}')
+  print(f'Part 2: {Solver(lines, PART2_RE)}')
 
 
 if __name__ == '__main__':
