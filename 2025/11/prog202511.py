@@ -27,14 +27,8 @@ def DeviceDict(lines):
 def WaysToDict(device_dict):
   """Basically a reverse of device_dict: for each device, which other
      devices point to it. Adds device 'out' at the end."""
-
   all_keys = device_dict.keys()
-  my_dict = {k: [] for k in all_keys}
-  for k in all_keys:
-    other_keys = [kk for kk in all_keys if kk != k]
-    for ok in other_keys:
-      if k in device_dict[ok]:
-        my_dict[k].append(ok)
+  my_dict = {k: [d for d in all_keys if k in device_dict[d]] for k in all_keys}
   my_dict['out'] = [k for k in all_keys if 'out' in device_dict[k]]
   return my_dict
 
