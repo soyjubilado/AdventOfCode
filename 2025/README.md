@@ -55,7 +55,7 @@
 
 ### Day 8
 
-  - This was, surprisingly, straighforward. I did check to see how many
+  - This was, surprisingly, straightforward. I did check to see how many
     pairs of junction boxes I'd be dealing with. Given 1000 coordinates,
     there are roughly 500000 combinations of pairs. Iterating through all
     the pairs and calculating a distance took less than a second.
@@ -69,3 +69,22 @@
 
     For part 2, I kept iterating until the resulting merged set had a size
     of 1000 (all the junction boxes).
+
+### Day 9
+
+  - Part 1 only.
+  - Brute force method: compute the area for every pair of tiles and
+    return the largest one
+  - For Part 2: How to determine whether the box contains all green tiles?
+  
+
+### Day 10
+
+  - Part 1 only.
+  - After some thought, I realized no button would be pressed more than
+    once. Easy to brute force a solution.
+    
+### Day 11
+
+  - Part 1 only.
+  - Similar solution as to part 2 of day 7.
