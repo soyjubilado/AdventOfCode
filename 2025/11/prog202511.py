@@ -4,7 +4,8 @@
 
 from functools import lru_cache
 DATA = 'data202511.txt'
-# DATA = 'testdata202511.txt'
+# DATA = 'testdata202511_a.txt'
+# DATA = 'testdata202511_b.txt'
 
 
 def GetData(datafile):
@@ -38,24 +39,33 @@ def WaysToDict(device_dict):
   return my_dict
 
 
-def PrintDict(my_dict):
-  """Pretty print a dictionary."""
-  print("\n".join([f'{k}: {v}' for k, v in my_dict.items()]))
-
-
-def PathsToYou(og_ways_to_dict):
-  """Closure to recursively find all the paths to 'you'."""
+def PathsToStart(og_ways_to_dict, start_pt, req1, req2):
+  """Closure to recursively find all the paths to start_pt. If req1
+     and req2 are given, require the paths to go through them."""
 
   ways_to_dict = og_ways_to_dict.copy()
+  check1 = check2 = lambda x: True
+
+  if req1:
+    check1 = lambda dev: dev == req1
+  if req2:
+    check2 = lambda dev: dev == req2
 
   @lru_cache(maxsize=None)
-  def PathsInnerFunc(device):
+  def PathsInnerFunc(device, seen1=False, seen2=False):
     """Inner function of closure."""
-    if 'you' in ways_to_dict[device]:
-      return 1
+    seen1 = seen1 or check1(device)
+    seen2 = seen2 or check2(device)
+
+    if start_pt in ways_to_dict[device]:
+      if seen1 and seen2:
+        return 1
+      return 0
+
     if not ways_to_dict[device]:
       return 0
-    return sum([PathsInnerFunc(i) for i in ways_to_dict[device]])
+
+    return sum([PathsInnerFunc(i, seen1, seen2) for i in ways_to_dict[device]])
 
   return PathsInnerFunc
 
@@ -63,12 +73,13 @@ def PathsToYou(og_ways_to_dict):
 def Part1(device_dict):
   """Part 1."""
   ways_to_dict = WaysToDict(device_dict)
-  return PathsToYou(ways_to_dict)('out')
+  return PathsToStart(ways_to_dict, 'you', '', '')('out')
 
 
-def Part2(_lines):
+def Part2(device_dict):
   """Part 2."""
-  return None
+  ways_to_dict = WaysToDict(device_dict)
+  return PathsToStart(ways_to_dict, 'svr', 'fft', 'dac')('out')
 
 
 def main():
@@ -76,7 +87,7 @@ def main():
   lines = GetData(DATA)
   device_dict = DeviceDict(lines)
   print(f'Part 1: {Part1(device_dict)}')
-  # print(f'Part 2: {Part2(lines)}')
+  print(f'Part 2: {Part2(device_dict)}')
 
 
 if __name__ == '__main__':

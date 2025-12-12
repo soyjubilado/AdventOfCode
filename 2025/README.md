@@ -86,5 +86,9 @@
     
 ### Day 11
 
-  - Part 1 only.
-  - Similar solution as to part 2 of day 7.
+  - Similar solution as to Part 2 of day 7.
+  - Minor modification to get to Part 2. The fun part was to have a
+    single function that solved both parts, depending on the parameters
+    passed in.
+  - I'm still using a closure, but it makes more sense for Part 2.
+
