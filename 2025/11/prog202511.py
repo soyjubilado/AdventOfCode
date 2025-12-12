@@ -11,8 +11,7 @@ DATA = 'data202511.txt'
 def GetData(datafile):
   """Read input into a list of lines."""
   with open(datafile, 'r') as fh:
-    lines = [i.strip() for i in fh]
-  return lines
+    return [i.strip() for i in fh]
 
 
 def DeviceDict(lines):
@@ -28,7 +27,9 @@ def WaysToDict(device_dict):
   """Basically a reverse of device_dict: for each device, which other
      devices point to it. Adds device 'out' at the end."""
   all_keys = device_dict.keys()
-  my_dict = {k: [d for d in all_keys if k in device_dict[d]] for k in all_keys}
+  my_dict = {}
+  for k in all_keys:
+    my_dict[k] = [d for d in all_keys if k in device_dict[d]]
   my_dict['out'] = [k for k in all_keys if 'out' in device_dict[k]]
   return my_dict
 
