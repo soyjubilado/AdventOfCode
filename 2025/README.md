@@ -60,14 +60,14 @@
     there are roughly 500000 combinations of pairs. Iterating through all
     the pairs and calculating a distance took less than a second.
 
-    Then I needed a way to keep track of the combined circuits. I used a
+  - I needed a way to keep track of the combined circuits. I used a
     dictionary keyed on the coordinates of all the boxes. So a dictionary of
     1000 coordinates, each one pointing to a set that included just itself.
 
-    Then, every time two boxes were connected, the two sets were merged, and
+  - Every time two boxes were connected, the two sets were merged, and
     every key in the new merged set was updated.
 
-    For part 2, I kept iterating until the resulting merged set had a size
+  - For part 2, I kept iterating until the resulting merged set had a size
     of 1000 (all the junction boxes).
 
 ### Day 9
@@ -77,18 +77,19 @@
     return the largest one
   - For Part 2: How to determine whether the box contains all green tiles?
   
-
 ### Day 10
 
   - Part 1 only.
   - After some thought, I realized no button would be pressed more than
     once. Easy to brute force a solution.
+  - I wrote a similar approach for Part 2, but was thwarted by the size
+    of the input.
     
 ### Day 11
 
-  - Similar solution as to Part 2 of day 7.
-  - Minor modification to get to Part 2. The fun part was to have a
-    single function that solved both parts, depending on the parameters
-    passed in.
-  - I'm still using a closure, but it makes more sense for Part 2.
-
+  - Both parts' solutions are similar to Part 2 of day 7.
+  - Minor modification to get from Part 1 to Part 2. The fun part was
+    to have a single function that solved both parts, depending on the
+    parameters passed in. I had too much fun coding this part, but it does
+    comply with the DRY principle.
+  - I'm still using a closure, but it almost makes sense for Part 2.
